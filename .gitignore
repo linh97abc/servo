@@ -1,2 +1,11 @@
 /db/
 /*.qws
+/DE0_CV_SDRAM_Nios_Test.done
+/DE0_CV_SDRAM_Nios_Test.fit.smsg
+/DE0_CV_SDRAM_Nios_Test.fit.summary
+/DE0_CV_SDRAM_Nios_Test.jdi
+/DE0_CV_SDRAM_Nios_Test.map.smsg
+/DE0_CV_SDRAM_Nios_Test.map.summary
+/DE0_CV_SDRAM_Nios_Test.pin
+/DE0_CV_SDRAM_Nios_Test.sof
+/DE0_CV_SDRAM_Nios_Test.sta.summary
