@@ -1,0 +1,14 @@
+/.settings
+/drivers
+/HAL
+/UCOSII
+/alt_sys_init.c
+/linker.h
+/linker.x
+/Makefile
+/mem_init.mk
+/memory.gdb
+/public.mk
+/summary.html
+/system.h
+/create-this-bsp
