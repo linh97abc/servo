@@ -12,3 +12,5 @@
 /summary.html
 /system.h
 /create-this-bsp
+/.force_relink
+
