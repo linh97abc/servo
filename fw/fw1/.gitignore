@@ -14,3 +14,5 @@
 /incremental_db/
 /*.rpt
 /*.sld
+*.sopcinfo
+/.qsys_edit/
