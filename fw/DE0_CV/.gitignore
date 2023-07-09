@@ -8,6 +8,7 @@
 /*.map.summary
 /*.pin
 /*.sof
+/*.pof
 /*.sta.summary
 /DE0_CV_QSYS/
 /*.sopcinfo

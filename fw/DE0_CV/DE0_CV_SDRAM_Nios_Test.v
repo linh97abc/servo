@@ -120,6 +120,10 @@ DE0_CV_QSYS u0(
 		.clk_clk(CLOCK_50),                        //                     clk.clk
 		.reset_reset_n(1'b1),                  //                   reset.reset_n
 		.key_external_connection_export(KEY), // key_external_connection.export
+
+            .avl_fifo_uart_0_conduit_end_rxd(GPIO_0[0]),
+            .avl_fifo_uart_0_conduit_end_txd(GPIO_0[1]),
+
 		//SDRAM
 		.clk_sdram_clk(DRAM_CLK),                  //               clk_sdram.clk
 	   .sdram_wire_addr(DRAM_ADDR),                //              sdram_wire.addr
