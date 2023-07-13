@@ -2,9 +2,9 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Jun 19, 2023 10:43:50 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1687189430932</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>D:\Project\FPGA\DE0_CV_SDRAM_Nios_Test\sw\app_bsp</BspGeneratedLocation>
+        <BspGeneratedTimeStamp>Jul 13, 2023 10:56:06 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1689263766141</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>.</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\fw\DE0_CV_QSYS.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
@@ -62,7 +62,7 @@
                 <SettingName>hal.linker.allow_code_at_reset</SettingName>
                 <Identifier>ALT_ALLOW_CODE_AT_RESET</Identifier>
                 <Type>Boolean</Type>
-                <Value>1</Value>
+                <Value>0</Value>
                 <DefaultValue>0</DefaultValue>
                 <DestinationFile>none</DestinationFile>
                 <Description>Indicates if initialization code is allowed at the reset address. If true, defines the macro ALT_ALLOW_CODE_AT_RESET in linker.h.</Description>
@@ -74,7 +74,7 @@
                 <SettingName>hal.linker.enable_alt_load</SettingName>
                 <Identifier>none</Identifier>
                 <Type>Boolean</Type>
-                <Value>1</Value>
+                <Value>0</Value>
                 <DefaultValue>0</DefaultValue>
                 <DestinationFile>none</DestinationFile>
                 <Description>Enables the alt_load() facility. The alt_load() facility copies data sections (.rodata, .rwdata, or .exceptions) from boot memory to RAM. If true, this setting sets up the VMA/LMA of sections in linker.x to allow them to be loaded into the .text memory.</Description>
@@ -86,7 +86,7 @@
                 <SettingName>hal.linker.enable_alt_load_copy_rodata</SettingName>
                 <Identifier>none</Identifier>
                 <Type>Boolean</Type>
-                <Value>1</Value>
+                <Value>0</Value>
                 <DefaultValue>0</DefaultValue>
                 <DestinationFile>none</DestinationFile>
                 <Description>Causes the alt_load() facility to copy the .rodata section. If true, this setting defines the macro ALT_LOAD_COPY_RODATA in linker.h.</Description>
@@ -98,7 +98,7 @@
                 <SettingName>hal.linker.enable_alt_load_copy_rwdata</SettingName>
                 <Identifier>none</Identifier>
                 <Type>Boolean</Type>
-                <Value>1</Value>
+                <Value>0</Value>
                 <DefaultValue>0</DefaultValue>
                 <DestinationFile>none</DestinationFile>
                 <Description>Causes the alt_load() facility to copy the .rwdata section. If true, this setting defines the macro ALT_LOAD_COPY_RWDATA in linker.h.</Description>
@@ -1634,7 +1634,7 @@
                 <SettingName>ucosii.os_tmr_en</SettingName>
                 <Identifier>OS_TMR_EN</Identifier>
                 <Type>Boolean</Type>
-                <Value>0</Value>
+                <Value>1</Value>
                 <DefaultValue>0</DefaultValue>
                 <DestinationFile>system_h_define</DestinationFile>
                 <Description>Enable code for timers</Description>
@@ -1746,37 +1746,49 @@
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>onchip_memory2</slaveDescriptor>
-                <addressRange>0x20020000 - 0x2003F3FF</addressRange>
-                <addressSpan>128000</addressSpan>
+                <addressRange>0x04020000 - 0x0402FFFF</addressRange>
+                <addressSpan>65536</addressSpan>
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
+                <slaveDescriptor>epcs_flash_controller_0</slaveDescriptor>
+                <addressRange>0x04041000 - 0x040417FF</addressRange>
+                <addressSpan>2048</addressSpan>
+                <attributes>flash, memory, non-volatile</attributes>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>avl_fifo_uart_0</slaveDescriptor>
+                <addressRange>0x04042000 - 0x0404207F</addressRange>
+                <addressSpan>128</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
                 <slaveDescriptor>timer</slaveDescriptor>
-                <addressRange>0x20041000 - 0x2004101F</addressRange>
+                <addressRange>0x04042080 - 0x0404209F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>key</slaveDescriptor>
-                <addressRange>0x20041020 - 0x2004102F</addressRange>
+                <addressRange>0x040420A0 - 0x040420AF</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>jtag_uart</slaveDescriptor>
-                <addressRange>0x20041040 - 0x20041047</addressRange>
-                <addressSpan>8</addressSpan>
-                <attributes>printable</attributes>
-        </MemoryMap>
-        <MemoryMap>
                 <slaveDescriptor>sysid_qsys</slaveDescriptor>
-                <addressRange>0x20041048 - 0x2004104F</addressRange>
+                <addressRange>0x040420B0 - 0x040420B7</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>jtag_uart</slaveDescriptor>
+                <addressRange>0x040420B8 - 0x040420BF</addressRange>
+                <addressSpan>8</addressSpan>
+                <attributes>printable</attributes>
+        </MemoryMap>
         <LinkerSection>
                 <sectionName>.text</sectionName>
-                <regionName>onchip_memory2</regionName>
+                <regionName>sdram</regionName>
         </LinkerSection>
         <LinkerSection>
                 <sectionName>.rodata</sectionName>

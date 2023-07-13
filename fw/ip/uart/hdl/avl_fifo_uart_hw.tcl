@@ -17,6 +17,7 @@ set_module_property EDITABLE true
 set_module_property REPORT_TO_TALKBACK false
 set_module_property ALLOW_GREYBOX_GENERATION false
 set_module_property REPORT_HIERARCHY false
+set_module_property VALIDATION_CALLBACK validate
 
 
 # 
@@ -54,10 +55,12 @@ set_parameter_property BAUDRATE HDL_PARAMETER true
 
 add_parameter DATA_BIT INTEGER 8
 set_parameter_property DATA_BIT DEFAULT_VALUE 8
+# set_parameter_property DATA_BIT AFFECTS_GENERATION {1}
 set_parameter_property DATA_BIT DISPLAY_NAME DATA_BIT
 set_parameter_property DATA_BIT TYPE INTEGER
 set_parameter_property DATA_BIT UNITS None
 set_parameter_property DATA_BIT HDL_PARAMETER true
+set_parameter_property DATA_BIT ALLOWED_RANGES {5 6 7 8}
 
 add_parameter PARITY_BIT INTEGER 0
 set_parameter_property PARITY_BIT DEFAULT_VALUE 0
@@ -65,6 +68,7 @@ set_parameter_property PARITY_BIT DISPLAY_NAME PARITY_BIT
 set_parameter_property PARITY_BIT TYPE INTEGER
 set_parameter_property PARITY_BIT UNITS None
 set_parameter_property PARITY_BIT HDL_PARAMETER true
+set_parameter_property PARITY_BIT ALLOWED_RANGES {0 2 3}
 
 add_parameter STOP_BIT INTEGER 0
 set_parameter_property STOP_BIT DEFAULT_VALUE 0
@@ -72,6 +76,7 @@ set_parameter_property STOP_BIT DISPLAY_NAME STOP_BIT
 set_parameter_property STOP_BIT TYPE INTEGER
 set_parameter_property STOP_BIT UNITS None
 set_parameter_property STOP_BIT HDL_PARAMETER true
+set_parameter_property STOP_BIT ALLOWED_RANGES {0 1 2}
 
 add_parameter RX_FIFO_DEPTH INTEGER 8
 set_parameter_property RX_FIFO_DEPTH DEFAULT_VALUE 8
@@ -198,3 +203,9 @@ set_interface_property interrupt_sender CMSIS_SVD_VARIABLES ""
 set_interface_property interrupt_sender SVD_ADDRESS_GROUP ""
 
 add_interface_port interrupt_sender irq irq Output 1
+
+proc validate {} {
+    set clockRate [ get_parameter_value FREQ_CLK ]
+
+    set_module_assignment embeddedsw.CMacro.FREQ $clockRate	
+}

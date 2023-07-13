@@ -1,8 +1,8 @@
 app: bsp
-	make -C app
+	make -C servo
 
 bsp: app_bsp/Makefile
-	make -C app_bsp
+	make -C servo_bsp
 
 app_bsp/Makefile:
 	cd app_bsp ; nios2-bsp-generate-files --bsp-dir . --settings settings.bsp
@@ -10,6 +10,6 @@ app_bsp/Makefile:
 create-bsp: app_bsp/Makefile
 
 clean:
-	make -C app clean
-	make -C app_bsp clean
-	rm app_bsp/Makefile
+	make -C servo clean
+	make -C servo_bsp clean
+	rm servo_bsp/Makefile

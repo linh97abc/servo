@@ -139,7 +139,7 @@ ACDS_VERSION := 18.1
 # Define path to the application ELF. 
 # It may be used by the makefile fragments so is defined before including them. 
 # 
-ELF := app.elf
+ELF := servo.elf
 
 # Paths to C, C++, and assembly source files.
 C_SRCS := hello_ucosii.c
@@ -177,7 +177,7 @@ CRT0 :=
 SYS_LIB :=
 
 # Define path to the root of the BSP.
-BSP_ROOT_DIR := D:/Project/FPGA/DE0_CV_SDRAM_Nios_Test/sw/app_bsp/
+BSP_ROOT_DIR := D:/Project/outsource/DE0_CV_SDRAM_Nios_Test/sw/servo_bsp/
 
 # List of application specific include directories, library directories and library names
 APP_INCLUDE_DIRS :=
@@ -188,7 +188,7 @@ APP_LIBRARY_NAMES :=
 BUILD_PRE_PROCESS :=
 BUILD_POST_PROCESS :=
 
-QUARTUS_PROJECT_DIR := D:/Project/FPGA/DE0_CV_SDRAM_Nios_Test/fw/
+QUARTUS_PROJECT_DIR := D:/Project/outsource/DE0_CV_SDRAM_Nios_Test/fw/
 
 
 #END GENERATED
