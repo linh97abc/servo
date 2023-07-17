@@ -2,9 +2,9 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Jul 13, 2023 10:56:06 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1689263766141</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>.</BspGeneratedLocation>
+        <BspGeneratedTimeStamp>Jul 16, 2023 8:51:36 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1689515496345</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>D:\Project\outsource\DE0_CV_SDRAM_Nios_Test\sw\servo_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\fw\DE0_CV_QSYS.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
@@ -1746,43 +1746,49 @@
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>onchip_memory2</slaveDescriptor>
-                <addressRange>0x04020000 - 0x0402FFFF</addressRange>
+                <addressRange>0x04010000 - 0x0401FFFF</addressRange>
                 <addressSpan>65536</addressSpan>
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>epcs_flash_controller_0</slaveDescriptor>
-                <addressRange>0x04041000 - 0x040417FF</addressRange>
+                <addressRange>0x04021000 - 0x040217FF</addressRange>
                 <addressSpan>2048</addressSpan>
                 <attributes>flash, memory, non-volatile</attributes>
         </MemoryMap>
         <MemoryMap>
+                <slaveDescriptor>servo_controllerv1_0</slaveDescriptor>
+                <addressRange>0x04022000 - 0x0402207F</addressRange>
+                <addressSpan>128</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
                 <slaveDescriptor>avl_fifo_uart_0</slaveDescriptor>
-                <addressRange>0x04042000 - 0x0404207F</addressRange>
+                <addressRange>0x04022080 - 0x040220FF</addressRange>
                 <addressSpan>128</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timer</slaveDescriptor>
-                <addressRange>0x04042080 - 0x0404209F</addressRange>
+                <addressRange>0x04022100 - 0x0402211F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>key</slaveDescriptor>
-                <addressRange>0x040420A0 - 0x040420AF</addressRange>
+                <addressRange>0x04022120 - 0x0402212F</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid_qsys</slaveDescriptor>
-                <addressRange>0x040420B0 - 0x040420B7</addressRange>
+                <addressRange>0x04022130 - 0x04022137</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart</slaveDescriptor>
-                <addressRange>0x040420B8 - 0x040420BF</addressRange>
+                <addressRange>0x04022138 - 0x0402213F</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>

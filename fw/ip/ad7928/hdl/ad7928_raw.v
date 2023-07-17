@@ -24,7 +24,7 @@ module ad7928_raw
     // result
     output reg  [11:0]  m_adc_data,
     output reg  [2:0]   m_adc_chanel,
-    output reg   m_axis_valid
+    output wire [15:0]  m_axis_valid
    
 );
 

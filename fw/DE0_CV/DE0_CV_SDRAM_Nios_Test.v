@@ -124,9 +124,23 @@ DE0_CV_QSYS u0(
             .avl_fifo_uart_0_conduit_end_rxd(GPIO_0[0]),
             .avl_fifo_uart_0_conduit_end_txd(GPIO_0[1]),
 
+            //
+            .servo_controllerv1_0_conduit_end_spi_sclk(GPIO_0[2]), // servo_controllerv1_0_conduit_end.spi_sclk
+		.servo_controllerv1_0_conduit_end_spi_cs(GPIO_0[3]),   //                                 .spi_cs
+		.servo_controllerv1_0_conduit_end_spi_miso(GPIO_0[4]), //                                 .spi_miso
+		.servo_controllerv1_0_conduit_end_spi_mosi(GPIO_0[5]), //                                 .spi_mosi
+		.servo_controllerv1_0_conduit_end_hall_0(GPIO_0[8:6]),   //                                 .hall_0
+		.servo_controllerv1_0_conduit_end_hall_1(GPIO_0[11:9]),   //                                 .hall_1
+		.servo_controllerv1_0_conduit_end_hall_2(GPIO_0[14:12]),   //                                 .hall_2
+		.servo_controllerv1_0_conduit_end_hall_3(GPIO_0[17:15]),   //                                 .hall_3
+		.servo_controllerv1_0_conduit_end_phase_0(GPIO_1[5:0]),  //                                 .phase_0
+		.servo_controllerv1_0_conduit_end_phase_1(GPIO_1[11:6]),  //                                 .phase_1
+		.servo_controllerv1_0_conduit_end_phase_2(GPIO_1[17:12]),  //                                 .phase_2
+		.servo_controllerv1_0_conduit_end_phase_3(GPIO_1[23:18]),   //                                 .phase_3
+
 		//SDRAM
 		.clk_sdram_clk(DRAM_CLK),                  //               clk_sdram.clk
-	   .sdram_wire_addr(DRAM_ADDR),                //              sdram_wire.addr
+	      .sdram_wire_addr(DRAM_ADDR),                //              sdram_wire.addr
 		.sdram_wire_ba(DRAM_BA),                  //                        .ba
 		.sdram_wire_cas_n(DRAM_CAS_N),               //                        .cas_n
 		.sdram_wire_cke(DRAM_CKE),                 //                        .cke
