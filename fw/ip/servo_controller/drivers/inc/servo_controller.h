@@ -46,47 +46,37 @@ struct servo_controller_config_t
 	// protected
 	uint16_t i_max[SERVO_CONTROLLER_NUM_SERVO];
 
-	// irq
-	bool realtime_err_irq_en;
-	bool new_process_irq_en;
-	bool adc_valid_irq_en;
-	bool stop_irq_en[SERVO_CONTROLLER_NUM_SERVO];
-	bool drv_fault_irq_en[SERVO_CONTROLLER_NUM_SERVO];
-
 	void (*on_adc_valid)(struct servo_controller_dev_t *dev, void *arg);
 	void (*on_new_process)(struct servo_controller_dev_t *dev, void *arg);
-	void (*on_realtime_err)(struct servo_controller_dev_t *dev, void *arg);
-	void (*on_stop_err)(struct servo_controller_dev_t *dev, void *arg);
-	void (*on_drv_fault)(struct servo_controller_dev_t *dev, void *arg);
+	void (*on_realtime_err)(struct servo_controller_dev_t *dev, enum Servo_controller_servo_id_t servo_id, void *arg);
+	void (*on_stop_err)(struct servo_controller_dev_t *dev, enum Servo_controller_servo_id_t servo_id, void *arg);
+	void (*on_drv_fault)(struct servo_controller_dev_t *dev, enum Servo_controller_servo_id_t servo_id, void *arg);
+
+	void *on_adc_valid_arg;
+	void *on_new_process_arg;
+	void *on_realtime_err_arg;
+	void *on_stop_err_arg;
+	void *on_drv_fault_arg;
 };
 
 struct servo_controller_dev_t
 {
 	struct alt_dev_s dev;
-	struct servo_controller_reg_t *base;
-	const uint8_t irq;
-	const uint8_t ic_id;
-	const unsigned coreFreq;
-	struct servo_controller_config_t *cfg;
+	struct servo_controller_reg_t *const BASE;
+	const uint8_t IRQ;
+	const uint8_t IC_ID;
+	const unsigned CORE_FREQ;
+	struct servo_controller_config_t *const cfg;
 };
 
 struct servo_controller_dev_t *servo_controller_open_dev(const char *name);
 
-int servo_controller_configure(
-	struct servo_controller_dev_t *dev,
-	struct servo_controller_config_t *static_cfg);
+int servo_controller_apply_configure(struct servo_controller_dev_t *dev);
 
 int servo_controller_start(struct servo_controller_dev_t *dev);
 int servo_controller_stop(struct servo_controller_dev_t *dev);
 
-int servo_controller_set_duty(
-	struct servo_controller_dev_t *dev,
-	enum Servo_controller_servo_id_t servo_id,
-	int16_t duty);
-
-int servo_controller_update_process(struct servo_controller_dev_t *dev);
-
-int servo_controller_set_and_update(
+int servo_controller_update_duty(
 	struct servo_controller_dev_t *dev,
 	int16_t duty[SERVO_CONTROLLER_NUM_SERVO]);
 

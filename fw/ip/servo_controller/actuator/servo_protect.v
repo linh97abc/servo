@@ -40,10 +40,11 @@ wire  [ADC_WIDTH-1:0] i1_max_neg;
 wire  [ADC_WIDTH-1:0] i2_max_neg;
 wire  [ADC_WIDTH-1:0] i3_max_neg;
 
-assign si0 = i0 - {1'b1, {ADC_WIDTH-1{1'b0}}};
-assign si1 = i1 - {1'b1, {ADC_WIDTH-1{1'b0}}};
-assign si2 = i2 - {1'b1, {ADC_WIDTH-1{1'b0}}};
-assign si3 = i3 - {1'b1, {ADC_WIDTH-1{1'b0}}};
+assign si0 = i0;
+assign si1 = i1;
+assign si2 = i2;
+assign si3 = i3;
+
 assign i0_max_neg = {ADC_WIDTH{1'b0}} - {1'b0, i0_max};
 assign i1_max_neg = {ADC_WIDTH{1'b0}} - {1'b0, i1_max};
 assign i2_max_neg = {ADC_WIDTH{1'b0}} - {1'b0, i2_max};

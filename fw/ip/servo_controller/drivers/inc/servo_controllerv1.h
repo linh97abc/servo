@@ -10,6 +10,7 @@
 #define SERVO_CONTROLLERV1_INIT(name, dev) servo_controller_init(&dev)
 
 #define SERVO_CONTROLLERV1_INSTANCE(name, dev)                                         \
+    static struct servo_controller_config_t dev##_cfg;                                 \
     static struct servo_controller_dev_t dev =                                         \
         {                                                                              \
             {                                                                          \
@@ -27,7 +28,7 @@
             name##_IRQ,                                                                \
             name##_IRQ_INTERRUPT_CONTROLLER_ID,                                        \
             name##_FREQ,                                                               \
-    }
+            &dev##_cfg}
 
 void servo_controller_init(struct servo_controller_dev_t *dev);
 
