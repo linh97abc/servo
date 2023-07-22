@@ -112,6 +112,13 @@ module DE0_CV_SDRAM_Nios_Test(
       output             VGA_VS
 );
 
+wire UART_DEBUG_TX;
+wire UART_DEBUG_RX;
+wire UART_RS485_TX;
+wire UART_RS485_RX;
+
+assign UART_DEBUG_RX = UART_DEBUG_TX;
+assign UART_RS485_RX = UART_RS485_TX;
 
 //=======================================================
 //  REG/WIRE declarations
@@ -119,10 +126,11 @@ module DE0_CV_SDRAM_Nios_Test(
 DE0_CV_QSYS u0(
 		.clk_clk(CLOCK_50),                        //                     clk.clk
 		.reset_reset_n(1'b1),                  //                   reset.reset_n
-		.key_external_connection_export(KEY), // key_external_connection.export
 
-            .avl_fifo_uart_0_conduit_end_rxd(GPIO_0[0]),
-            .avl_fifo_uart_0_conduit_end_txd(GPIO_0[1]),
+		.uart_debug_conduit_end_rxd(UART_DEBUG_RX),                  //           uart_debug_conduit_end.rxd
+		.uart_debug_conduit_end_txd(UART_DEBUG_TX),                  //                                 .txd
+		.uart_rs485_conduit_end_rxd(UART_RS485_RX),                  //           uart_rs485_conduit_end.rxd
+		.uart_rs485_conduit_end_txd(UART_RS485_TX),                   //                                 .txd
 
             //
             .servo_controllerv1_0_conduit_end_spi_sclk(GPIO_0[2]), // servo_controllerv1_0_conduit_end.spi_sclk
@@ -137,6 +145,8 @@ DE0_CV_QSYS u0(
 		.servo_controllerv1_0_conduit_end_phase_1(GPIO_1[11:6]),  //                                 .phase_1
 		.servo_controllerv1_0_conduit_end_phase_2(GPIO_1[17:12]),  //                                 .phase_2
 		.servo_controllerv1_0_conduit_end_phase_3(GPIO_1[23:18]),   //                                 .phase_3
+            .servo_controllerv1_0_conduit_end_nFault(GPIO_0[23:18]),     //                                 .nFault
+		.servo_controllerv1_0_conduit_end_drv8320_en(GPIO_0[27:24]), //                                 .drv8320_en
 
 		//SDRAM
 		.clk_sdram_clk(DRAM_CLK),                  //               clk_sdram.clk

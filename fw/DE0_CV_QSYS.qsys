@@ -25,19 +25,35 @@
          type = "String";
       }
    }
-   element avl_fifo_uart_0
+   element DE0_CV_QSYS
    {
-      datum _sortIndex
+      datum _originalDeviceFamily
       {
-         value = "10";
-         type = "int";
+         value = "Cyclone V";
+         type = "String";
       }
    }
-   element avl_fifo_uart_0.avalon_slave_0
+   element DE0_CV_QSYS
    {
-      datum baseAddress
+      datum _originalDeviceFamily
       {
-         value = "67248256";
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element DE0_CV_QSYS
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element DE0_CV_QSYS
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
          type = "String";
       }
    }
@@ -53,7 +69,7 @@
    {
       datum _sortIndex
       {
-         value = "9";
+         value = "8";
          type = "int";
       }
    }
@@ -77,23 +93,7 @@
    {
       datum baseAddress
       {
-         value = "67248440";
-         type = "String";
-      }
-   }
-   element key
-   {
-      datum _sortIndex
-      {
-         value = "8";
-         type = "int";
-      }
-   }
-   element key.s1
-   {
-      datum baseAddress
-      {
-         value = "67248416";
+         value = "67248424";
          type = "String";
       }
    }
@@ -157,7 +157,7 @@
    {
       datum _sortIndex
       {
-         value = "11";
+         value = "10";
          type = "int";
       }
    }
@@ -181,7 +181,7 @@
    {
       datum baseAddress
       {
-         value = "67248432";
+         value = "67248416";
          type = "String";
       }
    }
@@ -198,6 +198,38 @@
       datum baseAddress
       {
          value = "67248384";
+         type = "String";
+      }
+   }
+   element uart_debug
+   {
+      datum _sortIndex
+      {
+         value = "11";
+         type = "int";
+      }
+   }
+   element uart_debug.avalon_slave_0
+   {
+      datum baseAddress
+      {
+         value = "67248256";
+         type = "String";
+      }
+   }
+   element uart_rs485
+   {
+      datum _sortIndex
+      {
+         value = "9";
+         type = "int";
+      }
+   }
+   element uart_rs485.avalon_slave_0
+   {
+      datum baseAddress
+      {
+         value = "67248320";
          type = "String";
       }
    }
@@ -222,18 +254,8 @@
  <parameter name="timeStamp" value="0" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
- <interface
-   name="avl_fifo_uart_0_conduit_end"
-   internal="avl_fifo_uart_0.conduit_end"
-   type="conduit"
-   dir="end" />
  <interface name="clk" internal="clk_50.clk_in" type="clock" dir="end" />
  <interface name="clk_sdram" internal="pll.outclk1" type="clock" dir="start" />
- <interface
-   name="key_external_connection"
-   internal="key.external_connection"
-   type="conduit"
-   dir="end" />
  <interface name="pll_locked" internal="pll.locked" type="conduit" dir="end" />
  <interface name="reset" internal="clk_50.clk_in_reset" type="reset" dir="end" />
  <interface name="sdram_wire" internal="sdram.wire" type="conduit" dir="end" />
@@ -242,15 +264,16 @@
    internal="servo_controllerv1_0.conduit_end"
    type="conduit"
    dir="end" />
- <module name="avl_fifo_uart_0" kind="avl_fifo_uart" version="1.0" enabled="1">
-  <parameter name="BAUDRATE" value="921600" />
-  <parameter name="DATA_BIT" value="8" />
-  <parameter name="FREQ_CLK" value="100000000" />
-  <parameter name="PARITY_BIT" value="0" />
-  <parameter name="RX_FIFO_DEPTH" value="12" />
-  <parameter name="STOP_BIT" value="0" />
-  <parameter name="TX_FIFO_DEPTH" value="12" />
- </module>
+ <interface
+   name="uart_debug_conduit_end"
+   internal="uart_debug.conduit_end"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="uart_rs485_conduit_end"
+   internal="uart_rs485.conduit_end"
+   type="conduit"
+   dir="end" />
  <module name="clk_50" kind="clock_source" version="18.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -288,20 +311,6 @@
   <parameter name="writeBufferDepth" value="64" />
   <parameter name="writeIRQThreshold" value="8" />
  </module>
- <module name="key" kind="altera_avalon_pio" version="18.1" enabled="1">
-  <parameter name="bitClearingEdgeCapReg" value="false" />
-  <parameter name="bitModifyingOutReg" value="false" />
-  <parameter name="captureEdge" value="true" />
-  <parameter name="clockRate" value="100000000" />
-  <parameter name="direction" value="Input" />
-  <parameter name="edgeType" value="FALLING" />
-  <parameter name="generateIRQ" value="true" />
-  <parameter name="irqType" value="EDGE" />
-  <parameter name="resetValue" value="0" />
-  <parameter name="simDoTestBenchWiring" value="false" />
-  <parameter name="simDrivenValue" value="0" />
-  <parameter name="width" value="4" />
- </module>
  <module name="nios2_qsys" kind="altera_nios2_gen2" version="18.1" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="5" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="5" />
@@ -322,7 +331,7 @@
   <parameter name="dataAddrWidth" value="27" />
   <parameter name="dataMasterHighPerformanceAddrWidth" value="1" />
   <parameter name="dataMasterHighPerformanceMapParam" value="" />
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x0' end='0x4000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='onchip_memory2.s1' start='0x4010000' end='0x4020000' type='altera_avalon_onchip_memory2.s1' /><slave name='epcs_flash_controller_0.epcs_control_port' start='0x4021000' end='0x4021800' type='altera_avalon_epcs_flash_controller.epcs_control_port' /><slave name='nios2_qsys.debug_mem_slave' start='0x4021800' end='0x4022000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='servo_controllerv1_0.avalon_slave_0' start='0x4022000' end='0x4022080' type='servo_controllerv1.avalon_slave_0' /><slave name='avl_fifo_uart_0.avalon_slave_0' start='0x4022080' end='0x4022100' type='avl_fifo_uart.avalon_slave_0' /><slave name='timer.s1' start='0x4022100' end='0x4022120' type='altera_avalon_timer.s1' /><slave name='key.s1' start='0x4022120' end='0x4022130' type='altera_avalon_pio.s1' /><slave name='sysid_qsys.control_slave' start='0x4022130' end='0x4022138' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x4022138' end='0x4022140' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x0' end='0x4000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='onchip_memory2.s1' start='0x4010000' end='0x4020000' type='altera_avalon_onchip_memory2.s1' /><slave name='epcs_flash_controller_0.epcs_control_port' start='0x4021000' end='0x4021800' type='altera_avalon_epcs_flash_controller.epcs_control_port' /><slave name='nios2_qsys.debug_mem_slave' start='0x4021800' end='0x4022000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='servo_controllerv1_0.avalon_slave_0' start='0x4022000' end='0x4022080' type='servo_controllerv1.avalon_slave_0' /><slave name='uart_debug.avalon_slave_0' start='0x4022080' end='0x40220C0' type='avl_fifo_uart.avalon_slave_0' /><slave name='uart_rs485.avalon_slave_0' start='0x40220C0' end='0x4022100' type='avl_fifo_uart.avalon_slave_0' /><slave name='timer.s1' start='0x4022100' end='0x4022120' type='altera_avalon_timer.s1' /><slave name='sysid_qsys.control_slave' start='0x4022120' end='0x4022128' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x4022128' end='0x4022130' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
   <parameter name="data_master_high_performance_paddr_base" value="0" />
   <parameter name="data_master_high_performance_paddr_size" value="0" />
   <parameter name="data_master_paddr_base" value="0" />
@@ -777,22 +786,40 @@
   <parameter name="timeoutPulseOutput" value="false" />
   <parameter name="watchdogPulse" value="2" />
  </module>
+ <module name="uart_debug" kind="avl_fifo_uart" version="1.0" enabled="1">
+  <parameter name="BAUDRATE" value="921600" />
+  <parameter name="DATA_BIT" value="8" />
+  <parameter name="FREQ_CLK" value="100000000" />
+  <parameter name="PARITY_BIT" value="0" />
+  <parameter name="RX_FIFO_DEPTH" value="8" />
+  <parameter name="STOP_BIT" value="0" />
+  <parameter name="TX_FIFO_DEPTH" value="12" />
+ </module>
+ <module name="uart_rs485" kind="avl_fifo_uart" version="1.0" enabled="1">
+  <parameter name="BAUDRATE" value="921600" />
+  <parameter name="DATA_BIT" value="8" />
+  <parameter name="FREQ_CLK" value="100000000" />
+  <parameter name="PARITY_BIT" value="0" />
+  <parameter name="RX_FIFO_DEPTH" value="12" />
+  <parameter name="STOP_BIT" value="0" />
+  <parameter name="TX_FIFO_DEPTH" value="12" />
+ </module>
  <connection
    kind="avalon"
    version="18.1"
    start="nios2_qsys.data_master"
    end="jtag_uart.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04022138" />
+  <parameter name="baseAddress" value="0x04022128" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
    kind="avalon"
    version="18.1"
    start="nios2_qsys.data_master"
-   end="avl_fifo_uart_0.avalon_slave_0">
+   end="uart_rs485.avalon_slave_0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04022080" />
+  <parameter name="baseAddress" value="0x040220c0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -808,9 +835,18 @@
    kind="avalon"
    version="18.1"
    start="nios2_qsys.data_master"
+   end="uart_debug.avalon_slave_0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x04022080" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="nios2_qsys.data_master"
    end="sysid_qsys.control_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04022130" />
+  <parameter name="baseAddress" value="0x04022120" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -847,15 +883,6 @@
    end="timer.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x04022100" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="18.1"
-   start="nios2_qsys.data_master"
-   end="key.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04022120" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -899,7 +926,6 @@
  <connection kind="clock" version="18.1" start="pll.outclk0" end="sysid_qsys.clk" />
  <connection kind="clock" version="18.1" start="pll.outclk0" end="timer.clk" />
  <connection kind="clock" version="18.1" start="pll.outclk0" end="jtag_uart.clk" />
- <connection kind="clock" version="18.1" start="pll.outclk0" end="key.clk" />
  <connection kind="clock" version="18.1" start="pll.outclk0" end="sdram.clk" />
  <connection
    kind="clock"
@@ -915,17 +941,22 @@
    kind="clock"
    version="18.1"
    start="pll.outclk0"
-   end="avl_fifo_uart_0.clock" />
+   end="uart_rs485.clock" />
  <connection
    kind="clock"
    version="18.1"
    start="pll.outclk0"
    end="servo_controllerv1_0.clock" />
  <connection
+   kind="clock"
+   version="18.1"
+   start="pll.outclk0"
+   end="uart_debug.clock" />
+ <connection
    kind="interrupt"
    version="18.1"
    start="nios2_qsys.irq"
-   end="avl_fifo_uart_0.interrupt_sender">
+   end="uart_rs485.interrupt_sender">
   <parameter name="irqNumber" value="0" />
  </connection>
  <connection
@@ -933,6 +964,13 @@
    version="18.1"
    start="nios2_qsys.irq"
    end="servo_controllerv1_0.interrupt_sender">
+  <parameter name="irqNumber" value="1" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="18.1"
+   start="nios2_qsys.irq"
+   end="uart_debug.interrupt_sender">
   <parameter name="irqNumber" value="5" />
  </connection>
  <connection
@@ -940,16 +978,13 @@
    version="18.1"
    start="nios2_qsys.irq"
    end="timer.irq">
-  <parameter name="irqNumber" value="1" />
+  <parameter name="irqNumber" value="2" />
  </connection>
  <connection
    kind="interrupt"
    version="18.1"
    start="nios2_qsys.irq"
    end="jtag_uart.irq">
-  <parameter name="irqNumber" value="2" />
- </connection>
- <connection kind="interrupt" version="18.1" start="nios2_qsys.irq" end="key.irq">
   <parameter name="irqNumber" value="3" />
  </connection>
  <connection
@@ -979,7 +1014,6 @@
    version="18.1"
    start="clk_50.clk_reset"
    end="jtag_uart.reset" />
- <connection kind="reset" version="18.1" start="clk_50.clk_reset" end="key.reset" />
  <connection kind="reset" version="18.1" start="clk_50.clk_reset" end="pll.reset" />
  <connection
    kind="reset"
@@ -995,12 +1029,17 @@
    kind="reset"
    version="18.1"
    start="clk_50.clk_reset"
-   end="avl_fifo_uart_0.reset" />
+   end="uart_rs485.reset" />
  <connection
    kind="reset"
    version="18.1"
    start="clk_50.clk_reset"
    end="servo_controllerv1_0.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="clk_50.clk_reset"
+   end="uart_debug.reset" />
  <connection
    kind="reset"
    version="18.1"
@@ -1015,7 +1054,7 @@
    kind="reset"
    version="18.1"
    start="nios2_qsys.debug_reset_request"
-   end="avl_fifo_uart_0.reset" />
+   end="uart_rs485.reset" />
  <connection
    kind="reset"
    version="18.1"
