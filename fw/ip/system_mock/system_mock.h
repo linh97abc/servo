@@ -20,6 +20,22 @@ namespace sys_mock
         virtual void iowr(unsigned reg, uint32_t data) = 0;
     };
 
+    class IrqManager
+    {
+        typedef void (*IrqHandler_t)(void *arg);
+
+        IrqHandler_t handler[32]{0};
+        void *arg[32];
+
+        IrqManager() = default;
+
+    public:
+        static IrqManager *GetInst();
+
+        void Invoke(unsigned id);
+
+        void Register(unsigned id, IrqHandler_t handler, void *arg);
+    };
 } // namespace sys_mock
 
 #endif // __SYSTEM_MOCK_H__

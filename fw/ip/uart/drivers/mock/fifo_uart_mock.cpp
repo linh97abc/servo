@@ -66,7 +66,20 @@ void sys_mock::FifoUart_MemMap::iowr(unsigned reg, uint32_t data)
         ieReg |= data;
         this->BASE.ie.data = ieReg;
 
+        if (this->BASE.ie.field.rx_valid)
+        {
+            this->BASE.flag.field.rx_valid = 1;
+        }
 
+        if (this->BASE.ie.field.tx_ready)
+        {
+            this->BASE.flag.field.tx_ready = 1;
+        }
+
+        sys_mock::IrqManager::GetInst()->Invoke(this->irq);
+
+        this->BASE.flag.field.tx_ready = 0;
+        this->BASE.flag.field.rx_valid = 0;
 
         break;
     }

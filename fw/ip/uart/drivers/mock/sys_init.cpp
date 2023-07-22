@@ -17,7 +17,7 @@
 #define UART_DEBUG_TX_FIFO_DEPTH 12
 #define UART_DEBUG_TYPE "avl_fifo_uart"
 
-static sys_mock::FifoUart_MemMap fifo_Uart_Debug_inst(UART_DEBUG_NAME);
+static sys_mock::FifoUart_MemMap fifo_Uart_Debug_inst(UART_DEBUG_NAME, UART_DEBUG_IRQ);
 
 AVL_FIFO_UART_INSTANCE ( UART_DEBUG, uart_test);
 
