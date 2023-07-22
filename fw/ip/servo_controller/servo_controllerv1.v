@@ -381,22 +381,22 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
                 end
                 I0_MAX_OFFSET: begin
                    if (core_en) begin
-                        i0_max <= writedata;
+                        i0_max <= writedata[14:16-ADC_WIDTH];
                    end 
                 end
                 I1_MAX_OFFSET: begin
                    if (core_en) begin
-                        i1_max <= writedata;
+                        i1_max <= writedata[14:16-ADC_WIDTH];
                    end 
                 end
                 I2_MAX_OFFSET: begin
                    if (core_en) begin
-                        i2_max <= writedata;
+                        i2_max <= writedata[14:16-ADC_WIDTH];
                    end 
                 end
                 I3_MAX_OFFSET: begin
                    if (core_en) begin
-                        i3_max <= writedata;
+                        i3_max <= writedata[14:16-ADC_WIDTH];
                    end 
                 end
                 U0_OFFSET: begin
@@ -442,18 +442,18 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
                     U1_OFFSET: readdata <= u1;
                     U2_OFFSET: readdata <= u2;
                     U3_OFFSET: readdata <= u3;
-                    I0_MAX_OFFSET: readdata <= i0_max;
-                    I1_MAX_OFFSET: readdata <= i1_max;
-                    I2_MAX_OFFSET: readdata <= i2_max;
-                    I3_MAX_OFFSET: readdata <= i3_max;
-                    I0_OFFSET: readdata <= i0;
-                    I1_OFFSET: readdata <= i1;
-                    I2_OFFSET: readdata <= i2;
-                    I3_OFFSET: readdata <= i3;
-                    POS0_OFFSET: readdata <= pos0;
-                    POS1_OFFSET: readdata <= pos1;
-                    POS2_OFFSET: readdata <= pos2;
-                    POS3_OFFSET: readdata <= pos3;
+                    I0_MAX_OFFSET: readdata <= {i0_max, {16-ADC_WIDTH{1'b0}}};
+                    I1_MAX_OFFSET: readdata <= {i1_max, {16-ADC_WIDTH{1'b0}}};
+                    I2_MAX_OFFSET: readdata <= {i2_max, {16-ADC_WIDTH{1'b0}}};
+                    I3_MAX_OFFSET: readdata <= {i3_max, {16-ADC_WIDTH{1'b0}}};
+                    I0_OFFSET: readdata <= {i0, {16-ADC_WIDTH{1'b0}}};
+                    I1_OFFSET: readdata <= {i1, {16-ADC_WIDTH{1'b0}}};
+                    I2_OFFSET: readdata <= {i2, {16-ADC_WIDTH{1'b0}}};
+                    I3_OFFSET: readdata <= {i3, {16-ADC_WIDTH{1'b0}}};
+                    POS0_OFFSET: readdata <= {pos0, {16-ADC_WIDTH{1'b0}}};
+                    POS1_OFFSET: readdata <= {pos1, {16-ADC_WIDTH{1'b0}}};
+                    POS2_OFFSET: readdata <= {pos2, {16-ADC_WIDTH{1'b0}}};
+                    POS3_OFFSET: readdata <= {pos3, {16-ADC_WIDTH{1'b0}}};
 
 
                     default: readdata <= 0;

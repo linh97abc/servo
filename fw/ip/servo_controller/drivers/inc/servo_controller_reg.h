@@ -152,7 +152,7 @@ extern "C"
     {
         int16_t i16_val;
         uint32_t u32_val;
-    } servo_controller_reg_DUTY;
+    } servo_controller_reg_I16;
 
     struct servo_controller_reg_t
     {
@@ -166,10 +166,10 @@ extern "C"
         volatile uint32_t pwm_hperiod;
 
         volatile servo_controller_reg_DRV_MODE drv_mode[SERVO_CONTROLLER_NUM_SERVO];
-        volatile servo_controller_reg_DUTY duty[SERVO_CONTROLLER_NUM_SERVO];
-        volatile uint32_t i_max[SERVO_CONTROLLER_NUM_SERVO];
-        const volatile uint32_t i[SERVO_CONTROLLER_NUM_SERVO];
-        const volatile uint32_t pos[SERVO_CONTROLLER_NUM_SERVO];
+        volatile servo_controller_reg_I16 duty[SERVO_CONTROLLER_NUM_SERVO];
+        volatile servo_controller_reg_I16 i_max[SERVO_CONTROLLER_NUM_SERVO];
+        const volatile servo_controller_reg_I16 i[SERVO_CONTROLLER_NUM_SERVO];
+        const volatile servo_controller_reg_I16 pos[SERVO_CONTROLLER_NUM_SERVO];
     };
 
 #ifdef __cplusplus

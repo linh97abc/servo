@@ -3,6 +3,7 @@
 
 #include "servo_controller_reg.h"
 #include <stdbool.h>
+#include <errno.h>
 #include <sys/alt_dev.h>
 
 enum Servo_controller_filter_level_t
@@ -33,6 +34,7 @@ enum Servo_controller_servo_id_t
 	SERVO_CONTROLLER_SERVO_ID_3
 };
 
+struct servo_controller_dev_t;
 struct servo_controller_config_t
 {
 	enum Servo_controller_filter_level_t filter_level;
@@ -44,11 +46,11 @@ struct servo_controller_config_t
 	enum Servo_controller_drv_mode_t drv_mode[SERVO_CONTROLLER_NUM_SERVO];
 
 	// protected
-	uint16_t i_max[SERVO_CONTROLLER_NUM_SERVO];
+	int16_t i_max[SERVO_CONTROLLER_NUM_SERVO]; // fixed(16, 0)
 
 	void (*on_adc_valid)(struct servo_controller_dev_t *dev, void *arg);
 	void (*on_new_process)(struct servo_controller_dev_t *dev, void *arg);
-	void (*on_realtime_err)(struct servo_controller_dev_t *dev, enum Servo_controller_servo_id_t servo_id, void *arg);
+	void (*on_realtime_err)(struct servo_controller_dev_t *dev, void *arg);
 	void (*on_stop_err)(struct servo_controller_dev_t *dev, enum Servo_controller_servo_id_t servo_id, void *arg);
 	void (*on_drv_fault)(struct servo_controller_dev_t *dev, enum Servo_controller_servo_id_t servo_id, void *arg);
 
@@ -82,11 +84,11 @@ int servo_controller_update_duty(
 
 int servo_controller_get_position(
 	struct servo_controller_dev_t *dev,
-	uint16_t position[SERVO_CONTROLLER_NUM_SERVO]);
+	int16_t position[SERVO_CONTROLLER_NUM_SERVO]);
 
 int servo_controller_get_current(
 	struct servo_controller_dev_t *dev,
-	uint16_t current[SERVO_CONTROLLER_NUM_SERVO]);
+	int16_t current[SERVO_CONTROLLER_NUM_SERVO]);
 
 int servo_controller_get_duty(
 	struct servo_controller_dev_t *dev,

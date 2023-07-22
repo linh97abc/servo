@@ -1,7 +1,7 @@
 #include "avl_fifo_uart.h"
 #include "avl_fifo_uart_reg.h"
 #include <io.h>
-#include <sys/alt_dev.h>
+
 #include <priv/alt_file.h>
 #include <sys/alt_irq.h>
 #include <sys/alt_dev.h>
