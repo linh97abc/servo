@@ -15,7 +15,7 @@
 
 #define FIFO_UART_CR_EN (1u << 0)
 #define FIFO_UART_CR_RESET (1u << 1)
-#define FIFO_UART_CR_BAUD_SET(baud) (((baud) << 8) & 0xFFFFu)
+#define FIFO_UART_CR_BAUD_SET(baud) (((baud) &0xFFFFu) << 8)
 #define FIFO_UART_CR_BAUD_GET(regVal) (((regVal) >> 8) & 0xFFFFu)
 
 #define FIFO_UART_IE_STOP_ERR (1u << 10)

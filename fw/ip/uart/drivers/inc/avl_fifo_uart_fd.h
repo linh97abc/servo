@@ -35,7 +35,13 @@ extern "C"
             (FifoUart_Reg *)(NIOS2_DCACHE_BYPASS_MASK | name##_BASE), \
             name##_IRQ,                                               \
             name##_IRQ_INTERRUPT_CONTROLLER_ID,                       \
-            name##_FREQ}
+            name##_FREQ,                                              \
+            name##_DATA_BIT,                                          \
+            (enum FifoUart_ParityBits_t)name##_PARITY_BIT,            \
+            (enum FifoUart_StopBits_t)name##_STOP_BIT,                \
+            1u << name##_RX_FIFO_DEPTH,                               \
+            1u << name##_TX_FIFO_DEPTH,                               \
+    }
 
 #define AVL_FIFO_UART_INIT(name, dev) FifoUart_Init(&dev)
 #ifdef __cplusplus

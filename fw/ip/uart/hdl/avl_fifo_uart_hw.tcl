@@ -98,7 +98,7 @@ set_parameter_property TX_FIFO_DEPTH HDL_PARAMETER true
 add_display_item "Input Clock Frequency (Hz):" FREQ_CLK PARAMETER ""
 add_display_item "Baudrate:" BAUDRATE PARAMETER ""
 add_display_item "Databits (5,6,7,8):" DATA_BIT PARAMETER ""
-add_display_item "Parity Bit (00,01 <=> NONE, 11 <=> Odd, 10 <=> Even):" PARITY_BIT PARAMETER ""
+add_display_item "Parity Bit (0 <=> NONE, 2 <=> Even, 3 <=> Odd):" PARITY_BIT PARAMETER ""
 add_display_item "Stop Bit (0 <=> 1 bit, 1 <=> 1,5 bit, 2 <=> 2 bit):" STOP_BIT PARAMETER ""
 add_display_item "RX_FIFO_DEPTH:" RX_FIFO_DEPTH PARAMETER ""
 add_display_item "TX_FIFO_DEPTH:" TX_FIFO_DEPTH PARAMETER ""
@@ -206,6 +206,17 @@ add_interface_port interrupt_sender irq irq Output 1
 
 proc validate {} {
     set clockRate [ get_parameter_value FREQ_CLK ]
+    set dataBit [ get_parameter_value DATA_BIT ]
+    set parityBit [ get_parameter_value PARITY_BIT ]
+    set stopBit [ get_parameter_value STOP_BIT ]
+    set rxFifoDepth [ get_parameter_value RX_FIFO_DEPTH ]
+    set txFifoDepth [ get_parameter_value TX_FIFO_DEPTH ]
+
 
     set_module_assignment embeddedsw.CMacro.FREQ $clockRate	
+    set_module_assignment embeddedsw.CMacro.DATA_BIT $dataBit	
+    set_module_assignment embeddedsw.CMacro.PARITY_BIT $parityBit	
+    set_module_assignment embeddedsw.CMacro.STOP_BIT $stopBit	
+    set_module_assignment embeddedsw.CMacro.RX_FIFO_DEPTH $rxFifoDepth	
+    set_module_assignment embeddedsw.CMacro.TX_FIFO_DEPTH $txFifoDepth	
 }
