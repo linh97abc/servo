@@ -56,28 +56,31 @@ module uart_sfifo
         .rdata(r_data)
    );
 
+   reg reading;
 
    assign we = w_valid & w_ready;
    assign count_out = waddr - raddr;
    assign empty = (count_out == 0)? 1'b1: 1'b0;
    assign full = (count_out == (2**ADDR_BIT - 1))? 1'b1: 1'b0;
 
-
-
-   assign r_valid = ~empty;
+   assign r_valid = ~empty & ~reading;
    assign w_ready = ~full;
    
+
    always @(posedge clk ) begin
       if (reset) begin
          waddr <= 0;
          raddr <= 0;
+         reading <= 1'b0;
       end else begin
+
+         reading <= (r_ready & r_valid) | (w_valid & w_ready & empty);
 
          if (w_valid & w_ready) begin
             waddr <= waddr + 1'b1;
          end
 
-         if (r_ready & r_valid) begin
+         if (r_ready & r_valid & ~reading) begin
             raddr <= raddr + 1'b1;
          end
 

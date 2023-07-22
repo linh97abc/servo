@@ -17,7 +17,7 @@ module avl_fifo_uart
     input wire reset_n,
     
     //avalon mm interface
-    input wire [4:0] address,
+    input wire [3:0] address,
     input wire [31:0] writedata,
     input wire write_n,
     input wire read_n,    
@@ -44,7 +44,7 @@ module avl_fifo_uart
 
     localparam RX_THRESHOLD_REG = 6;
     localparam TX_REG = 7;
-    localparam RX_REG = 16;
+    localparam RX_REG = 10;
 
 
 
@@ -168,24 +168,20 @@ axis_uart_inst
     end
     
     //avalon read data
-    always @(posedge clk or negedge reset_n)            //read reg value      
+    always @(*)            //read reg value      
     begin
-        if(~reset_n) begin
-            readdata <= 0;
+        if(~read_n) begin
+            case (address)
+                CR_REG: readdata <= control_reg;
+                RX_REG: readdata <= {rx_valid, {31-DATA_BIT{1'b0}}, rx_data};
+                FLAG_REG: readdata <= core_status;
+                TX_COUNT_REG: readdata <= tx_cout;
+                RX_COUNT_REG: readdata <= rx_cout;
+                RX_THRESHOLD_REG: readdata <= rx_threshold_cnt;
+                IE_REG: readdata <= ie;
+                default: readdata <= 0;
+            endcase
         end
-        else begin
-            if(~read_n) begin
-                case (address)
-                    CR_REG: readdata <= control_reg;
-                    RX_REG: readdata <= {rx_valid, {31-DATA_BIT{1'b0}}, rx_data};
-                    FLAG_REG: readdata <= core_status;
-                    TX_COUNT_REG: readdata <= tx_cout;
-                    RX_COUNT_REG: readdata <= rx_cout;
-                    RX_THRESHOLD_REG: readdata <= rx_threshold_cnt;
-                    IE_REG: readdata <= ie;
-                    default: readdata <= 0;
-                endcase
-            end
-        end
+
     end    
 endmodule

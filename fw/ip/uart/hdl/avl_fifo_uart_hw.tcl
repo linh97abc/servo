@@ -160,7 +160,7 @@ set_interface_property avalon_slave_0 CMSIS_SVD_VARIABLES ""
 set_interface_property avalon_slave_0 SVD_ADDRESS_GROUP ""
 
 # add_interface_port avalon_slave_0 chipselect chipselect Input 1
-add_interface_port avalon_slave_0 address address Input 5
+add_interface_port avalon_slave_0 address address Input 4
 add_interface_port avalon_slave_0 writedata writedata Input 32
 # add_interface_port avalon_slave_0 begintransfer begintransfer Input 1
 add_interface_port avalon_slave_0 write_n write_n Input 1

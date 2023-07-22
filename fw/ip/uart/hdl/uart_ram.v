@@ -19,7 +19,6 @@ module uart_ram
    );
 
     reg  [DATA_BIT-1:0]    array_reg [0:2**ADDR_BIT-1]; // register array
-    // reg [DATA_BIT-1:0] rdata_reg;
 
 
    always @(posedge clk) begin
@@ -27,10 +26,9 @@ module uart_ram
         array_reg[waddr] <= wdata;
     end
 
-    // rdata_reg <= array_reg[raddr];
-    rdata = (we && (waddr == raddr))? wdata: array_reg[raddr];
+    rdata <= array_reg[raddr];
    end
 
-//    assign rdata = (we && (waddr == raddr))? wdata: rdata_reg;
+
 
 endmodule

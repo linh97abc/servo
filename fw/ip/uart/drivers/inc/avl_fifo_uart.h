@@ -12,22 +12,46 @@ extern "C"
 {
 #endif
 
+	typedef union
+	{
+		uint32_t en : 1;
+		uint32_t reset : 1;
+		uint32_t reserved : 6;
+		uint32_t baudrate : 16;
+		uint32_t reserved2 : 8;
+	} avl_fifo_uart_CR_REG;
+
+	typedef union
+	{
+		uint32_t rx_idle : 1;
+		uint32_t rx_full : 1;
+		uint32_t rx_empty : 1;
+		uint32_t tx_full : 1;
+		uint32_t tx_empty : 1;
+		uint32_t rx_threshold : 1;
+		uint32_t rx_valid : 1;
+		uint32_t tx_ready : 1;
+		uint32_t overrun_err : 1;
+		uint32_t parity_err : 1;
+		uint32_t stop_err : 1;
+		uint32_t reserved : 21;
+	} avl_fifo_uart_IE_FLAG_REG;
 	typedef struct tag_FifoUart_Reg
 	{
-		uint32_t CR;
-		uint32_t IE;
-		uint32_t IE_DIS;
-		uint32_t FLAG;
-		uint32_t TX_CNT;
-		uint32_t RX_CNT;
-		uint32_t RX_THRESHOLD;
-		uint32_t TX;
+		volatile avl_fifo_uart_CR_REG cr;
+		volatile avl_fifo_uart_IE_FLAG_REG ie;
+		volatile uint32_t ie_dis;
+		volatile avl_fifo_uart_IE_FLAG_REG flag;
+		const volatile uint32_t tx_cnt;
+		const volatile uint32_t rx_cnt;
+		volatile uint32_t rx_threshold;
+		volatile uint32_t tx;
 	} FifoUart_Reg;
 
 	typedef struct tag_FifoUart_Dev
 	{
 		struct alt_dev_s dev;
-		volatile FifoUart_Reg *base;
+		struct tag_FifoUart_Reg *base;
 		uint8_t irq;
 		uint8_t ic_id;
 		unsigned coreFreq;
@@ -35,8 +59,6 @@ extern "C"
 		uint16_t timeout;
 		bool isReady;
 		OS_FLAG_GRP *flag;
-		OS_EVENT *read_lock;
-		OS_EVENT *write_lock;
 
 	} FifoUart_Dev;
 

@@ -1,7 +1,17 @@
 #ifndef __AVL_FIFO_UART_REG_H__
 #define __AVL_FIFO_UART_REG_H__
 
-#define FIFO_UART_RX_REG 16
+#define FIFO_UART_CR_REG 0
+#define FIFO_UART_IE_REG 1
+#define FIFO_UART_IE_DIS_REG 2
+#define FIFO_UART_FLAG_REG 3
+
+#define FIFO_UART_TX_COUNT_REG 4
+#define FIFO_UART_RX_COUNT_REG 5
+
+#define FIFO_UART_RX_THRESHOLD_REG 6
+#define FIFO_UART_TX_REG 7
+#define FIFO_UART_RX_REG 10
 
 #define FIFO_UART_CR_EN (1u << 0)
 #define FIFO_UART_CR_RESET (1u << 1)
