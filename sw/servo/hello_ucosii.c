@@ -17,7 +17,7 @@ OS_STK    task2_stk[TASK_STACKSIZE];
 /* Prints "Hello World" and sleeps for three seconds */
 void task1(void* pdata)
 {
-	FifoUart_Dev *fifo_uart_0 = FifoUart_OpenDev(AVL_FIFO_UART_0_NAME);
+	FifoUart_Dev *fifo_uart_0 = FifoUart_OpenDev(UART_RS485_NAME);
 
 	FifoUart_SetBaudrate(fifo_uart_0, 921600);
 

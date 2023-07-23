@@ -42,7 +42,7 @@ add_sw_property c_source src/servo_controller.c
 # Include files
 add_sw_property include_source inc/servo_controller.h
 add_sw_property include_source inc/servo_controllerv1.h
-add_sw_property include_source inc/servo_controller_reg.h
+add_sw_property include_source inc/LL/servo_controller_reg.h
 
 # This driver supports HAL & UCOSII BSP (OS) types
 add_sw_property supported_bsp_type HAL

@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Jul 23, 2023 12:44:29 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1690091069721</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Jul 23, 2023 1:18:07 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1690093087720</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\Project\outsource\DE0_CV_SDRAM_Nios_Test\sw\servo_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\fw\DE0_CV_QSYS.sopcinfo</SopcDesignFile>
