@@ -1,10 +1,6 @@
 #ifndef __SERVO_CONTROLLER_REG_H__
 #define __SERVO_CONTROLLER_REG_H__
 
-#include <stdint.h>
-
-#define SERVO_CONTROLLER_NUM_SERVO 4
-
 #define SERVO_CONTROLLER_CR_OFFSET 0
 #define SERVO_CONTROLLER_TR_OFFSET 1
 #define SERVO_CONTROLLER_IE_OFFSET 2
@@ -73,107 +69,5 @@
 #define SERVO_CONTROLLER_TR_START_SERVO0_BIT (1u << 2)
 #define SERVO_CONTROLLER_TR_ADC_INIT_BIT (1u << 1)
 #define SERVO_CONTROLLER_TR_U_VALID_BIT (1u << 0)
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-    typedef union
-    {
-        struct
-        {
-            uint32_t en : 1;
-            uint32_t filter_level : 4;
-            uint32_t protected_0_en : 1;
-            uint32_t protected_1_en : 1;
-            uint32_t protected_2_en : 1;
-            uint32_t protected_3_en : 1;
-            uint32_t drv_0_en : 1;
-            uint32_t drv_1_en : 1;
-            uint32_t drv_2_en : 1;
-            uint32_t drv_3_en : 1;
-        } field;
-        uint32_t val;
-    } servo_controller_reg_CR;
-
-    typedef union
-    {
-        struct
-        {
-            uint32_t realtime_err : 1;
-            uint32_t mea_trig : 1;
-            uint32_t adc_valid : 1;
-            uint32_t drv_0_stop : 1;
-            uint32_t drv_1_stop : 1;
-            uint32_t drv_2_stop : 1;
-            uint32_t drv_3_stop : 1;
-            uint32_t drv_0_fault : 1;
-            uint32_t drv_1_fault : 1;
-            uint32_t drv_2_fault : 1;
-            uint32_t drv_3_fault : 1;
-        } field;
-        uint32_t val;
-    } servo_controller_reg_FLAG;
-
-    typedef union
-    {
-        struct
-        {
-            uint32_t realtime_err : 1;
-            uint32_t mea_trig : 1;
-            uint32_t adc_valid : 1;
-            uint32_t drv_0_stop : 1;
-            uint32_t drv_1_stop : 1;
-            uint32_t drv_2_stop : 1;
-            uint32_t drv_3_stop : 1;
-            uint32_t drv_0_fault : 1;
-            uint32_t drv_1_fault : 1;
-            uint32_t drv_2_fault : 1;
-            uint32_t drv_3_fault : 1;
-        } field;
-        uint32_t val;
-    } servo_controller_reg_IE;
-
-    enum Servo_controller_drv_mode_t
-    {
-        SERVO_CONTROLLER_DRV_MODE_6x = 0,
-        SERVO_CONTROLLER_DRV_MODE_3x = 1,
-        SERVO_CONTROLLER_DRV_MODE_1x = 2,
-    };
-
-    typedef union
-    {
-        enum Servo_controller_drv_mode_t enum_val;
-        uint32_t u32_val;
-    } servo_controller_reg_DRV_MODE;
-
-    typedef union
-    {
-        int16_t i16_val;
-        uint32_t u32_val;
-    } servo_controller_reg_I16;
-
-    struct servo_controller_reg_t
-    {
-        volatile servo_controller_reg_CR cr;
-        volatile uint32_t tr;
-        volatile servo_controller_reg_IE ie;
-        volatile servo_controller_reg_FLAG flag;
-
-        volatile uint32_t spi_prescale;
-        volatile uint32_t pwm_prescale;
-        volatile uint32_t pwm_hperiod;
-
-        volatile servo_controller_reg_DRV_MODE drv_mode[SERVO_CONTROLLER_NUM_SERVO];
-        volatile servo_controller_reg_I16 duty[SERVO_CONTROLLER_NUM_SERVO];
-        volatile servo_controller_reg_I16 i_max[SERVO_CONTROLLER_NUM_SERVO];
-        const volatile servo_controller_reg_I16 i[SERVO_CONTROLLER_NUM_SERVO];
-        const volatile servo_controller_reg_I16 pos[SERVO_CONTROLLER_NUM_SERVO];
-    };
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // __SERVO_CONTROLLER_REG_H__

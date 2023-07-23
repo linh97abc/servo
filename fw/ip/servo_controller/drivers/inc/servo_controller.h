@@ -1,97 +1,283 @@
 #ifndef __SERVO_CONTROLLER_H__
 #define __SERVO_CONTROLLER_H__
 
-#include "servo_controller_reg.h"
+#include <stdint.h>
 #include <stdbool.h>
 #include <errno.h>
 #include <sys/alt_dev.h>
 
-enum Servo_controller_filter_level_t
+#ifdef __cplusplus
+extern "C"
 {
-	SERVO_CONTROLLER_FILTER_LEVEL_0,
-	SERVO_CONTROLLER_FILTER_LEVEL_1,
-	SERVO_CONTROLLER_FILTER_LEVEL_2,
-	SERVO_CONTROLLER_FILTER_LEVEL_3,
-	SERVO_CONTROLLER_FILTER_LEVEL_4,
-	SERVO_CONTROLLER_FILTER_LEVEL_5,
-	SERVO_CONTROLLER_FILTER_LEVEL_6,
-	SERVO_CONTROLLER_FILTER_LEVEL_7,
-	SERVO_CONTROLLER_FILTER_LEVEL_8,
-	SERVO_CONTROLLER_FILTER_LEVEL_9,
-	SERVO_CONTROLLER_FILTER_LEVEL_10,
-	SERVO_CONTROLLER_FILTER_LEVEL_11,
-	SERVO_CONTROLLER_FILTER_LEVEL_12,
-	SERVO_CONTROLLER_FILTER_LEVEL_13,
-	SERVO_CONTROLLER_FILTER_LEVEL_14,
-	SERVO_CONTROLLER_FILTER_LEVEL_15,
-};
+#endif
 
-enum Servo_controller_servo_id_t
-{
-	SERVO_CONTROLLER_SERVO_ID_0,
-	SERVO_CONTROLLER_SERVO_ID_1,
-	SERVO_CONTROLLER_SERVO_ID_2,
-	SERVO_CONTROLLER_SERVO_ID_3
-};
+#define SERVO_CONTROLLER_NUM_SERVO 4
 
-struct servo_controller_dev_t;
-struct servo_controller_config_t
-{
-	enum Servo_controller_filter_level_t filter_level;
-	bool protected_en[SERVO_CONTROLLER_NUM_SERVO];
-	bool drv_en[SERVO_CONTROLLER_NUM_SERVO];
-	uint32_t spi_speed;
-	uint32_t pwm_base_freq;
-	uint32_t pwm_freq;
-	enum Servo_controller_drv_mode_t drv_mode[SERVO_CONTROLLER_NUM_SERVO];
+	enum Servo_controller_filter_level_t
+	{
+		SERVO_CONTROLLER_FILTER_LEVEL_0,
+		SERVO_CONTROLLER_FILTER_LEVEL_1,
+		SERVO_CONTROLLER_FILTER_LEVEL_2,
+		SERVO_CONTROLLER_FILTER_LEVEL_3,
+		SERVO_CONTROLLER_FILTER_LEVEL_4,
+		SERVO_CONTROLLER_FILTER_LEVEL_5,
+		SERVO_CONTROLLER_FILTER_LEVEL_6,
+		SERVO_CONTROLLER_FILTER_LEVEL_7,
+		SERVO_CONTROLLER_FILTER_LEVEL_8,
+		SERVO_CONTROLLER_FILTER_LEVEL_9,
+		SERVO_CONTROLLER_FILTER_LEVEL_10,
+		SERVO_CONTROLLER_FILTER_LEVEL_11,
+		SERVO_CONTROLLER_FILTER_LEVEL_12,
+		SERVO_CONTROLLER_FILTER_LEVEL_13,
+		SERVO_CONTROLLER_FILTER_LEVEL_14,
+		SERVO_CONTROLLER_FILTER_LEVEL_15,
+	};
 
-	// protected
-	int16_t i_max[SERVO_CONTROLLER_NUM_SERVO]; // fixed(16, 0)
+	enum Servo_controller_servo_id_t
+	{
+		SERVO_CONTROLLER_SERVO_ID_0,
+		SERVO_CONTROLLER_SERVO_ID_1,
+		SERVO_CONTROLLER_SERVO_ID_2,
+		SERVO_CONTROLLER_SERVO_ID_3
+	};
 
-	void (*on_adc_valid)(struct servo_controller_dev_t *dev, void *arg);
-	void (*on_new_process)(struct servo_controller_dev_t *dev, void *arg);
-	void (*on_realtime_err)(struct servo_controller_dev_t *dev, void *arg);
-	void (*on_stop_err)(struct servo_controller_dev_t *dev, enum Servo_controller_servo_id_t servo_id, void *arg);
-	void (*on_drv_fault)(struct servo_controller_dev_t *dev, enum Servo_controller_servo_id_t servo_id, void *arg);
+	enum Servo_controller_drv_mode_t
+	{
+		SERVO_CONTROLLER_DRV_MODE_6x = 0,
+		SERVO_CONTROLLER_DRV_MODE_3x = 1,
+		SERVO_CONTROLLER_DRV_MODE_1x = 2,
+	};
 
-	void *on_adc_valid_arg;
-	void *on_new_process_arg;
-	void *on_realtime_err_arg;
-	void *on_stop_err_arg;
-	void *on_drv_fault_arg;
-};
+	typedef union
+	{
+		struct
+		{
+			uint32_t en : 1;
+			uint32_t filter_level : 4;
+			uint32_t protected_0_en : 1;
+			uint32_t protected_1_en : 1;
+			uint32_t protected_2_en : 1;
+			uint32_t protected_3_en : 1;
+			uint32_t drv_0_en : 1;
+			uint32_t drv_1_en : 1;
+			uint32_t drv_2_en : 1;
+			uint32_t drv_3_en : 1;
+		} field;
+		uint32_t val;
+	} servo_controller_reg_CR;
 
-struct servo_controller_dev_t
-{
-	struct alt_dev_s dev;
-	struct servo_controller_reg_t *const BASE;
-	const uint8_t IRQ;
-	const uint8_t IC_ID;
-	const unsigned CORE_FREQ;
-	struct servo_controller_config_t *const cfg;
-};
+	typedef union
+	{
+		struct
+		{
+			uint32_t realtime_err : 1;
+			uint32_t mea_trig : 1;
+			uint32_t adc_valid : 1;
+			uint32_t drv_0_stop : 1;
+			uint32_t drv_1_stop : 1;
+			uint32_t drv_2_stop : 1;
+			uint32_t drv_3_stop : 1;
+			uint32_t drv_0_fault : 1;
+			uint32_t drv_1_fault : 1;
+			uint32_t drv_2_fault : 1;
+			uint32_t drv_3_fault : 1;
+		} field;
+		uint32_t val;
+	} servo_controller_reg_FLAG;
 
-struct servo_controller_dev_t *servo_controller_open_dev(const char *name);
+	typedef union
+	{
+		struct
+		{
+			uint32_t realtime_err : 1;
+			uint32_t mea_trig : 1;
+			uint32_t adc_valid : 1;
+			uint32_t drv_0_stop : 1;
+			uint32_t drv_1_stop : 1;
+			uint32_t drv_2_stop : 1;
+			uint32_t drv_3_stop : 1;
+			uint32_t drv_0_fault : 1;
+			uint32_t drv_1_fault : 1;
+			uint32_t drv_2_fault : 1;
+			uint32_t drv_3_fault : 1;
+		} field;
+		uint32_t val;
+	} servo_controller_reg_IE;
 
-int servo_controller_apply_configure(struct servo_controller_dev_t *dev);
+	typedef union
+	{
+		enum Servo_controller_drv_mode_t enum_val;
+		uint32_t u32_val;
+	} servo_controller_reg_DRV_MODE;
 
-int servo_controller_start(struct servo_controller_dev_t *dev);
-int servo_controller_stop(struct servo_controller_dev_t *dev);
+	typedef union
+	{
+		int16_t i16_val;
+		uint32_t u32_val;
+	} servo_controller_reg_I16;
 
-int servo_controller_update_duty(
-	struct servo_controller_dev_t *dev,
-	int16_t duty[SERVO_CONTROLLER_NUM_SERVO]);
+	struct servo_controller_reg_t
+	{
+		volatile servo_controller_reg_CR cr;
+		volatile uint32_t tr;
+		volatile servo_controller_reg_IE ie;
+		volatile servo_controller_reg_FLAG flag;
 
-int servo_controller_get_position(
-	struct servo_controller_dev_t *dev,
-	int16_t position[SERVO_CONTROLLER_NUM_SERVO]);
+		volatile uint32_t spi_prescale;
+		volatile uint32_t pwm_prescale;
+		volatile uint32_t pwm_hperiod;
 
-int servo_controller_get_current(
-	struct servo_controller_dev_t *dev,
-	int16_t current[SERVO_CONTROLLER_NUM_SERVO]);
+		volatile servo_controller_reg_DRV_MODE drv_mode[SERVO_CONTROLLER_NUM_SERVO];
+		volatile servo_controller_reg_I16 duty[SERVO_CONTROLLER_NUM_SERVO];
+		volatile servo_controller_reg_I16 i_max[SERVO_CONTROLLER_NUM_SERVO];
+		const volatile servo_controller_reg_I16 i[SERVO_CONTROLLER_NUM_SERVO];
+		const volatile servo_controller_reg_I16 pos[SERVO_CONTROLLER_NUM_SERVO];
+	};
 
-int servo_controller_get_duty(
-	struct servo_controller_dev_t *dev,
-	int16_t duty[SERVO_CONTROLLER_NUM_SERVO]);
+	struct servo_controller_dev_t;
+	struct servo_controller_config_t
+	{
+		/// @brief filter level for measurement data
+		enum Servo_controller_filter_level_t filter_level;
+
+		/// @brief stop motor if motor current overload
+		bool protected_en[SERVO_CONTROLLER_NUM_SERVO];
+
+		/// @brief enable motor driver
+		bool drv_en[SERVO_CONTROLLER_NUM_SERVO];
+
+		/// @brief spi speed of measurement IC
+		uint32_t spi_speed;
+
+		/// @brief Base frequence of PWM (min period of PWM pulse), dependence of switch on/off/deadtime
+		uint32_t pwm_base_freq;
+
+		/// @brief PWM frequency
+		uint32_t pwm_freq;
+
+		/// @brief Mode of pulse for motor driver
+		enum Servo_controller_drv_mode_t drv_mode[SERVO_CONTROLLER_NUM_SERVO];
+
+		/// @brief Limit of motor current value, in fixed(16, 0), range [-1, 0)
+		int16_t i_max[SERVO_CONTROLLER_NUM_SERVO];
+
+		/// @brief Adc init done event handler
+		void (*on_adc_valid)(struct servo_controller_dev_t *dev, void *arg);
+
+		/// @brief New sample event handler
+		void (*on_new_process)(struct servo_controller_dev_t *dev, void *arg);
+
+		/// @brief Realtime violation event handler
+		void (*on_realtime_err)(struct servo_controller_dev_t *dev, void *arg);
+
+		/// @brief Motor current ovverload event handler
+		void (*on_stop_err)(struct servo_controller_dev_t *dev, enum Servo_controller_servo_id_t servo_id, void *arg);
+
+		/// @brief Motor driver fault event handler
+		void (*on_drv_fault)(struct servo_controller_dev_t *dev, enum Servo_controller_servo_id_t servo_id, void *arg);
+
+		/// @brief on_adc_valid event argument
+		void *on_adc_valid_arg;
+
+		/// @brief on_new_process_arg event argument
+		void *on_new_process_arg;
+
+		/// @brief on_realtime_err_arg event argument
+		void *on_realtime_err_arg;
+
+		/// @brief on_stop_err_arg event argument
+		void *on_stop_err_arg;
+
+		/// @brief on_drv_fault_arg event argument
+		void *on_drv_fault_arg;
+	};
+
+	struct servo_controller_dev_t
+	{
+		struct alt_dev_s dev;
+		struct servo_controller_reg_t *const BASE;
+		const uint8_t IRQ;
+		const uint8_t IC_ID;
+		const unsigned CORE_FREQ;
+		struct servo_controller_config_t *const cfg;
+	};
+
+#define SERVO_CONTROLLER_CFG(dev) ((dev)->cfg)
+
+	/// @brief Find Servo device by name
+	/// @param name Servo device name
+	/// @return Pointer to servo device, NULL if device not found
+	/// @example Open servo device named "/dev/servo"
+	///     struct servo_controller_dev_t *servo_dev;
+	///
+	///     void main() {
+	///         servo_dev = servo_controller_open_dev("/dev/servo")
+	///         // do something
+	///     }
+	struct servo_controller_dev_t *servo_controller_open_dev(const char *name);
+
+	/// @brief Apply new config for device
+	/// @param dev Pointer to servo device
+	/// @return Error code
+	/// @example Configure spi speed, pwm frequency
+	///     SERVO_CONTROLLER_CFG(servo_dev)->spi_speed = 1000000;
+	///     SERVO_CONTROLLER_CFG(servo_dev)->pwm_base_freq = 1000000;
+	///     SERVO_CONTROLLER_CFG(servo_dev)->pwm_freq = 1000;
+	///     servo_controller_apply_configure(servo_dev);
+	int servo_controller_apply_configure(struct servo_controller_dev_t *dev);
+
+	/// @brief Start servo
+	/// @param dev Pointer to servo device
+	/// @return Error code
+	int servo_controller_start(struct servo_controller_dev_t *dev);
+
+	/// @brief Stop servo
+	/// @param dev Pointer to servo device
+	/// @return Error code
+	int servo_controller_stop(struct servo_controller_dev_t *dev);
+
+	/// @brief Update duty cycle, must to call after each servo process
+	/// @param dev Pointer to servo device
+	/// @param duty Duty cycle in fixed number (16, 0) , range [-1, 1)
+	/// @return Error code
+	/// @example
+	///     void servo_irq_handler(void *arg) {
+	///         int duty[SERVO_CONTROLLER_NUM_SERVO];
+	///         // check if new_process_irq occurred
+	///         // caculate new duty cycle
+	///
+	///         servo_controller_update_duty(dev, duty);
+	///     }
+	int servo_controller_update_duty(
+		struct servo_controller_dev_t *dev,
+		int16_t duty[SERVO_CONTROLLER_NUM_SERVO]);
+
+	/// @brief Get motor postion
+	/// @param dev Pointer to servo device
+	/// @param position Motor position in fixed number (16, 0) , range [-1, 1)
+	/// @return Error code
+	int servo_controller_get_position(
+		struct servo_controller_dev_t *dev,
+		int16_t position[SERVO_CONTROLLER_NUM_SERVO]);
+
+	/// @brief Get motor current
+	/// @param dev Pointer to servo device
+	/// @param current Motor current in fixed number (16, 0) , range [-1, 1)
+	/// @return Error code
+	int servo_controller_get_current(
+		struct servo_controller_dev_t *dev,
+		int16_t current[SERVO_CONTROLLER_NUM_SERVO]);
+
+	/// @brief Get duty cycle of pwm
+	/// @param dev Pointer to servo device
+	/// @param duty Duty cycle in fixed number (16, 0) , range [-1, 1)
+	/// @return Error code
+	int servo_controller_get_duty(
+		struct servo_controller_dev_t *dev,
+		int16_t duty[SERVO_CONTROLLER_NUM_SERVO]);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // __SERVO_CONTROLLER_H__
