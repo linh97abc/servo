@@ -29,7 +29,7 @@ module uart_sfifo
     output wire                    r_valid,
     input  wire                    r_ready,
 
-    output wire [ADDR_BIT-1:0]       count_out,  
+    output wire [ADDR_BIT:0]       count_out,  
     output wire                    empty, 
     output wire                    full
    );
@@ -38,8 +38,19 @@ module uart_sfifo
 //Internal connections & variables
 //********************************************************************
    wire we;
+   wire ram_rvalid;
+   wire ram_rready;
+   wire [DATA_BIT-1:0] ram_rdata;
+   wire [ADDR_BIT-1:0] ram_count;
+
    reg [ADDR_BIT-1:0] waddr;
    reg [ADDR_BIT-1:0] raddr;
+   reg [DATA_BIT-1:0] rx_pipeline_data;
+   reg reg_rvalid;
+   reg rx_pipeline_valid;
+   reg first_writing;
+   reg rx_pipeline_pending;
+   reg r_ready_prev;
 
    uart_ram #(
       .DATA_BIT(DATA_BIT), 
@@ -53,34 +64,50 @@ module uart_sfifo
         .waddr(waddr),
         .wdata(w_data),
         .raddr(raddr),
-        .rdata(r_data)
+        .rdata(ram_rdata)
    );
 
-   reg reading;
-
    assign we = w_valid & w_ready;
-   assign count_out = waddr - raddr;
-   assign empty = (count_out == 0)? 1'b1: 1'b0;
-   assign full = (count_out == (2**ADDR_BIT - 1))? 1'b1: 1'b0;
+   assign ram_count = waddr - raddr;
 
-   assign r_valid = ~empty & ~reading;
+   assign empty = ~(|ram_count);
+   assign full = &ram_count;
+
+   assign ram_rvalid = ~empty & ~first_writing;
+   assign r_valid = reg_rvalid;
    assign w_ready = ~full;
-   
+   assign ram_rready = r_ready | ~rx_pipeline_valid;
+   assign r_data = rx_pipeline_valid? rx_pipeline_data: ram_rdata;
+   assign count_out = ram_count + rx_pipeline_pending;
 
    always @(posedge clk ) begin
       if (reset) begin
          waddr <= 0;
          raddr <= 0;
-         reading <= 1'b0;
+         rx_pipeline_data <= 0;
+         rx_pipeline_valid <= 1'b0;
+         first_writing <= 1'b1;
+         reg_rvalid <= 1'b0;
+         rx_pipeline_pending <= 1'b0;
+         r_ready_prev <= 1'b0;
       end else begin
+         reg_rvalid <= ((rx_pipeline_valid | ram_rvalid) & ~empty) | (reg_rvalid & ~r_ready);
+         first_writing <= w_valid & w_ready & empty;
+         rx_pipeline_data <= (ram_rvalid & (r_ready | ~rx_pipeline_valid))? ram_rdata:rx_pipeline_data;
+         r_ready_prev <= r_ready;
 
-         reading <= (r_ready & r_valid) | (w_valid & w_ready & empty);
+         rx_pipeline_valid <= (rx_pipeline_valid & ~r_ready) | 
+                              (~r_ready_prev & ram_rvalid);
+
+         rx_pipeline_pending <= (rx_pipeline_pending & ~r_ready) | 
+                              (rx_pipeline_pending & ram_rvalid) |
+                              (~(r_ready & reg_rvalid) & ram_rvalid);
 
          if (w_valid & w_ready) begin
             waddr <= waddr + 1'b1;
          end
 
-         if (r_ready & r_valid & ~reading) begin
+         if (ram_rready & ram_rvalid) begin
             raddr <= raddr + 1'b1;
          end
 

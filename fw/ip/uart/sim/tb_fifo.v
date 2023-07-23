@@ -16,7 +16,7 @@ localparam ADDR_BIT = 4;
     wire                    r_valid;
     reg                    r_ready;
 
-    wire [ADDR_BIT-1:0]       count_out;  
+    wire [ADDR_BIT:0]       count_out;  
     wire                    empty; 
     wire                    full;
 
@@ -62,7 +62,11 @@ uart_sfifo
     @(posedge clk);
     #1 r_ready = 1;
 
-    repeat(5) @(posedge clk);
+    repeat(5) begin
+        @(posedge clk);
+        #1 w_data = w_data + 1;
+    end
+
     #1 w_valid = 0;
 
     repeat(50) @(posedge clk);
@@ -72,6 +76,41 @@ uart_sfifo
     repeat(5) begin
         @(posedge clk);
         #1 w_data = w_data + 1;
+    end
+
+    #1 w_valid = 0;
+
+    repeat(5) @(posedge clk);
+    #1 r_ready = 0;
+
+    repeat(5) begin
+        @(posedge clk);
+        #1 w_data = w_data + 1;
+        w_valid = 1;
+        @(posedge clk);
+        #1 w_valid = 0;
+    end
+
+    repeat(4) begin
+        @(posedge clk);
+        #1 r_ready = 1;
+        @(posedge clk);
+        #1 r_ready = 0;
+    end
+
+    @(posedge clk);
+    #1 r_ready = 1;
+    w_data = w_data + 1;
+    w_valid = 1;
+    @(posedge clk);
+    #1 r_ready = 0;
+    w_valid = 0;
+
+    repeat(5) begin
+        @(posedge clk);
+        #1 r_ready = 1;
+        @(posedge clk);
+        #1 r_ready = 0;
     end
    end
 

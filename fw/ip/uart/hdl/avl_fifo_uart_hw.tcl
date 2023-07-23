@@ -151,7 +151,7 @@ set_interface_property s1 linewrapBursts false
 set_interface_property s1 maximumPendingReadTransactions 0
 set_interface_property s1 maximumPendingWriteTransactions 0
 set_interface_property s1 readLatency 0
-set_interface_property s1 readWaitTime 1
+set_interface_property s1 readWaitTime 0
 set_interface_property s1 setupTime 0
 set_interface_property s1 timingUnits Cycles
 set_interface_property s1 writeWaitTime 0
