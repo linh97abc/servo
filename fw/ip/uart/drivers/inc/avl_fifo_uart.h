@@ -89,13 +89,66 @@ extern "C"
 
 	} FifoUart_Dev;
 
+	/// @brief Find Uart Device by device name
+	/// @param name Uart device name
+	/// @return Pointer to Uart device, NULL if device not found
+	/// @example
+	///     FifoUart_Dev *uart_dev;
+	///     void main() {
+	///         char send_data[] = "Hello world\n";
+	///         char read_data[20];
+	///         int send_length, read_length, stt;
+	///
+	///	        uart_dev = FifoUart_OpenDev("/dev/uart_0");
+	///         stt = FifoUart_SetBaudrate(uart_dev, 921600);
+	///         send_length = FifoUart_Write(uart_dev, send_data, sizeof(send_data));
+	///         read_length = FifoUart_Read(uart_dev, read_data, sizeof(read_data));
+	///         // do something
+	///     }
 	FifoUart_Dev *FifoUart_OpenDev(const char *name);
+
+
+	/// @brief Set Uart Baudrate
+	/// @param dev Pointer to Uart device
+	/// @param baud Baudrate
+	/// @return Error code
 	int FifoUart_SetBaudrate(FifoUart_Dev *dev, unsigned baud);
+
+
+	/// @brief Get Uart Baudrate
+	/// @param dev Pointer to Uart device
+	/// @return Baudrate or Error code (< 0)
 	int FifoUart_GetBaudrate(FifoUart_Dev *dev);
+
+
+	/// @brief Set timeout for write and read function
+	/// @param dev Pointer to Uart device
+	/// @param timeout_tick timeout in os tick
+	/// @return Error code
 	int FifoUart_SetTimeout(FifoUart_Dev *dev, unsigned timeout_tick);
 
+
+	/// @brief Read data in uart receive buffer, return 0 if buffer empty
+	/// @param dev Pointer to Uart device
+	/// @param buff Buffer to save read data
+	/// @param len Length of buffer (in byte)
+	/// @return Readdata length or Error code (< 0)
 	int FifoUart_ReadNonBlock(FifoUart_Dev *dev, void *buff, unsigned len);
+
+
+	/// @brief Read data in uart receive buffer, wait for uart receive data if buffer empty
+	/// @param dev Pointer to Uart device
+	/// @param buff Buffer to save read data
+	/// @param len Length of buffer (in byte)
+	/// @return Readdata length or Error code (< 0)
 	int FifoUart_Read(FifoUart_Dev *dev, void *buff, unsigned len);
+
+
+	/// @brief Write to uart transmit buffer
+	/// @param dev Pointer to Uart device
+	/// @param buff Data to write
+	/// @param len Length of data (in byte)
+	/// @return Writedata legnth or Error code (< 0)
 	int FifoUart_Write(FifoUart_Dev *dev, const void *buff, unsigned len);
 
 #ifdef __cplusplus
