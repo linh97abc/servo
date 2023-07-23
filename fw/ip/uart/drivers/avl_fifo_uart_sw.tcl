@@ -43,7 +43,9 @@ add_sw_property c_source src/avl_fifo_uart_fd.c
 # Include files
 add_sw_property include_source inc/avl_fifo_uart.h
 add_sw_property include_source inc/avl_fifo_uart_fd.h
-add_sw_property include_source inc/avl_fifo_uart_reg.h
+add_sw_property include_source inc/LL/avl_fifo_uart_fd_ll.h
+add_sw_property include_source inc/LL/avl_fifo_uart_reg.h
+
 
 # This driver supports HAL & UCOSII BSP (OS) types
 add_sw_property supported_bsp_type HAL

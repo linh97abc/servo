@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Jul 23, 2023 1:03:27 AM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1690049007587</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Jul 23, 2023 12:12:31 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1690089151113</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\Project\outsource\DE0_CV_SDRAM_Nios_Test\sw\servo_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\fw\DE0_CV_QSYS.sopcinfo</SopcDesignFile>
@@ -194,7 +194,7 @@
                 <SettingName>hal.stdin</SettingName>
                 <Identifier>none</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>jtag_uart</Value>
+                <Value>uart_debug</Value>
                 <DefaultValue>none</DefaultValue>
                 <DestinationFile>system_h_define</DestinationFile>
                 <Description>Slave descriptor of STDIN character-mode device. This setting is used by the ALT_STDIN family of defines in system.h.</Description>
@@ -206,7 +206,7 @@
                 <SettingName>hal.stdout</SettingName>
                 <Identifier>none</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>jtag_uart</Value>
+                <Value>uart_debug</Value>
                 <DefaultValue>none</DefaultValue>
                 <DestinationFile>system_h_define</DestinationFile>
                 <Description>Slave descriptor of STDOUT character-mode device. This setting is used by the ALT_STDOUT family of defines in system.h.</Description>
@@ -218,7 +218,7 @@
                 <SettingName>hal.stderr</SettingName>
                 <Identifier>none</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>jtag_uart</Value>
+                <Value>uart_debug</Value>
                 <DefaultValue>none</DefaultValue>
                 <DestinationFile>system_h_define</DestinationFile>
                 <Description>Slave descriptor of STDERR character-mode device. This setting is used by the ALT_STDERR family of defines in system.h.</Description>
@@ -1763,22 +1763,22 @@
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>timestamp</slaveDescriptor>
+                <slaveDescriptor>uart_debug</slaveDescriptor>
                 <addressRange>0x04022080 - 0x040220BF</addressRange>
                 <addressSpan>64</addressSpan>
-                <attributes>timer</attributes>
-        </MemoryMap>
-        <MemoryMap>
-                <slaveDescriptor>uart_debug</slaveDescriptor>
-                <addressRange>0x040220C0 - 0x040220FF</addressRange>
-                <addressSpan>64</addressSpan>
-                <attributes/>
+                <attributes>printable</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>uart_rs485</slaveDescriptor>
+                <addressRange>0x040220C0 - 0x040220FF</addressRange>
+                <addressSpan>64</addressSpan>
+                <attributes>printable</attributes>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>timestamp</slaveDescriptor>
                 <addressRange>0x04022100 - 0x0402213F</addressRange>
                 <addressSpan>64</addressSpan>
-                <attributes/>
+                <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timer</slaveDescriptor>

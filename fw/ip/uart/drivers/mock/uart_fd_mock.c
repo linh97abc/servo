@@ -11,3 +11,8 @@ int __FifoUart_WriteFd(alt_fd *fd, const char *ptr, int len)
 {
     return 0;
 }
+
+int __FifoUart_IoctlFd(alt_fd *fd, int reg, void *arg)
+{
+    return 0;
+}

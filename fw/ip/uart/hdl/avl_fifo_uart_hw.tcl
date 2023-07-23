@@ -1,5 +1,6 @@
 
 package require -exact qsys 14.1
+source $env(QUARTUS_ROOTDIR)/../ip/altera/sopc_builder_ip/common/embedded_ip_hwtcl_common.tcl
 
 
 # 
@@ -7,11 +8,12 @@ package require -exact qsys 14.1
 # 
 set_module_property DESCRIPTION ""
 set_module_property NAME avl_fifo_uart
+set_module_property DISPLAY_NAME avl_fifo_uart
+set_module_property GROUP {Interface Protocols/Serial}
 set_module_property VERSION 1.0
 set_module_property INTERNAL false
 set_module_property OPAQUE_ADDRESS_MAP true
 set_module_property AUTHOR linh
-set_module_property DISPLAY_NAME avl_fifo_uart
 set_module_property INSTANTIATE_IN_SYSTEM_MODULE true
 set_module_property EDITABLE true
 set_module_property REPORT_TO_TALKBACK false
@@ -134,42 +136,42 @@ add_interface_port reset reset_n reset_n Input 1
 
 
 # 
-# connection point avalon_slave_0
+# connection point s1
 # 
-add_interface avalon_slave_0 avalon end
-set_interface_property avalon_slave_0 addressUnits WORDS
-set_interface_property avalon_slave_0 associatedClock clock
-set_interface_property avalon_slave_0 associatedReset reset
-set_interface_property avalon_slave_0 bitsPerSymbol 8
-set_interface_property avalon_slave_0 burstOnBurstBoundariesOnly false
-set_interface_property avalon_slave_0 burstcountUnits WORDS
-set_interface_property avalon_slave_0 explicitAddressSpan 0
-set_interface_property avalon_slave_0 holdTime 0
-set_interface_property avalon_slave_0 linewrapBursts false
-set_interface_property avalon_slave_0 maximumPendingReadTransactions 0
-set_interface_property avalon_slave_0 maximumPendingWriteTransactions 0
-set_interface_property avalon_slave_0 readLatency 0
-set_interface_property avalon_slave_0 readWaitTime 1
-set_interface_property avalon_slave_0 setupTime 0
-set_interface_property avalon_slave_0 timingUnits Cycles
-set_interface_property avalon_slave_0 writeWaitTime 0
-set_interface_property avalon_slave_0 ENABLED true
-set_interface_property avalon_slave_0 EXPORT_OF ""
-set_interface_property avalon_slave_0 PORT_NAME_MAP ""
-set_interface_property avalon_slave_0 CMSIS_SVD_VARIABLES ""
-set_interface_property avalon_slave_0 SVD_ADDRESS_GROUP ""
+add_interface s1 avalon end
+set_interface_property s1 addressUnits WORDS
+set_interface_property s1 associatedClock clock
+set_interface_property s1 associatedReset reset
+set_interface_property s1 bitsPerSymbol 8
+set_interface_property s1 burstOnBurstBoundariesOnly false
+set_interface_property s1 burstcountUnits WORDS
+set_interface_property s1 explicitAddressSpan 0
+set_interface_property s1 holdTime 0
+set_interface_property s1 linewrapBursts false
+set_interface_property s1 maximumPendingReadTransactions 0
+set_interface_property s1 maximumPendingWriteTransactions 0
+set_interface_property s1 readLatency 0
+set_interface_property s1 readWaitTime 1
+set_interface_property s1 setupTime 0
+set_interface_property s1 timingUnits Cycles
+set_interface_property s1 writeWaitTime 0
+set_interface_property s1 ENABLED true
+set_interface_property s1 EXPORT_OF ""
+set_interface_property s1 PORT_NAME_MAP ""
+set_interface_property s1 CMSIS_SVD_VARIABLES ""
+set_interface_property s1 SVD_ADDRESS_GROUP ""
 
-# add_interface_port avalon_slave_0 chipselect chipselect Input 1
-add_interface_port avalon_slave_0 address address Input 4
-add_interface_port avalon_slave_0 writedata writedata Input 32
-# add_interface_port avalon_slave_0 begintransfer begintransfer Input 1
-add_interface_port avalon_slave_0 write_n write_n Input 1
-add_interface_port avalon_slave_0 read_n read_n Input 1
-add_interface_port avalon_slave_0 readdata readdata Output 32
-set_interface_assignment avalon_slave_0 embeddedsw.configuration.isFlash 0
-set_interface_assignment avalon_slave_0 embeddedsw.configuration.isMemoryDevice 0
-set_interface_assignment avalon_slave_0 embeddedsw.configuration.isNonVolatileStorage 0
-set_interface_assignment avalon_slave_0 embeddedsw.configuration.isPrintableDevice 0
+# add_interface_port s1 chipselect chipselect Input 1
+add_interface_port s1 address address Input 4
+add_interface_port s1 writedata writedata Input 32
+# add_interface_port s1 begintransfer begintransfer Input 1
+add_interface_port s1 write_n write_n Input 1
+add_interface_port s1 read_n read_n Input 1
+add_interface_port s1 readdata readdata Output 32
+set_interface_assignment s1 embeddedsw.configuration.isFlash 0
+set_interface_assignment s1 embeddedsw.configuration.isMemoryDevice 0
+set_interface_assignment s1 embeddedsw.configuration.isNonVolatileStorage 0
+set_interface_assignment s1 embeddedsw.configuration.isPrintableDevice 1
 
 
 # 
@@ -191,7 +193,7 @@ add_interface_port conduit_end txd txd Output 1
 # connection point interrupt_sender
 # 
 add_interface interrupt_sender interrupt end
-set_interface_property interrupt_sender associatedAddressablePoint avalon_slave_0
+set_interface_property interrupt_sender associatedAddressablePoint s1
 set_interface_property interrupt_sender associatedClock clock
 set_interface_property interrupt_sender associatedReset reset
 set_interface_property interrupt_sender bridgedReceiverOffset ""
@@ -219,4 +221,10 @@ proc validate {} {
     set_module_assignment embeddedsw.CMacro.STOP_BIT $stopBit	
     set_module_assignment embeddedsw.CMacro.RX_FIFO_DEPTH $rxFifoDepth	
     set_module_assignment embeddedsw.CMacro.TX_FIFO_DEPTH $txFifoDepth	
+
+    # Device tree parameters
+	set_module_assignment embeddedsw.dts.vendor "vtx"
+	set_module_assignment embeddedsw.dts.group "serial"
+	set_module_assignment embeddedsw.dts.name "fuart"
+	set_module_assignment embeddedsw.dts.compatible "vtx,fuart-1.0"
 }
