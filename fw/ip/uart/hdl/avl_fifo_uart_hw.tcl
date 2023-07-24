@@ -66,19 +66,19 @@ set_parameter_property DATA_BIT ALLOWED_RANGES {5 6 7 8}
 
 add_parameter PARITY_BIT INTEGER 0
 set_parameter_property PARITY_BIT DEFAULT_VALUE 0
-set_parameter_property PARITY_BIT DISPLAY_NAME "Parity Bit (0 <=> NONE, 2 <=> Even, 3 <=> Odd)"
+set_parameter_property PARITY_BIT DISPLAY_NAME "Parity Bit"
 set_parameter_property PARITY_BIT TYPE INTEGER
 set_parameter_property PARITY_BIT UNITS None
 set_parameter_property PARITY_BIT HDL_PARAMETER true
-set_parameter_property PARITY_BIT ALLOWED_RANGES {0 2 3}
+set_parameter_property PARITY_BIT ALLOWED_RANGES {0:None 2:Even 3:Odd}
 
 add_parameter STOP_BIT INTEGER 0
 set_parameter_property STOP_BIT DEFAULT_VALUE 0
-set_parameter_property STOP_BIT DISPLAY_NAME "Stop Bit (0 <=> 1 bit, 1 <=> 1,5 bit, 2 <=> 2 bit)"
+set_parameter_property STOP_BIT DISPLAY_NAME {Stop Bit}
 set_parameter_property STOP_BIT TYPE INTEGER
 set_parameter_property STOP_BIT UNITS None
 set_parameter_property STOP_BIT HDL_PARAMETER true
-set_parameter_property STOP_BIT ALLOWED_RANGES {0 1 2}
+set_parameter_property STOP_BIT ALLOWED_RANGES {0:1_bit 1:1_5_bit 2:2_bit}
 
 add_parameter C_RX_THRESHOLD INTEGER 32
 set_parameter_property C_RX_THRESHOLD DEFAULT_VALUE 32
