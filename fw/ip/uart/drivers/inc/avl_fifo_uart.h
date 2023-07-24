@@ -28,7 +28,8 @@ extern "C"
 
 	typedef union
 	{
-		struct {
+		struct
+		{
 			uint32_t rx_idle : 1;
 			uint32_t rx_full : 1;
 			uint32_t rx_empty : 1;
@@ -107,19 +108,16 @@ extern "C"
 	///     }
 	FifoUart_Dev *FifoUart_OpenDev(const char *name);
 
-
 	/// @brief Set Uart Baudrate
 	/// @param dev Pointer to Uart device
 	/// @param baud Baudrate
 	/// @return Error code
 	int FifoUart_SetBaudrate(FifoUart_Dev *dev, unsigned baud);
 
-
 	/// @brief Get Uart Baudrate
 	/// @param dev Pointer to Uart device
 	/// @return Baudrate or Error code (< 0)
 	int FifoUart_GetBaudrate(FifoUart_Dev *dev);
-
 
 	/// @brief Set timeout for write and read function
 	/// @param dev Pointer to Uart device
@@ -127,6 +125,14 @@ extern "C"
 	/// @return Error code
 	int FifoUart_SetTimeout(FifoUart_Dev *dev, unsigned timeout_tick);
 
+	/// @brief Set threshold for uart recive buffer.
+	/// @note The Rx threshold event is triggered when the number of bytes
+	///       in the FIFO is greater than the threshold value,
+	///       or the RxD signal is inactive when the FIFO RX is not empty.
+	/// @param dev Pointer to Uart device
+	/// @param threshold RXFIFO Triger level value.
+	/// @return Error code
+	int FifoUart_SetRxThreshold(FifoUart_Dev *dev, unsigned threshold);
 
 	/// @brief Read data in uart receive buffer, return 0 if buffer empty
 	/// @param dev Pointer to Uart device
@@ -135,14 +141,12 @@ extern "C"
 	/// @return Readdata length or Error code (< 0)
 	int FifoUart_ReadNonBlock(FifoUart_Dev *dev, void *buff, unsigned len);
 
-
 	/// @brief Read data in uart receive buffer, wait for uart receive data if buffer empty
 	/// @param dev Pointer to Uart device
 	/// @param buff Buffer to save read data
 	/// @param len Length of buffer (in byte)
 	/// @return Readdata length or Error code (< 0)
 	int FifoUart_Read(FifoUart_Dev *dev, void *buff, unsigned len);
-
 
 	/// @brief Write to uart transmit buffer
 	/// @param dev Pointer to Uart device

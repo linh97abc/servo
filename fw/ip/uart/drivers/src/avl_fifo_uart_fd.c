@@ -53,6 +53,12 @@ int __FifoUart_IoctlFd(alt_fd *fd, int req, void *arg)
 		stt = FifoUart_SetTimeout(dev, *((unsigned *)arg));
 		return stt;
 	}
+
+	case FIFO_UART_IOCTL_SET_RX_THRESHOLD:
+	{
+		stt = FifoUart_SetRxThreshold(dev, *((unsigned *)arg));
+		return stt;
+	}
 	default:
 		break;
 	}

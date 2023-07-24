@@ -184,11 +184,11 @@ int FifoUart_Read(FifoUart_Dev *dev, void *buff, unsigned len)
 
 	if (!(core_status & FIFO_UART_FLAG_RX_VALID))
 	{
-		OSFlagPost(dev->flag, FIFO_UART_FLAG_RX_VALID, OS_FLAG_CLR, &err);
+		OSFlagPost(dev->flag, FIFO_UART_FLAG_RX_THRESHHOLD, OS_FLAG_CLR, &err);
 		ALT_DEBUG_ASSERT((err == OS_ERR_NONE));
 
-		FIFO_UART_IOWR(dev, FIFO_UART_IE_REG, FIFO_UART_FLAG_RX_VALID);
-		OSFlagPend(dev->flag, FIFO_UART_FLAG_RX_VALID,
+		FIFO_UART_IOWR(dev, FIFO_UART_IE_REG, FIFO_UART_IE_RX_THRESHHOLD);
+		OSFlagPend(dev->flag, FIFO_UART_FLAG_RX_THRESHHOLD,
 				   OS_FLAG_WAIT_SET_ANY,
 				   dev->timeout, &err);
 
@@ -267,4 +267,21 @@ int FifoUart_Write(FifoUart_Dev *dev, const void *buff, unsigned len)
 	OSSchedUnlock();
 
 	return i;
+}
+
+int FifoUart_SetRxThreshold(FifoUart_Dev *dev, unsigned threshold)
+{
+	if (!dev)
+	{
+		return -EINVAL;
+	}
+
+	if (threshold >= dev->RX_FIFO_SIZE)
+	{
+		return -EINVAL;
+	}
+
+	FIFO_UART_IOWR(dev, FIFO_UART_RX_THRESHOLD_REG, threshold);
+
+	return 0;
 }

@@ -5,6 +5,7 @@ module avl_fifo_uart
     parameter FREQ_CLK  = 100_000_000,
     parameter BAUDRATE  = 921600,
     // parameter [15:0] RX_TIMEOUT_US = 500,
+    parameter C_RX_THRESHOLD  = 32,
     parameter DATA_BIT  = 8, // number of bits in a word
     parameter [1:0] PARITY_BIT         = 0,                   // 00,01 <=> NONE, 11 <=> Odd, 10 <=> Even
     parameter [1:0] STOP_BIT           = 0,                    // 0 <=> 1 bit, 1 <=> 1,5 bit, 2 <=> 2 bit
@@ -139,7 +140,7 @@ axis_uart_inst
     always @(posedge clk or negedge reset_n)             //write down to reg
     begin
         if(~reset_n) begin
-            rx_threshold_cnt <= 0;
+            rx_threshold_cnt <= C_RX_THRESHOLD;
             core_reset <= 1'b0;
             core_en <= 1'b1;
             baudrate <= BAUD_PRES;

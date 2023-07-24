@@ -116,7 +116,7 @@ initial begin
     avl_write(inst.CR_REG, {16'd9 , 6'b0 ,1'b0, 1'b1});
 
 
-    avl_write(inst.RX_THRESHOLD_REG, 4);
+    avl_write(inst.RX_THRESHOLD_REG, 8);
     avl_write(inst.IE_REG, 1 << 5);
 
     avl_write(inst.TX_REG, 0);
@@ -126,10 +126,10 @@ initial begin
 
     wait(irq == 1'b1);
 
-    avl_read(inst.RX_REG);
-    avl_read(inst.RX_REG);
-    avl_read(inst.RX_REG);
-    avl_read(inst.RX_REG);
+    // avl_read(inst.RX_REG);
+    // avl_read(inst.RX_REG);
+    // avl_read(inst.RX_REG);
+    // avl_read(inst.RX_REG);
 
 end
 

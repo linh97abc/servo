@@ -58,7 +58,7 @@ set_parameter_property BAUDRATE HDL_PARAMETER true
 add_parameter DATA_BIT INTEGER 8
 set_parameter_property DATA_BIT DEFAULT_VALUE 8
 # set_parameter_property DATA_BIT AFFECTS_GENERATION {1}
-set_parameter_property DATA_BIT DISPLAY_NAME DATA_BIT
+set_parameter_property DATA_BIT DISPLAY_NAME "Databits (5,6,7,8)"
 set_parameter_property DATA_BIT TYPE INTEGER
 set_parameter_property DATA_BIT UNITS None
 set_parameter_property DATA_BIT HDL_PARAMETER true
@@ -66,7 +66,7 @@ set_parameter_property DATA_BIT ALLOWED_RANGES {5 6 7 8}
 
 add_parameter PARITY_BIT INTEGER 0
 set_parameter_property PARITY_BIT DEFAULT_VALUE 0
-set_parameter_property PARITY_BIT DISPLAY_NAME PARITY_BIT
+set_parameter_property PARITY_BIT DISPLAY_NAME "Parity Bit (0 <=> NONE, 2 <=> Even, 3 <=> Odd)"
 set_parameter_property PARITY_BIT TYPE INTEGER
 set_parameter_property PARITY_BIT UNITS None
 set_parameter_property PARITY_BIT HDL_PARAMETER true
@@ -74,11 +74,18 @@ set_parameter_property PARITY_BIT ALLOWED_RANGES {0 2 3}
 
 add_parameter STOP_BIT INTEGER 0
 set_parameter_property STOP_BIT DEFAULT_VALUE 0
-set_parameter_property STOP_BIT DISPLAY_NAME STOP_BIT
+set_parameter_property STOP_BIT DISPLAY_NAME "Stop Bit (0 <=> 1 bit, 1 <=> 1,5 bit, 2 <=> 2 bit)"
 set_parameter_property STOP_BIT TYPE INTEGER
 set_parameter_property STOP_BIT UNITS None
 set_parameter_property STOP_BIT HDL_PARAMETER true
 set_parameter_property STOP_BIT ALLOWED_RANGES {0 1 2}
+
+add_parameter C_RX_THRESHOLD INTEGER 32
+set_parameter_property C_RX_THRESHOLD DEFAULT_VALUE 32
+set_parameter_property C_RX_THRESHOLD DISPLAY_NAME "RX THRESHOLD"
+set_parameter_property C_RX_THRESHOLD TYPE INTEGER
+set_parameter_property C_RX_THRESHOLD UNITS None
+set_parameter_property C_RX_THRESHOLD HDL_PARAMETER true
 
 add_parameter RX_FIFO_DEPTH INTEGER 8
 set_parameter_property RX_FIFO_DEPTH DEFAULT_VALUE 8
@@ -97,13 +104,29 @@ set_parameter_property TX_FIFO_DEPTH HDL_PARAMETER true
 # 
 # display items
 # 
-add_display_item "Input Clock Frequency (Hz):" FREQ_CLK PARAMETER ""
-add_display_item "Baudrate:" BAUDRATE PARAMETER ""
-add_display_item "Databits (5,6,7,8):" DATA_BIT PARAMETER ""
-add_display_item "Parity Bit (0 <=> NONE, 2 <=> Even, 3 <=> Odd):" PARITY_BIT PARAMETER ""
-add_display_item "Stop Bit (0 <=> 1 bit, 1 <=> 1,5 bit, 2 <=> 2 bit):" STOP_BIT PARAMETER ""
-add_display_item "RX_FIFO_DEPTH:" RX_FIFO_DEPTH PARAMETER ""
-add_display_item "TX_FIFO_DEPTH:" TX_FIFO_DEPTH PARAMETER ""
+# add_display_item "Input Clock Frequency (Hz):" FREQ_CLK PARAMETER ""
+# add_display_item "Baudrate:" BAUDRATE PARAMETER ""
+# add_display_item "Databits (5,6,7,8):" DATA_BIT PARAMETER ""
+# add_display_item "Parity Bit (0 <=> NONE, 2 <=> Even, 3 <=> Odd):" PARITY_BIT PARAMETER ""
+# add_display_item "Stop Bit (0 <=> 1 bit, 1 <=> 1,5 bit, 2 <=> 2 bit):" STOP_BIT PARAMETER ""
+# add_display_item "RX_FIFO_DEPTH:" RX_FIFO_DEPTH PARAMETER ""
+# add_display_item "TX_FIFO_DEPTH:" TX_FIFO_DEPTH PARAMETER ""
+
+# display group
+add_display_item {} {Input Clock Frequency (Hz)} GROUP
+add_display_item {} {Alow config by software} GROUP
+add_display_item {} {Fixed Parameter} GROUP
+
+# group parameter
+add_display_item {Input Clock Frequency (Hz)} FREQ_CLK PARAMETER
+add_display_item {Alow config by software} BAUDRATE PARAMETER
+add_display_item {Alow config by software} C_RX_THRESHOLD PARAMETER
+
+add_display_item {Fixed Parameter} DATA_BIT PARAMETER
+add_display_item {Fixed Parameter} PARITY_BIT PARAMETER
+add_display_item {Fixed Parameter} STOP_BIT PARAMETER
+add_display_item {Fixed Parameter} RX_FIFO_DEPTH PARAMETER
+add_display_item {Fixed Parameter} TX_FIFO_DEPTH PARAMETER
 
 
 # 
