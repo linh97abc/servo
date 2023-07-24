@@ -173,7 +173,7 @@ axis_uart_inst
         if(~read_n) begin
             case (address)
                 CR_REG: readdata <= control_reg;
-                RX_REG: readdata <= {rx_valid, {31-DATA_BIT{1'b0}}, rx_data};
+                RX_REG: readdata <= {rx_valid, uart_status[2], {30-DATA_BIT{1'b0}}, rx_data};
                 FLAG_REG: readdata <= core_status;
                 TX_COUNT_REG: readdata <= tx_cout;
                 RX_COUNT_REG: readdata <= rx_cout;

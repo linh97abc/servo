@@ -20,7 +20,8 @@ localparam ADDR_BIT = 4;
     wire                    empty; 
     wire                    full;
 
-uart_sfifo
+// uart_sfifo
+uart_sfifo_nopipe
    #(DATA_BIT, ADDR_BIT)
    inst
    (

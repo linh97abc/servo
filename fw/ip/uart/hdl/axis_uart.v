@@ -101,7 +101,7 @@ assign tx_start = tx_valid & ~tx_not_empty;
         .dout(rx_dout)                // PARITY_ERROR, STOP_ERROR, DATA_BIT
         );
 
-    uart_sfifo
+    uart_sfifo_nopipe
         #(
         .DATA_BIT(DATA_BIT),
         .ADDR_BIT(RX_FIFO_DEPTH)
@@ -125,7 +125,7 @@ assign tx_start = tx_valid & ~tx_not_empty;
         .full(rx_full)
         );
 
-    uart_sfifo
+    uart_sfifo_nopipe
         #(
         .DATA_BIT(DATA_BIT),
         .ADDR_BIT(RX_FIFO_DEPTH)

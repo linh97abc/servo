@@ -34,7 +34,7 @@ add_fileset_file axis_uart.v VERILOG PATH axis_uart.v
 add_fileset_file uart_ram.v VERILOG PATH uart_ram.v
 add_fileset_file uart_rx.v VERILOG PATH uart_rx.v
 add_fileset_file uart_tx.v VERILOG PATH uart_tx.v
-add_fileset_file uart_sfifo.v VERILOG PATH uart_sfifo.v
+add_fileset_file uart_sfifo_nopipe.v VERILOG PATH uart_sfifo_nopipe.v
 
 
 # 

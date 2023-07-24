@@ -42,6 +42,7 @@ module uart_sfifo
    wire ram_rready;
    wire [DATA_BIT-1:0] ram_rdata;
    wire [ADDR_BIT-1:0] ram_count;
+   wire ram_empty;
 
    reg [ADDR_BIT-1:0] waddr;
    reg [ADDR_BIT-1:0] raddr;
@@ -70,15 +71,16 @@ module uart_sfifo
    assign we = w_valid & w_ready;
    assign ram_count = waddr - raddr;
 
-   assign empty = ~(|ram_count);
+   assign ram_empty = ~(|ram_count);
    assign full = &ram_count;
 
-   assign ram_rvalid = ~empty & ~first_writing;
+   assign ram_rvalid = ~ram_empty & ~first_writing;
    assign r_valid = reg_rvalid;
    assign w_ready = ~full;
    assign ram_rready = r_ready | ~rx_pipeline_valid;
    assign r_data = rx_pipeline_valid? rx_pipeline_data: ram_rdata;
    assign count_out = ram_count + rx_pipeline_pending;
+   assign empty = ram_empty & ~rx_pipeline_pending;
 
    always @(posedge clk ) begin
       if (reset) begin
@@ -91,8 +93,8 @@ module uart_sfifo
          rx_pipeline_pending <= 1'b0;
          r_ready_prev <= 1'b0;
       end else begin
-         reg_rvalid <= ((rx_pipeline_valid | ram_rvalid) & ~empty) | (reg_rvalid & ~r_ready);
-         first_writing <= w_valid & w_ready & empty;
+         reg_rvalid <= ((rx_pipeline_valid | ram_rvalid) & ~ram_empty) | (reg_rvalid & ~r_ready);
+         first_writing <= w_valid & w_ready & ram_empty;
          rx_pipeline_data <= (ram_rvalid & (r_ready | ~rx_pipeline_valid))? ram_rdata:rx_pipeline_data;
          r_ready_prev <= r_ready;
 

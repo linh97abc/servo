@@ -137,7 +137,13 @@ int FifoUart_ReadNonBlock(FifoUart_Dev *dev, void *buff, unsigned len)
 
 	for (; i < len; i++)
 	{
-		uint32_t data = FIFO_UART_IORD(dev, FIFO_UART_RX_REG);
+		uint32_t data;
+
+		do
+		{
+			data = FIFO_UART_IORD(dev, FIFO_UART_RX_REG);
+		} while (!(data & (FIFO_UART_RX_REG_VALID | FIFO_UART_RX_REG_EMPTY)));
+
 		if (data & FIFO_UART_RX_REG_VALID)
 		{
 			pBuff[i] = data & 0xFFu;
@@ -200,7 +206,13 @@ int FifoUart_Read(FifoUart_Dev *dev, void *buff, unsigned len)
 
 	for (; i < len; i++)
 	{
-		uint32_t data = FIFO_UART_IORD(dev, FIFO_UART_RX_REG);
+		uint32_t data;
+
+		do
+		{
+			data = FIFO_UART_IORD(dev, FIFO_UART_RX_REG);
+		} while (!(data & (FIFO_UART_RX_REG_VALID | FIFO_UART_RX_REG_EMPTY)));
+
 		if (data & FIFO_UART_RX_REG_VALID)
 		{
 			pBuff[i] = data & 0xFFu;
