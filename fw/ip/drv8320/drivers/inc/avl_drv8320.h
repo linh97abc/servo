@@ -11,8 +11,16 @@ extern "C"
 {
 #endif
 
+/// @brief Maximun channel supported
 #define DRV8320_NUM_CHANNEL 4
 
+/// @brief Convert float number to fixed(16, 0) number
+#define DRV8320_FLOAT_TO_FIXED(num) ((int16_t)((num)*INT16_MAX))
+
+/// @brief Convert fixed(16, 0) number to float number
+#define DRV8320_FIXED_TO_FLOAT(num) ((float) (num)/INT16_MAX)
+
+	/// @brief Channel ID
 	enum Drv8320_channel_id_t
 	{
 		DRV8320_CHANNEL_ID_0,
@@ -21,6 +29,7 @@ extern "C"
 		DRV8320_CHANNEL_ID_3
 	};
 
+	/// @brief Mode PWM
 	enum Drv8320_drv_mode_t
 	{
 		DRV8320_DRV_MODE_6x = 0,

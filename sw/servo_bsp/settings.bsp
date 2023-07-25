@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Jul 23, 2023 1:18:07 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1690093087720</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Jul 25, 2023 10:19:42 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1690298382130</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\Project\outsource\DE0_CV_SDRAM_Nios_Test\sw\servo_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\fw\DE0_CV_QSYS.sopcinfo</SopcDesignFile>
@@ -1757,44 +1757,44 @@
                 <attributes>flash, memory, non-volatile</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>servo_controllerv1_0</slaveDescriptor>
+                <slaveDescriptor>avl_drv8320_0</slaveDescriptor>
                 <addressRange>0x04022000 - 0x0402207F</addressRange>
                 <addressSpan>128</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>uart_debug</slaveDescriptor>
-                <addressRange>0x04022080 - 0x040220BF</addressRange>
+                <addressRange>0x04022100 - 0x0402213F</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>uart_rs485</slaveDescriptor>
-                <addressRange>0x040220C0 - 0x040220FF</addressRange>
+                <addressRange>0x04022140 - 0x0402217F</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timestamp</slaveDescriptor>
-                <addressRange>0x04022100 - 0x0402213F</addressRange>
+                <addressRange>0x04022180 - 0x040221BF</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timer</slaveDescriptor>
-                <addressRange>0x04022140 - 0x0402215F</addressRange>
+                <addressRange>0x040221C0 - 0x040221DF</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid_qsys</slaveDescriptor>
-                <addressRange>0x04022160 - 0x04022167</addressRange>
+                <addressRange>0x040221E0 - 0x040221E7</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart</slaveDescriptor>
-                <addressRange>0x04022168 - 0x0402216F</addressRange>
+                <addressRange>0x040221E8 - 0x040221EF</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
