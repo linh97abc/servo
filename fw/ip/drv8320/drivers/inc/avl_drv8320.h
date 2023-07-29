@@ -112,7 +112,7 @@ extern "C"
 		volatile Drv8320_reg_IE ie;
 		volatile Drv8320_reg_FLAG flag;
 
-		uint32_t reserved;
+		volatile uint32_t trigger_rate;
 		volatile uint32_t pwm_prescale;
 		volatile uint32_t pwm_hperiod;
 
@@ -129,6 +129,9 @@ extern "C"
 
 		/// @brief PWM frequency
 		uint32_t pwm_freq;
+
+		/// @brief Interrupt after @b trigger_rate times pwm pulse
+		uint8_t trigger_rate;
 
 		/// @brief Mode of pulse for motor driver
 		enum Drv8320_drv_mode_t drv_mode[DRV8320_NUM_CHANNEL];

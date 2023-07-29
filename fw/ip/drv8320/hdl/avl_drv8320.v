@@ -37,7 +37,6 @@ parameter [1:0] C_MODE1 = 0;
 parameter [1:0] C_MODE2 = 0;
 parameter [1:0] C_MODE3 = 0;
 
-localparam [7:0] DEAD_TIME = 1;
 localparam DUTY_WIDTH = 16;
 localparam PWM_PRES = FREQ_CLK/PWM_BASE_FREQ-1;
 localparam PWM_HALF_PERIOD = PWM_BASE_FREQ/(2*PWM_FREQ) - 1;
@@ -75,12 +74,13 @@ reg         core_en;
 wire [SERVO_NUM-1:0] start_servo;
 reg [DUTY_WIDTH-2:0] pwm_prescaler;
 reg [DUTY_WIDTH-2:0] half_period;
+reg [5:0] trig_rate;
 reg [SERVO_NUM-1:0] protected_en;
 reg [DUTY_WIDTH-1:0] u0;
 reg [DUTY_WIDTH-1:0] u1;
 reg [DUTY_WIDTH-1:0] u2;
 reg [DUTY_WIDTH-1:0] u3;
-reg u_valid;
+
 
 
 reg [1:0] mode_0;
@@ -116,7 +116,6 @@ assign flag = {start_servo, drv8320_fault, stop, 1'b0, measurement_trigger_pendd
 servo_pwm_control #
 (
     .CORE_FREQUENCY(FREQ_CLK),
-    .DEAD_TIME(DEAD_TIME),
     .DUTY_WIDTH(DUTY_WIDTH)
 )
 servo_pwm_inst
@@ -135,7 +134,6 @@ servo_pwm_inst
     .u1(u1),
     .u2(u2),
     .u3(u3),
-    .s_valid(u_valid),
 
     .measurement_trigger(measurement_trigger),
 
@@ -176,7 +174,7 @@ localparam CR_OFFSET = 0,
         TR_OFFSET = 1,
         IE_OFFSET = 2,
         FLAG_OFFSET = 3,
-
+        TRIGGER_RATE_OFFSET = 4,
         PWM_PRES_OFFSET = 5,
         PWM_HPERIOD_OFFSET = 6,
 
@@ -210,7 +208,7 @@ localparam CR_OFFSET = 0,
             u1 <= 0;
             u2 <= 0;
             u3 <= 0;
-            u_valid <= 1'b0;
+
             ie <= 0;
             mode_0 <= C_MODE0;
             mode_1 <= C_MODE1;
@@ -219,7 +217,6 @@ localparam CR_OFFSET = 0,
         end
         else begin 
             core_reset <= ((address == TR_OFFSET) && ~write_n)? writedata[TR_RESET_BIT]: 1'b0;           
-            u_valid <= ((address == TR_OFFSET) && ~write_n)? writedata[TR_U_VALID_BIT]: 1'b0;
 
             measurement_trigger_pendding <= 
                 (measurement_trigger_pendding | measurement_trigger ) 
@@ -232,7 +229,7 @@ localparam CR_OFFSET = 0,
 
             
             realtime_err <= 
-                (measurement_trigger_pendding & measurement_trigger)
+                (realtime_err | (measurement_trigger_pendding & measurement_trigger))
                 & ( (address == FLAG_OFFSET)? (write_n | ~writedata[FLAG_REAL_TIME_BIT]): 1'b1);
 
 
@@ -245,36 +242,36 @@ localparam CR_OFFSET = 0,
                 end
                 IE_OFFSET: ie <= writedata;
 
-                PWM_PRES_OFFSET: begin
-                   if (core_en) begin
+                PWM_PRES_OFFSET: 
+                   if (~core_en) begin
                         pwm_prescaler <= writedata;
                    end 
-                end 
-                PWM_HPERIOD_OFFSET: begin
-                   if (core_en) begin
+                 
+                PWM_HPERIOD_OFFSET: 
+                   if (~core_en) begin
                         half_period <= writedata;
                    end 
-                end 
-                PULSE_MODE0_OFFSET: begin
-                   if (core_en) begin
+                 
+                PULSE_MODE0_OFFSET: 
+                   if (~core_en) begin
                         mode_0 <= writedata;
                    end 
-                end 
-                PULSE_MODE1_OFFSET: begin
-                   if (core_en) begin
+                 
+                PULSE_MODE1_OFFSET: 
+                   if (~core_en) begin
                         mode_1 <= writedata;
                    end 
-                end 
-                PULSE_MODE2_OFFSET: begin
-                   if (core_en) begin
+                 
+                PULSE_MODE2_OFFSET: 
+                   if (~core_en) begin
                         mode_2 <= writedata;
                    end 
-                end 
-                PULSE_MODE3_OFFSET: begin
-                   if (core_en) begin
+                 
+                PULSE_MODE3_OFFSET: 
+                   if (~core_en) begin
                         mode_3 <= writedata;
                    end 
-                end
+                
                 
                 U0_OFFSET: begin
                   u0 <= writedata;  
@@ -288,6 +285,10 @@ localparam CR_OFFSET = 0,
                 U3_OFFSET: begin
                   u3 <= writedata;  
                 end
+
+                TRIGGER_RATE_OFFSET: if (~core_en) begin
+                    trig_rate <= writedata;
+                end 
 
                 endcase 
             end
@@ -306,6 +307,7 @@ localparam CR_OFFSET = 0,
                 FLAG_OFFSET: readdata <= flag;
                 PWM_PRES_OFFSET: readdata <= pwm_prescaler;
                 PWM_HPERIOD_OFFSET: readdata <= half_period;
+                TRIGGER_RATE_OFFSET: readdata <= trig_rate;
                 PULSE_MODE0_OFFSET: readdata <= mode_0;
                 PULSE_MODE1_OFFSET: readdata <= mode_1;
                 PULSE_MODE2_OFFSET: readdata <= mode_2;

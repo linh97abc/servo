@@ -31,10 +31,7 @@ add_fileset_file avl_drv8320.v VERILOG PATH avl_drv8320.v TOP_LEVEL_FILE
 
 add_fileset_file servo_3phase_pwm.v VERILOG PATH servo_3phase_pwm.v
 add_fileset_file servo_pwmx4.v VERILOG PATH servo_pwmx4.v
-add_fileset_file servo_u_to_duty_mul_mul_15ns_12s_27_4_1.v VERILOG PATH servo_u_to_duty_mul_mul_15ns_12s_27_4_1.v
-add_fileset_file servo_u_to_duty_mux_42_16_1_1.v VERILOG PATH servo_u_to_duty_mux_42_16_1_1.v
 add_fileset_file servo_pwm_control.v VERILOG PATH servo_pwm_control.v
-add_fileset_file servo_u_to_duty.v VERILOG PATH servo_u_to_duty.v
 add_fileset_file servo_u2duty_wrapper.v VERILOG PATH servo_u2duty_wrapper.v
 
 

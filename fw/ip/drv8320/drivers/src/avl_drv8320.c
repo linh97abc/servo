@@ -40,6 +40,8 @@ int Drv8320_apply_configure(struct Drv8320_dev_t *dev)
 	prescale = dev->CORE_FREQ / (dev->cfg->pwm_freq << 1) - 1;
 	SERVO_IOWR(dev, DRV8320_PWM_HPERIOD_OFFSET, prescale);
 
+	SERVO_IOWR(dev, DRV8320_TRIGGER_RATE_OFFSET, dev->cfg->trigger_rate);
+
 	SERVO_IOWR(dev, DRV8320_PULSE_MODE0_OFFSET, dev->cfg->drv_mode[0]);
 	SERVO_IOWR(dev, DRV8320_PULSE_MODE1_OFFSET, dev->cfg->drv_mode[1]);
 	SERVO_IOWR(dev, DRV8320_PULSE_MODE2_OFFSET, dev->cfg->drv_mode[2]);
