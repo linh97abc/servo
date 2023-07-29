@@ -4,7 +4,8 @@ module avl_fifo_uart
 #(
     parameter FREQ_CLK  = 100_000_000,
     parameter BAUDRATE  = 921600,
-    // parameter [15:0] RX_TIMEOUT_US = 500,
+    parameter OVERSAMPLING_RATE = 4,
+    parameter RX_TIMEOUT_WORD = 4, // in os_tick
     parameter C_RX_THRESHOLD  = 32,
     parameter DATA_BIT  = 8, // number of bits in a word
     parameter [1:0] PARITY_BIT         = 0,                   // 00,01 <=> NONE, 11 <=> Odd, 10 <=> Even
@@ -27,13 +28,15 @@ module avl_fifo_uart
     // uart
     input wire rxd,
     output wire txd,
+    // debug
+    output wire dbg_os_pulse,
 
     //irq
     output wire irq
 );
 
     // localparam [15:0] RX_TIMEOUT_PRES = (FREQ_CLK/1000_000) * RX_TIMEOUT_US;
-    localparam [15:0] BAUD_PRES = (FREQ_CLK/BAUDRATE) - 1;
+    localparam [15:0] BAUD_PRES = (FREQ_CLK/BAUDRATE);
 
     localparam CR_REG = 0;
     localparam IE_REG = 1;
@@ -63,18 +66,18 @@ wire [DATA_BIT-1:0] rx_data;
 reg [RX_FIFO_DEPTH-1:0] rx_threshold_cnt;
 wire rx_threshold;
 
-wire [RX_FIFO_DEPTH-1:0] rx_cout;
-wire [TX_FIFO_DEPTH-1:0] tx_cout;
+wire [RX_FIFO_DEPTH:0] rx_cout;
+wire [TX_FIFO_DEPTH:0] tx_cout;
 
 wire [4:0] uart_status;
-wire [2:0] uart_err;
-reg [2:1] uart_err_reg;
+wire [3:0] uart_err;
+reg [3:0] uart_err_reg;
 
-wire [10:0] core_status;
+wire [11:0] core_status;
 assign rx_threshold = ((rx_threshold_cnt <= rx_cout) || (uart_status[0] & rx_valid))? 1'b1: 1'b0;
 assign core_status = {uart_err_reg, tx_ready, rx_valid, rx_threshold, uart_status};
 
-reg [10:0] ie;
+reg [11:0] ie;
 
 assign irq = |(ie & core_status);
 
@@ -82,6 +85,8 @@ assign irq = |(ie & core_status);
 
 axis_uart
 #(
+.OVERSAMPLING_RATE(OVERSAMPLING_RATE),
+.RX_TIMEOUT(RX_TIMEOUT_WORD * (DATA_BIT + 2)),
 .DATA_BIT(DATA_BIT),
 .PARITY_BIT(PARITY_BIT),
 .STOP_BIT(STOP_BIT),
@@ -110,15 +115,16 @@ axis_uart_inst
     // status
     .rx_cout(rx_cout),
     .tx_cout(tx_cout),
-    .status(uart_status), //tx_empty, tx_full, rx_empty, rx_full, rx_idle
+    .status(uart_status), // tx_empty, tx_full, rx_empty, rx_full, rx_idle
 
     // error
-    .err(uart_err), // stop_err, parity_err, overrun_err
+    .err(uart_err), // start err, stop_err, parity_err, overrun_err
 
 
     // uart
     .txd(txd),
-    .rxd(rxd)
+    .rxd(rxd),
+    .dbg_os_pulse(dbg_os_pulse)
 );
 
     always @(posedge clk or negedge reset_n)             //write down to reg
@@ -131,7 +137,7 @@ axis_uart_inst
 
         uart_err_reg <= uart_err | 
             (
-                uart_err_reg &  ((~write_n && (address == FLAG_REG))? ~writedata[10:8]: 3'b111)
+                uart_err_reg &  ((~write_n && (address == FLAG_REG))? ~writedata[10:8]: 4'b1111)
                 );
         end
     end

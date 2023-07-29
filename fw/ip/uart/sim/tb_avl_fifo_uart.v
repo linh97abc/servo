@@ -1,22 +1,25 @@
 `timescale 1 ns / 1 ps
 module tb_avl_fifo_uart;
 
-    parameter CLK_FREQ_HZ  = 1000_000;
-    parameter BAUDRATE  = 100_0000;
+    parameter CLK_FREQ_HZ  = 100_000_000;
+    parameter BAUDRATE  = 3_000_000;
     // parameter [15:0] BAUDRATE  = 16'd200_000;
     parameter [15:0] RX_TIMEOUT_US = 100;
     parameter DATA_BIT  = 8; // number of bits in a word
-    parameter [1:0] PARITY_BIT         = 0;                   // 00,01 <=> NONE, 11 <=> Odd, 10 <=> Even
+    parameter [1:0] PARITY_BIT         = 2;                   // 00,01 <=> NONE, 11 <=> Odd, 10 <=> Even
     parameter [1:0] STOP_BIT           = 0;                    // 0 <=> 1 bit, 1 <=> 1,5 bit, 2 <=> 2 bit
     parameter RX_FIFO_DEPTH  = 4;
     parameter TX_FIFO_DEPTH  = 4;
+
+    parameter OVERSAMPLING_RATE = 4;
+    parameter RX_TIMEOUT_WORD = 4; // in os_tick
 
     //clk, reset
     reg clk;
     reg reset_n;
     
     //avalon mm interface
-    reg [4:0] address;
+    reg [3:0] address;
     reg [31:0] writedata;
     reg write_n;
     reg read_n;    
@@ -26,6 +29,7 @@ module tb_avl_fifo_uart;
     wire rxd;
      wire txd;
 
+wire dbg_os_pulse;
     //irq
      wire irq;
 
@@ -33,14 +37,17 @@ module tb_avl_fifo_uart;
 
 avl_fifo_uart
 #(
-     CLK_FREQ_HZ ,
-      BAUDRATE  ,
+    .FREQ_CLK(CLK_FREQ_HZ ),
+    .BAUDRATE  (BAUDRATE),
+    .OVERSAMPLING_RATE(OVERSAMPLING_RATE),
+    .RX_TIMEOUT_WORD(RX_TIMEOUT_WORD),
     //   RX_TIMEOUT_US ,
-     DATA_BIT  , // number of bits in a word
-      PARITY_BIT        ,                   // 00,01 <=> NONE, 11 <=> Odd, 10 <=> Even
-      STOP_BIT          ,                    // 0 <=> 1 bit, 1 <=> 1,5 bit, 2 <=> 2 bit
-     RX_FIFO_DEPTH  ,
-     TX_FIFO_DEPTH  
+    .C_RX_THRESHOLD(4),
+    .DATA_BIT(DATA_BIT)  , // number of bits in a word
+    .PARITY_BIT(  PARITY_BIT )       ,                   // 00,01 <=> NONE, 11 <=> Odd, 10 <=> Even
+    .STOP_BIT(STOP_BIT)          ,                    // 0 <=> 1 bit, 1 <=> 1,5 bit, 2 <=> 2 bit
+    .RX_FIFO_DEPTH(RX_FIFO_DEPTH)  ,
+    .TX_FIFO_DEPTH  (TX_FIFO_DEPTH)
 )
 inst
 (
@@ -59,6 +66,7 @@ inst
      rxd,
    txd,
 
+dbg_os_pulse,
     //irq
    irq
 );
@@ -112,11 +120,11 @@ initial begin
     reset_n = 1;
     @(posedge clk);
 
-    avl_write(inst.CR_REG, {16'd9 , 6'b0 ,1'b1, 1'b0});
-    avl_write(inst.CR_REG, {16'd9 , 6'b0 ,1'b0, 1'b1});
+    avl_write(inst.CR_REG, {CLK_FREQ_HZ/BAUDRATE , 6'b0 ,1'b1, 1'b0});
+    avl_write(inst.CR_REG, {CLK_FREQ_HZ/BAUDRATE  , 6'b0 ,1'b0, 1'b1});
 
 
-    avl_write(inst.RX_THRESHOLD_REG, 8);
+    avl_write(inst.RX_THRESHOLD_REG, 4);
     avl_write(inst.IE_REG, 1 << 5);
 
     avl_write(inst.TX_REG, 0);
@@ -126,10 +134,10 @@ initial begin
 
     wait(irq == 1'b1);
 
-    // avl_read(inst.RX_REG);
-    // avl_read(inst.RX_REG);
-    // avl_read(inst.RX_REG);
-    // avl_read(inst.RX_REG);
+    avl_read(inst.RX_REG);
+    avl_read(inst.RX_REG);
+    avl_read(inst.RX_REG);
+    avl_read(inst.RX_REG);
 
 end
 

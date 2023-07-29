@@ -2,6 +2,8 @@
 
 module axis_uart
 #(
+    parameter OVERSAMPLING_RATE = 4,
+    parameter [10-OVERSAMPLING_RATE:0] RX_TIMEOUT = 64, // in os_tick
     parameter [3:0] DATA_BIT  = 8, // number of bits in a word
     parameter [1:0] PARITY_BIT         = 0,                   // 00,01 <=> NONE, 11 <=> Odd, 10 <=> Even
     parameter [1:0] STOP_BIT           = 0,                    // 0 <=> 1 bit, 1 <=> 1,5 bit, 2 <=> 2 bit
@@ -13,8 +15,7 @@ module axis_uart
     input aresetn,
 
     //config
-    input  wire  [15: 0]                  baud_divisor,
-    // input [15:0] rx_timeout,
+    input  wire  [15: 0]   baud_divisor,
 
     // axis
 
@@ -27,78 +28,77 @@ module axis_uart
     input m_axis_tready,
 
     // status
-    output [RX_FIFO_DEPTH-1:0] rx_cout,
-    output [TX_FIFO_DEPTH-1:0] tx_cout,
+    output [RX_FIFO_DEPTH:0] rx_cout,
+    output [TX_FIFO_DEPTH:0] tx_cout,
     output [4:0] status, //tx_empty, tx_full, rx_empty, rx_full, rx_idle
 
     // error
-    output [2:0] err, // stop_err, parity_err, overrun_err
+    output [3:0] err, // start err, stop_err, parity_err, overrun_err
 
 
     // uart
     output wire txd,
-    input wire rxd
-);
+    input wire rxd,
 
-wire [15:0] rx_timeout;
-assign rx_timeout = {baud_divisor[11:0], 4'b0000}; // 16 baud
+    // debug
+    output wire dbg_os_pulse
+);
 
 wire tx_empty, tx_full, rx_empty, rx_full, rx_idle;
 assign status = {tx_empty, tx_full, rx_empty, rx_full, rx_idle};
 
 wire [DATA_BIT-1:0] tx_din;
-wire tx_valid, tx_start, tx_done_tick;
-reg tx_not_empty;
+wire tx_valid;
 
-wire [DATA_BIT+1:0] rx_dout;
+
+wire [DATA_BIT-1:0] rx_dout;
+wire rx_start_err;
 wire parity_err;
 wire stop_err;
 wire rx_done_tick;
 
-assign parity_err = rx_dout[DATA_BIT+1];
-assign stop_err = rx_dout[DATA_BIT];
 
 wire overrun_err;
 wire rx_buff_ready;
 
-assign overrun_err = ~parity_err & ~stop_err & rx_done_tick & ~rx_buff_ready;
-assign err = {stop_err, parity_err, overrun_err};
+reg [1:0] rxd_sync;
 
-assign tx_start = tx_valid & ~tx_not_empty;
+wire tx_busy;
+wire rx_busy;
+reg rx_busy_last;
+wire [2:0] rx_err;
 
-    uart_tx
-        #(
-            .DATA_BIT(DATA_BIT),
-            .PARITY_BIT(PARITY_BIT),
-            .STOP_BIT(STOP_BIT),
-            .DATA_BIT_IN(DATA_BIT)
-        ) 
-        uart_tx_inst
+assign rx_start_err = rx_err[2];
+assign parity_err = rx_err[1];
+assign stop_err = rx_err[0];
+
+assign rx_done_tick = ~rx_busy & rx_busy_last;
+assign overrun_err = ~(|rx_err) & ~rx_buff_ready;
+
+assign err = {rx_start_err, stop_err, parity_err, overrun_err};
+
+    uart#
         (
-        .clk(aclk),                // system clock
-        .reset(~aresetn),              // system reset (active high)
-        .baud_divisor(baud_divisor),       // baud_divisor
-        .tx_start(tx_start),           // indicates that CPU writes new data
-        .din(tx_din),                // TX Data bits
-        .tx_done_tick(tx_done_tick),       // Indicate TX Controller trasmits enough data (start,datas,stop,parity)
-        .tx(txd)
-        );
-
-
-    uart_rx#
+            .os_rate(OVERSAMPLING_RATE),
+            .d_width(DATA_BIT),
+            .parity(PARITY_BIT[1]),
+            .c_parity_eo(PARITY_BIT[0])
+            
+        ) uart_inst
         (
-            .DATA_BIT(DATA_BIT),
-            .PARITY_BIT(PARITY_BIT),
-            .STOP_BIT(STOP_BIT),
-            .DATA_BIT_OUT(DATA_BIT+2)                 // # data bits  (1 parity bit + 1 stop bit + 8 data bits)
-        ) uart_rx_inst
-        (
-        .clk(aclk),                // system clock
-        .reset(~aresetn),              // system reset (active high)
-        .baud_divisor(baud_divisor),       // baud_divisor
-        .rx(rxd),                 // rxd signal 
-        .rx_done_tick(rx_done_tick),       // Indicate RX Controller receivers enough data (start,datas,stop bit)
-        .dout(rx_dout)                // PARITY_ERROR, STOP_ERROR, DATA_BIT
+            .clk(aclk),
+            .reset_n(aresetn),
+            .baud_pres(baud_divisor),
+            // .tx_ena(tx_valid & ~tx_busy),
+            .tx_ena(tx_valid),
+            .tx_data(tx_din),
+            .rx(rxd_sync[1]),
+            .rx_busy(rx_busy),
+            .rx_error(rx_err),
+            .rx_data(rx_dout),
+            .tx_busy(tx_busy),
+            .tx(txd),
+            .dbg_os_pulse(dbg_os_pulse)
         );
 
     uart_sfifo_nopipe
@@ -142,35 +142,36 @@ assign tx_start = tx_valid & ~tx_not_empty;
 
         .r_data(tx_din),
         .r_valid(tx_valid),
-        .r_ready(~tx_not_empty),
+        .r_ready(~tx_busy),
 
         .count_out(tx_cout),  
         .empty(tx_empty), 
         .full(tx_full)
         );
 
+
 always @(posedge aclk) begin
     if(~aresetn) begin
-        tx_not_empty <= 1'b0;
+        rxd_sync <= 2'b11;
+        rx_busy_last <= 1'b0;
     end else begin
-        if (tx_start) begin
-            tx_not_empty <= 1'b1;
-        end else if (tx_done_tick) begin
-            tx_not_empty <= 1'b0;
-        end
+        rxd_sync <= {rxd_sync[0], rxd};
+        rx_busy_last <= rx_busy;
     end
 end
 
-reg [15:0] rx_idle_cnt;
 
-assign rx_idle = (rx_idle_cnt == rx_timeout)? 1'b1: 1'b0;
+
+reg [10:0] rx_idle_cnt;
+
+assign rx_idle = (rx_idle_cnt[10:OVERSAMPLING_RATE] == RX_TIMEOUT)? 1'b1: 1'b0;
 always @(posedge aclk) begin
     if(~aresetn) begin
         rx_idle_cnt <= 0;
     end else begin
         if (rx_done_tick) begin
             rx_idle_cnt <= 0;
-        end else if (~rx_idle) begin
+        end else if (~rx_idle & dbg_os_pulse) begin
             rx_idle_cnt <= rx_idle_cnt + 1'b1;
         end
     end

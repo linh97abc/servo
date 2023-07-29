@@ -32,8 +32,7 @@ set_fileset_property QUARTUS_SYNTH ENABLE_FILE_OVERWRITE_MODE false
 add_fileset_file avl_fifo_uart.v VERILOG PATH avl_fifo_uart.v TOP_LEVEL_FILE
 add_fileset_file axis_uart.v VERILOG PATH axis_uart.v
 add_fileset_file uart_ram.v VERILOG PATH uart_ram.v
-add_fileset_file uart_rx.v VERILOG PATH uart_rx.v
-add_fileset_file uart_tx.v VERILOG PATH uart_tx.v
+add_fileset_file uart.vhd VHDL PATH uart.vhd
 add_fileset_file uart_sfifo_nopipe.v VERILOG PATH uart_sfifo_nopipe.v
 
 
@@ -101,6 +100,22 @@ set_parameter_property TX_FIFO_DEPTH TYPE INTEGER
 set_parameter_property TX_FIFO_DEPTH UNITS None
 set_parameter_property TX_FIFO_DEPTH HDL_PARAMETER true
 
+add_parameter OVERSAMPLING_RATE INTEGER 4
+set_parameter_property OVERSAMPLING_RATE DEFAULT_VALUE 4
+set_parameter_property OVERSAMPLING_RATE DISPLAY_NAME OVERSAMPLING_RATE
+set_parameter_property OVERSAMPLING_RATE TYPE INTEGER
+set_parameter_property OVERSAMPLING_RATE UNITS None
+set_parameter_property OVERSAMPLING_RATE HDL_PARAMETER true
+set_parameter_property OVERSAMPLING_RATE ALLOWED_RANGES {1:2_pulse 2:4_pulse 3:8_pulse 4:16_pulse}
+
+add_parameter RX_TIMEOUT_WORD INTEGER 4
+set_parameter_property RX_TIMEOUT_WORD DEFAULT_VALUE 4
+set_parameter_property RX_TIMEOUT_WORD DISPLAY_NAME RX_TIMEOUT_WORD
+set_parameter_property RX_TIMEOUT_WORD TYPE INTEGER
+set_parameter_property RX_TIMEOUT_WORD UNITS None
+set_parameter_property RX_TIMEOUT_WORD HDL_PARAMETER true
+set_parameter_property RX_TIMEOUT_WORD ALLOWED_RANGES {1:8}
+
 # 
 # display items
 # 
@@ -127,6 +142,8 @@ add_display_item {Fixed Parameter} PARITY_BIT PARAMETER
 add_display_item {Fixed Parameter} STOP_BIT PARAMETER
 add_display_item {Fixed Parameter} RX_FIFO_DEPTH PARAMETER
 add_display_item {Fixed Parameter} TX_FIFO_DEPTH PARAMETER
+add_display_item {Fixed Parameter} OVERSAMPLING_RATE PARAMETER
+add_display_item {Fixed Parameter} RX_TIMEOUT_WORD PARAMETER
 
 
 # 
@@ -211,6 +228,7 @@ set_interface_property conduit_end SVD_ADDRESS_GROUP ""
 
 add_interface_port conduit_end rxd rxd Input 1
 add_interface_port conduit_end txd txd Output 1
+add_interface_port conduit_end dbg_os_pulse dbg_os_pulse Output 1
 
 # 
 # connection point interrupt_sender
@@ -236,6 +254,8 @@ proc validate {} {
     set stopBit [ get_parameter_value STOP_BIT ]
     set rxFifoDepth [ get_parameter_value RX_FIFO_DEPTH ]
     set txFifoDepth [ get_parameter_value TX_FIFO_DEPTH ]
+    set os_rate [ get_parameter_value OVERSAMPLING_RATE ]
+    set rx_timeout [ get_parameter_value RX_TIMEOUT_WORD ]
 
 
     set_module_assignment embeddedsw.CMacro.FREQ $clockRate	
@@ -244,6 +264,8 @@ proc validate {} {
     set_module_assignment embeddedsw.CMacro.STOP_BIT $stopBit	
     set_module_assignment embeddedsw.CMacro.RX_FIFO_DEPTH $rxFifoDepth	
     set_module_assignment embeddedsw.CMacro.TX_FIFO_DEPTH $txFifoDepth	
+    set_module_assignment embeddedsw.CMacro.OVERSAMPLING_RATE $os_rate	
+    set_module_assignment embeddedsw.CMacro.RX_TIMEOUT_WORD $rx_timeout	
 
     # Device tree parameters
 	set_module_assignment embeddedsw.dts.vendor "vtx"

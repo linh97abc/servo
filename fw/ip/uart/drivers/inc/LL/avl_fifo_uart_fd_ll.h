@@ -45,6 +45,8 @@ extern "C"
             (enum FifoUart_StopBits_t)name##_STOP_BIT,                \
             1u << name##_RX_FIFO_DEPTH,                               \
             1u << name##_TX_FIFO_DEPTH,                               \
+            1u << name##_OVERSAMPLING_RATE,                           \
+            name##_RX_TIMEOUT_WORD,                                   \
     }
 
 #define AVL_FIFO_UART_INIT(name, dev) FifoUart_Init(&dev)

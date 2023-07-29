@@ -18,7 +18,8 @@ module uart_sfifo_nopipe
     output wire                    r_valid,
     input  wire                    r_ready,
 
-    output wire [ADDR_BIT-1:0]       count_out,  
+   //  output reg [ADDR_BIT-1:0]     count_out,  
+    output reg [ADDR_BIT:0]     count_out,  
     output wire                    empty, 
     output wire                    full
    );
@@ -48,10 +49,10 @@ module uart_sfifo_nopipe
    reg reading;
 
    assign we = w_valid & w_ready;
-   assign count_out = waddr - raddr;
 
    assign empty = ~(|count_out);
-   assign full = &count_out;
+   // assign full = &count_out;
+   assign full = count_out[ADDR_BIT];
 
    assign r_valid = ~empty & ~reading;
    assign w_ready = ~full;
@@ -62,6 +63,7 @@ module uart_sfifo_nopipe
          waddr <= 0;
          raddr <= 0;
          reading <= 1'b0;
+         count_out <= 0;
       end else begin
 
          reading <= (r_ready & r_valid) | (w_valid & w_ready & empty);
@@ -70,12 +72,14 @@ module uart_sfifo_nopipe
             waddr <= waddr + 1'b1;
          end
 
-        //  if (r_ready & r_valid & ~reading) begin
-        //     raddr <= raddr + 1'b1;
-        //  end
-
          if (r_ready & r_valid) begin
             raddr <= raddr + 1'b1;
+         end
+
+         if (w_valid & w_ready & ~(r_ready & r_valid)) begin
+            count_out <= count_out + 1'b1;
+         end else if (~(w_valid & w_ready) & r_ready & r_valid) begin
+            count_out <= count_out - 1'b1;
          end
 
       end

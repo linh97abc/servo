@@ -18,6 +18,7 @@
 #define FIFO_UART_CR_BAUD_SET(baud) (((baud) &0xFFFFu) << 8)
 #define FIFO_UART_CR_BAUD_GET(regVal) (((regVal) >> 8) & 0xFFFFu)
 
+#define FIFO_UART_IE_START_ERR (1u << 11)
 #define FIFO_UART_IE_STOP_ERR (1u << 10)
 #define FIFO_UART_IE_PARITY_ERR (1u << 9)
 #define FIFO_UART_IE_OVERRUN_ERR (1u << 8)
@@ -30,6 +31,7 @@
 #define FIFO_UART_IE_RX_FULL (1u << 1)
 #define FIFO_UART_IE_RX_IDLE (1u << 0)
 
+#define FIFO_UART_FLAG_START_ERR (1u << 11)
 #define FIFO_UART_FLAG_STOP_ERR (1u << 10)
 #define FIFO_UART_FLAG_PARITY_ERR (1u << 9)
 #define FIFO_UART_FLAG_OVERRUN_ERR (1u << 8)

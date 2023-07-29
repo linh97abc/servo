@@ -41,7 +41,8 @@ extern "C"
 			uint32_t overrun_err : 1;
 			uint32_t parity_err : 1;
 			uint32_t stop_err : 1;
-			uint32_t reserved : 21;
+			uint32_t start_err : 1;
+			uint32_t reserved : 20;
 
 		} field;
 		uint32_t data;
@@ -71,20 +72,48 @@ extern "C"
 		FIFO_UART_STOP_BITS_1_5 = 1,
 		FIFO_UART_STOP_BITS_2 = 2
 	};
+
+	/// @brief Find Uart Device Type
 	typedef struct tag_FifoUart_Dev
 	{
 		struct alt_dev_s dev;
+		
+		/// @brief UART Base Address
 		struct tag_FifoUart_Reg *const BASE;
+		
+		/// @brief Interrupt ID
 		const uint8_t IRQ;
+		
+		/// @brief Interrupt controller ID
 		const uint8_t IC_ID;
+		
+		/// @brief Core frequency
 		const unsigned CORE_FREQ;
+		
+		/// @brief Size of 1 word
 		const uint8_t DATA_BITS;
+
+		/// @brief Parity bits
 		const enum FifoUart_ParityBits_t PARITY_BITS;
+
+		/// @brief Stop bits
 		const enum FifoUart_StopBits_t STOP_BITS;
+		
+		/// @brief Size of RX Buffer (in word)
 		const unsigned RX_FIFO_SIZE;
+		
+		/// @brief Size of TX Buffer (in word)
 		const unsigned TX_FIFO_SIZE;
 
+		/// @brief Num of sample time for 1 bit data
+		const unsigned SAMPLE_RATE;
+
+		/// @brief @b recv_timout is time to transmit @b RX_LINE_TIMEOUT bytes of data 
+		const unsigned RX_LINE_TIMEOUT;
+
+		/// @brief timeout (in tick) for read function
 		uint16_t timeout;
+
 		bool isReady;
 		OS_FLAG_GRP *flag;
 
