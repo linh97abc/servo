@@ -115,7 +115,6 @@ assign flag = {start_servo, drv8320_fault, stop, 1'b0, measurement_trigger_pendd
 
 servo_pwm_control #
 (
-    .CORE_FREQUENCY(FREQ_CLK),
     .DUTY_WIDTH(DUTY_WIDTH)
 )
 servo_pwm_inst

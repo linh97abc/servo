@@ -129,24 +129,39 @@ DE0_CV_QSYS u0(
 
 		.uart_debug_conduit_end_rxd(UART_DEBUG_RX),                  //           uart_debug_conduit_end.rxd
 		.uart_debug_conduit_end_txd(UART_DEBUG_TX),                  //                                 .txd
-		.uart_rs485_conduit_end_rxd(UART_RS485_RX),                  //           uart_rs485_conduit_end.rxd
+		.uart_debug_conduit_end_dbg_os_pulse(),
+            .uart_rs485_conduit_end_rxd(UART_RS485_RX),                  //           uart_rs485_conduit_end.rxd
 		.uart_rs485_conduit_end_txd(UART_RS485_TX),                   //                                 .txd
+            .uart_rs485_conduit_end_dbg_os_pulse(),
 
             //
-            .servo_controllerv1_0_conduit_end_spi_sclk(GPIO_0[2]), // servo_controllerv1_0_conduit_end.spi_sclk
-		.servo_controllerv1_0_conduit_end_spi_cs(GPIO_0[3]),   //                                 .spi_cs
-		.servo_controllerv1_0_conduit_end_spi_miso(GPIO_0[4]), //                                 .spi_miso
-		.servo_controllerv1_0_conduit_end_spi_mosi(GPIO_0[5]), //                                 .spi_mosi
-		.servo_controllerv1_0_conduit_end_hall_0(GPIO_0[8:6]),   //                                 .hall_0
-		.servo_controllerv1_0_conduit_end_hall_1(GPIO_0[11:9]),   //                                 .hall_1
-		.servo_controllerv1_0_conduit_end_hall_2(GPIO_0[14:12]),   //                                 .hall_2
-		.servo_controllerv1_0_conduit_end_hall_3(GPIO_0[17:15]),   //                                 .hall_3
-		.servo_controllerv1_0_conduit_end_phase_0(GPIO_1[5:0]),  //                                 .phase_0
-		.servo_controllerv1_0_conduit_end_phase_1(GPIO_1[11:6]),  //                                 .phase_1
-		.servo_controllerv1_0_conduit_end_phase_2(GPIO_1[17:12]),  //                                 .phase_2
-		.servo_controllerv1_0_conduit_end_phase_3(GPIO_1[23:18]),   //                                 .phase_3
-            .servo_controllerv1_0_conduit_end_nFault(GPIO_0[23:18]),     //                                 .nFault
-		.servo_controllerv1_0_conduit_end_drv8320_en(GPIO_0[27:24]), //                                 .drv8320_en
+            // .servo_controllerv1_0_conduit_end_spi_sclk(GPIO_0[2]), // servo_controllerv1_0_conduit_end.spi_sclk
+		// .servo_controllerv1_0_conduit_end_spi_cs(GPIO_0[3]),   //                                 .spi_cs
+		// .servo_controllerv1_0_conduit_end_spi_miso(GPIO_0[4]), //                                 .spi_miso
+		// .servo_controllerv1_0_conduit_end_spi_mosi(GPIO_0[5]), //                                 .spi_mosi
+		// .servo_controllerv1_0_conduit_end_hall_0(GPIO_0[8:6]),   //                                 .hall_0
+		// .servo_controllerv1_0_conduit_end_hall_1(GPIO_0[11:9]),   //                                 .hall_1
+		// .servo_controllerv1_0_conduit_end_hall_2(GPIO_0[14:12]),   //                                 .hall_2
+		// .servo_controllerv1_0_conduit_end_hall_3(GPIO_0[17:15]),   //                                 .hall_3
+		// .servo_controllerv1_0_conduit_end_phase_0(GPIO_1[5:0]),  //                                 .phase_0
+		// .servo_controllerv1_0_conduit_end_phase_1(GPIO_1[11:6]),  //                                 .phase_1
+		// .servo_controllerv1_0_conduit_end_phase_2(GPIO_1[17:12]),  //                                 .phase_2
+		// .servo_controllerv1_0_conduit_end_phase_3(GPIO_1[23:18]),   //                                 .phase_3
+            // .servo_controllerv1_0_conduit_end_nFault(GPIO_0[23:18]),     //                                 .nFault
+		// .servo_controllerv1_0_conduit_end_drv8320_en(GPIO_0[27:24]), //                                 .drv8320_en
+
+            .avl_drv8320_0_conduit_end_hall_0(GPIO_0[8:6]),     // avl_drv8320_0_conduit_end.hall_0
+		.avl_drv8320_0_conduit_end_hall_1(GPIO_0[11:9]),     //                          .hall_1
+		.avl_drv8320_0_conduit_end_hall_2(GPIO_0[14:12]),     //                          .hall_2
+		.avl_drv8320_0_conduit_end_hall_3(GPIO_0[17:15]),     //                          .hall_3
+		.avl_drv8320_0_conduit_end_phase_0(GPIO_1[5:0]),    //                          .phase_0
+		.avl_drv8320_0_conduit_end_phase_1(GPIO_1[11:6]),    //                          .phase_1
+		.avl_drv8320_0_conduit_end_phase_2(GPIO_1[17:12]),    //                          .phase_2
+		.avl_drv8320_0_conduit_end_phase_3(GPIO_1[23:18]),    //                          .phase_3
+		.avl_drv8320_0_conduit_end_nFault(GPIO_0[23:18]),     //                          .nFault
+		.avl_drv8320_0_conduit_end_stop(),       //                          .stop
+		.avl_drv8320_0_conduit_end_drv8320_en(GPIO_0[27:24]),
+
 
 		//SDRAM
 		.clk_sdram_clk(DRAM_CLK),                  //               clk_sdram.clk
