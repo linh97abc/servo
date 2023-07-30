@@ -10,6 +10,8 @@
 #define FIFO_UART_IOWR(dev, addr, data) IOWR((uintptr_t)dev->BASE, addr, data)
 #define FIFO_UART_IORD(dev, addr) IORD((uintptr_t)dev->BASE, addr)
 
+static void FifoUart_IrqHandler(void *arg) __attribute__((section(".exceptions")));
+
 static void FifoUart_IrqHandler(void *arg)
 {
 	FifoUart_Dev *dev = (FifoUart_Dev *)arg;

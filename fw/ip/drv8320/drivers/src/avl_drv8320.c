@@ -11,6 +11,8 @@
 #define SERVO_IOWR(dev, reg, data) IOWR((uintptr_t)dev->BASE, reg, data)
 #define SERVO_IORD(dev, reg) IORD((uintptr_t)dev->BASE, reg)
 
+static void Drv8320_irq_handler(void *arg) __attribute__((section(".exceptions")));
+
 struct Drv8320_dev_t *Drv8320_open_dev(const char *name)
 {
 	extern alt_llist alt_dev_list;
@@ -170,6 +172,8 @@ int Drv8320_get_duty(
 
 	return 0;
 }
+
+
 
 static void Drv8320_irq_handler(void *arg)
 {
