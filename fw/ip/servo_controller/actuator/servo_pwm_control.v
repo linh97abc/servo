@@ -9,6 +9,8 @@ module servo_pwm_control (
     start_servo,
     protected_en,
 
+    trig_rate,
+
     // slave 
     u0, // -1 .. 1
     u1,
@@ -63,6 +65,7 @@ input [DUTY_WIDTH-2:0] prescaler;
 input [DUTY_WIDTH-2:0] half_period;
 input [SERVO_NUM-1:0] start_servo;
 input [SERVO_NUM-1:0] protected_en;
+input [5:0] trig_rate;
 input [DUTY_WIDTH-1:0] u0;
 input [DUTY_WIDTH-1:0] u1;
 input [DUTY_WIDTH-1:0] u2;
@@ -160,6 +163,7 @@ servo_pwmx4 #(
     .core_en(core_en),
     .prescaler(prescaler),
     .half_period(half_period),
+    .trig_rate(trig_rate),
 
     .d0(d0),
     .d1(d1),

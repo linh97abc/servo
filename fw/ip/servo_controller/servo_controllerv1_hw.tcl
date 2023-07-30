@@ -36,11 +36,8 @@ add_fileset_file ad7928_top.v VERILOG PATH measurement/ad7928_top.v
 
 add_fileset_file servo_3phase_pwm.v VERILOG PATH actuator/servo_3phase_pwm.v
 add_fileset_file servo_pwmx4.v VERILOG PATH actuator/servo_pwmx4.v
-add_fileset_file servo_u_to_duty_mul_mul_15ns_12s_27_4_1.v VERILOG PATH actuator/servo_u_to_duty_mul_mul_15ns_12s_27_4_1.v
 add_fileset_file servo_protect.v VERILOG PATH actuator/servo_protect.v
-add_fileset_file servo_u_to_duty_mux_42_16_1_1.v VERILOG PATH actuator/servo_u_to_duty_mux_42_16_1_1.v
 add_fileset_file servo_pwm_control.v VERILOG PATH actuator/servo_pwm_control.v
-add_fileset_file servo_u_to_duty.v VERILOG PATH actuator/servo_u_to_duty.v
 add_fileset_file servo_u2duty_wrapper.v VERILOG PATH actuator/servo_u2duty_wrapper.v
 
 

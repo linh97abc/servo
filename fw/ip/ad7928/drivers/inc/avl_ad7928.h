@@ -1,5 +1,5 @@
-#ifndef __SERVO_CONTROLLER_H__
-#define __SERVO_CONTROLLER_H__
+#ifndef __AD7928_H__
+#define __AD7928_H__
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -11,41 +11,41 @@ extern "C"
 {
 #endif
 
-#define SERVO_CONTROLLER_NUM_SERVO 4
+#define AD7928_NUM_SERVO 4
 
 	enum Servo_controller_filter_level_t
 	{
-		SERVO_CONTROLLER_FILTER_LEVEL_0,
-		SERVO_CONTROLLER_FILTER_LEVEL_1,
-		SERVO_CONTROLLER_FILTER_LEVEL_2,
-		SERVO_CONTROLLER_FILTER_LEVEL_3,
-		SERVO_CONTROLLER_FILTER_LEVEL_4,
-		SERVO_CONTROLLER_FILTER_LEVEL_5,
-		SERVO_CONTROLLER_FILTER_LEVEL_6,
-		SERVO_CONTROLLER_FILTER_LEVEL_7,
-		SERVO_CONTROLLER_FILTER_LEVEL_8,
-		SERVO_CONTROLLER_FILTER_LEVEL_9,
-		SERVO_CONTROLLER_FILTER_LEVEL_10,
-		SERVO_CONTROLLER_FILTER_LEVEL_11,
-		SERVO_CONTROLLER_FILTER_LEVEL_12,
-		SERVO_CONTROLLER_FILTER_LEVEL_13,
-		SERVO_CONTROLLER_FILTER_LEVEL_14,
-		SERVO_CONTROLLER_FILTER_LEVEL_15,
+		AD7928_FILTER_LEVEL_0,
+		AD7928_FILTER_LEVEL_1,
+		AD7928_FILTER_LEVEL_2,
+		AD7928_FILTER_LEVEL_3,
+		AD7928_FILTER_LEVEL_4,
+		AD7928_FILTER_LEVEL_5,
+		AD7928_FILTER_LEVEL_6,
+		AD7928_FILTER_LEVEL_7,
+		AD7928_FILTER_LEVEL_8,
+		AD7928_FILTER_LEVEL_9,
+		AD7928_FILTER_LEVEL_10,
+		AD7928_FILTER_LEVEL_11,
+		AD7928_FILTER_LEVEL_12,
+		AD7928_FILTER_LEVEL_13,
+		AD7928_FILTER_LEVEL_14,
+		AD7928_FILTER_LEVEL_15,
 	};
 
 	enum Servo_controller_servo_id_t
 	{
-		SERVO_CONTROLLER_SERVO_ID_0,
-		SERVO_CONTROLLER_SERVO_ID_1,
-		SERVO_CONTROLLER_SERVO_ID_2,
-		SERVO_CONTROLLER_SERVO_ID_3
+		AD7928_SERVO_ID_0,
+		AD7928_SERVO_ID_1,
+		AD7928_SERVO_ID_2,
+		AD7928_SERVO_ID_3
 	};
 
 	enum Servo_controller_drv_mode_t
 	{
-		SERVO_CONTROLLER_DRV_MODE_6x = 0,
-		SERVO_CONTROLLER_DRV_MODE_3x = 1,
-		SERVO_CONTROLLER_DRV_MODE_1x = 2,
+		AD7928_DRV_MODE_6x = 0,
+		AD7928_DRV_MODE_3x = 1,
+		AD7928_DRV_MODE_1x = 2,
 	};
 
 	typedef union
@@ -106,17 +106,6 @@ extern "C"
 
 	typedef union
 	{
-		struct
-		{
-			uint32_t half_period : 15;
-			uint32_t reserved : 1;
-			uint32_t base_pres : 15;
-		} field;
-		uint32_t val;
-	} servo_controller_reg_PWM_PRES;
-
-	typedef union
-	{
 		enum Servo_controller_drv_mode_t enum_val;
 		uint32_t u32_val;
 	} servo_controller_reg_DRV_MODE;
@@ -135,14 +124,14 @@ extern "C"
 		volatile servo_controller_reg_FLAG flag;
 
 		volatile uint32_t spi_prescale;
-		volatile servo_controller_reg_PWM_PRES pwm_prescale;
-		volatile uint32_t pwm_trig_rate;
+		volatile uint32_t pwm_prescale;
+		volatile uint32_t pwm_hperiod;
 
-		volatile servo_controller_reg_DRV_MODE drv_mode[SERVO_CONTROLLER_NUM_SERVO];
-		volatile servo_controller_reg_I16 duty[SERVO_CONTROLLER_NUM_SERVO];
-		volatile servo_controller_reg_I16 i_max[SERVO_CONTROLLER_NUM_SERVO];
-		const volatile servo_controller_reg_I16 i[SERVO_CONTROLLER_NUM_SERVO];
-		const volatile servo_controller_reg_I16 pos[SERVO_CONTROLLER_NUM_SERVO];
+		volatile servo_controller_reg_DRV_MODE drv_mode[AD7928_NUM_SERVO];
+		volatile servo_controller_reg_I16 duty[AD7928_NUM_SERVO];
+		volatile servo_controller_reg_I16 i_max[AD7928_NUM_SERVO];
+		const volatile servo_controller_reg_I16 i[AD7928_NUM_SERVO];
+		const volatile servo_controller_reg_I16 pos[AD7928_NUM_SERVO];
 	};
 
 	struct servo_controller_dev_t;
@@ -152,10 +141,10 @@ extern "C"
 		enum Servo_controller_filter_level_t filter_level;
 
 		/// @brief stop motor if motor current overload
-		bool protected_en[SERVO_CONTROLLER_NUM_SERVO];
+		bool protected_en[AD7928_NUM_SERVO];
 
 		/// @brief enable motor driver
-		bool drv_en[SERVO_CONTROLLER_NUM_SERVO];
+		bool drv_en[AD7928_NUM_SERVO];
 
 		/// @brief spi speed of measurement IC
 		uint32_t spi_speed;
@@ -166,14 +155,11 @@ extern "C"
 		/// @brief PWM frequency
 		uint32_t pwm_freq;
 
-		/// @brief PWM trigger rate
-		uint8_t pwm_trig_rate;
-
 		/// @brief Mode of pulse for motor driver
-		enum Servo_controller_drv_mode_t drv_mode[SERVO_CONTROLLER_NUM_SERVO];
+		enum Servo_controller_drv_mode_t drv_mode[AD7928_NUM_SERVO];
 
 		/// @brief Limit of motor current value, in fixed(16, 0), range [-1, 0)
-		int16_t i_max[SERVO_CONTROLLER_NUM_SERVO];
+		int16_t i_max[AD7928_NUM_SERVO];
 
 		/// @brief Adc init done event handler
 		void (*on_adc_valid)(struct servo_controller_dev_t *dev, void *arg);
@@ -190,8 +176,20 @@ extern "C"
 		/// @brief Motor driver fault event handler
 		void (*on_drv_fault)(struct servo_controller_dev_t *dev, enum Servo_controller_servo_id_t servo_id, void *arg);
 
-		/// @brief Callback argument
-		void *callback_arg;
+		/// @brief on_adc_valid event argument
+		void *on_adc_valid_arg;
+
+		/// @brief on_new_process_arg event argument
+		void *on_new_process_arg;
+
+		/// @brief on_realtime_err_arg event argument
+		void *on_realtime_err_arg;
+
+		/// @brief on_stop_err_arg event argument
+		void *on_stop_err_arg;
+
+		/// @brief on_drv_fault_arg event argument
+		void *on_drv_fault_arg;
 	};
 
 	struct servo_controller_dev_t
@@ -204,7 +202,7 @@ extern "C"
 		struct servo_controller_config_t *const cfg;
 	};
 
-#define SERVO_CONTROLLER_CFG(dev) ((dev)->cfg)
+#define AD7928_CFG(dev) ((dev)->cfg)
 
 	/// @brief Find Servo device by name
 	/// @param name Servo device name
@@ -222,9 +220,9 @@ extern "C"
 	/// @param dev Pointer to servo device
 	/// @return Error code
 	/// @example Configure spi speed, pwm frequency
-	///     SERVO_CONTROLLER_CFG(servo_dev)->spi_speed = 1000000;
-	///     SERVO_CONTROLLER_CFG(servo_dev)->pwm_base_freq = 1000000;
-	///     SERVO_CONTROLLER_CFG(servo_dev)->pwm_freq = 1000;
+	///     AD7928_CFG(servo_dev)->spi_speed = 1000000;
+	///     AD7928_CFG(servo_dev)->pwm_base_freq = 1000000;
+	///     AD7928_CFG(servo_dev)->pwm_freq = 1000;
 	///     servo_controller_apply_configure(servo_dev);
 	int servo_controller_apply_configure(struct servo_controller_dev_t *dev);
 
@@ -244,7 +242,7 @@ extern "C"
 	/// @return Error code
 	/// @example
 	///     void servo_irq_handler(void *arg) {
-	///         int duty[SERVO_CONTROLLER_NUM_SERVO];
+	///         int duty[AD7928_NUM_SERVO];
 	///         // check if new_process_irq occurred
 	///         // caculate new duty cycle
 	///
@@ -252,7 +250,7 @@ extern "C"
 	///     }
 	int servo_controller_update_duty(
 		struct servo_controller_dev_t *dev,
-		int16_t duty[SERVO_CONTROLLER_NUM_SERVO]);
+		int16_t duty[AD7928_NUM_SERVO]);
 
 	/// @brief Get motor postion
 	/// @param dev Pointer to servo device
@@ -260,7 +258,7 @@ extern "C"
 	/// @return Error code
 	int servo_controller_get_position(
 		struct servo_controller_dev_t *dev,
-		int16_t position[SERVO_CONTROLLER_NUM_SERVO]);
+		int16_t position[AD7928_NUM_SERVO]);
 
 	/// @brief Get motor current
 	/// @param dev Pointer to servo device
@@ -268,7 +266,7 @@ extern "C"
 	/// @return Error code
 	int servo_controller_get_current(
 		struct servo_controller_dev_t *dev,
-		int16_t current[SERVO_CONTROLLER_NUM_SERVO]);
+		int16_t current[AD7928_NUM_SERVO]);
 
 	/// @brief Get duty cycle of pwm
 	/// @param dev Pointer to servo device
@@ -276,10 +274,10 @@ extern "C"
 	/// @return Error code
 	int servo_controller_get_duty(
 		struct servo_controller_dev_t *dev,
-		int16_t duty[SERVO_CONTROLLER_NUM_SERVO]);
+		int16_t duty[AD7928_NUM_SERVO]);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // __SERVO_CONTROLLER_H__
+#endif // __AD7928_H__

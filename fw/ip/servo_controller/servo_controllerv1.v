@@ -87,6 +87,7 @@ reg         core_en;
 reg [7:0]   spi_divisor;
 reg         adc_init;
 reg [3:0] filter_level;
+reg [5:0] trig_rate;
 
 // m
 wire  [ADC_WIDTH-1:0]  i0;
@@ -253,7 +254,7 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
 
         SPI_PRES_OFFSET = 4,
         PWM_PRES_OFFSET = 5,
-        PWM_HPERIOD_OFFSET = 6,
+        PWM_TRIG_RATE = 6,
 
         PULSE_MODE0_OFFSET = 7,
         PULSE_MODE1_OFFSET = PULSE_MODE0_OFFSET+1,
@@ -351,12 +352,13 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
                 end 
                 PWM_PRES_OFFSET: begin
                    if (core_en) begin
-                        pwm_prescaler <= writedata;
+                        pwm_prescaler <= writedata[14:0];
+                        half_period <= writedata[30:16];
                    end 
                 end 
-                PWM_HPERIOD_OFFSET: begin
+                PWM_TRIG_RATE: begin
                    if (core_en) begin
-                        half_period <= writedata;
+                        trig_rate <= writedata;
                    end 
                 end 
                 PULSE_MODE0_OFFSET: begin

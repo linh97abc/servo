@@ -51,12 +51,11 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 	prescale = dev->CORE_FREQ / dev->cfg->spi_speed - 1;
 	SERVO_IOWR(dev, SERVO_CONTROLLER_SPI_PRES_OFFSET, prescale);
 
-	servo_controller_reg_PWM_PRES pwm_pres;
-	pwm_pres.field.base_pres = dev->CORE_FREQ / dev->cfg->pwm_base_freq - 1;
-	pwm_pres.field.half_period = dev->cfg->pwm_base_freq/ (dev->cfg->pwm_freq << 1) - 1;
-	SERVO_IOWR(dev, SERVO_CONTROLLER_PWM_PRES_OFFSET, pwm_pres.val);
+	prescale = dev->CORE_FREQ / dev->cfg->pwm_base_freq - 1;
+	SERVO_IOWR(dev, SERVO_CONTROLLER_PWM_PRES_OFFSET, prescale);
 
-	SERVO_IOWR(dev, SERVO_CONTROLLER_PWM_TRIG_RATE_OFFSET, dev->cfg->pwm_trig_rate);
+	prescale = dev->CORE_FREQ / (dev->cfg->pwm_freq << 1) - 1;
+	SERVO_IOWR(dev, SERVO_CONTROLLER_PWM_HPERIOD_OFFSET, prescale);
 
 	SERVO_IOWR(dev, SERVO_CONTROLLER_PULSE_MODE0_OFFSET, dev->cfg->drv_mode[0]);
 	SERVO_IOWR(dev, SERVO_CONTROLLER_PULSE_MODE1_OFFSET, dev->cfg->drv_mode[1]);
@@ -254,61 +253,61 @@ static void servo_controller_irq_handler(void *arg)
 
 	if (flag.val & SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT)
 	{
-		dev->cfg->on_new_process(dev, dev->cfg->callback_arg);
+		dev->cfg->on_new_process(dev, dev->cfg->on_new_process_arg);
 	}
 
 	if (flag.val & ~SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT)
 	{
 		if (flag.val & SERVO_CONTROLLER_FLAG_ADC_VALID_BIT)
 		{
-			dev->cfg->on_adc_valid(dev, dev->cfg->callback_arg);
+			dev->cfg->on_adc_valid(dev, dev->cfg->on_adc_valid_arg);
 			ie.field.adc_valid = 0;
 			SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val);
 		}
 
 		if (flag.val & SERVO_CONTROLLER_FLAG_REALTIME_ERR_BIT)
 		{
-			dev->cfg->on_realtime_err(dev, dev->cfg->callback_arg);
+			dev->cfg->on_realtime_err(dev, dev->cfg->on_realtime_err_arg);
 		}
 
 		if (flag.val & SERVO_CONTROLLER_FLAG_STOP0_BIT)
 		{
-			dev->cfg->on_stop_err(dev, 0, dev->cfg->callback_arg);
+			dev->cfg->on_stop_err(dev, 0, dev->cfg->on_stop_err_arg);
 		}
 
 		if (flag.val & SERVO_CONTROLLER_FLAG_STOP1_BIT)
 		{
-			dev->cfg->on_stop_err(dev, 1, dev->cfg->callback_arg);
+			dev->cfg->on_stop_err(dev, 1, dev->cfg->on_stop_err_arg);
 		}
 
 		if (flag.val & SERVO_CONTROLLER_FLAG_STOP2_BIT)
 		{
-			dev->cfg->on_stop_err(dev, 2, dev->cfg->callback_arg);
+			dev->cfg->on_stop_err(dev, 2, dev->cfg->on_stop_err_arg);
 		}
 
 		if (flag.val & SERVO_CONTROLLER_FLAG_STOP3_BIT)
 		{
-			dev->cfg->on_stop_err(dev, 3, dev->cfg->callback_arg);
+			dev->cfg->on_stop_err(dev, 3, dev->cfg->on_stop_err_arg);
 		}
 
 		if (flag.val & SERVO_CONTROLLER_FLAG_DRV8320_FAULT0_BIT)
 		{
-			dev->cfg->on_drv_fault(dev, 0, dev->cfg->callback_arg);
+			dev->cfg->on_drv_fault(dev, 0, dev->cfg->on_drv_fault_arg);
 		}
 
 		if (flag.val & SERVO_CONTROLLER_FLAG_DRV8320_FAULT1_BIT)
 		{
-			dev->cfg->on_drv_fault(dev, 1, dev->cfg->callback_arg);
+			dev->cfg->on_drv_fault(dev, 1, dev->cfg->on_drv_fault_arg);
 		}
 
 		if (flag.val & SERVO_CONTROLLER_FLAG_DRV8320_FAULT2_BIT)
 		{
-			dev->cfg->on_drv_fault(dev, 2, dev->cfg->callback_arg);
+			dev->cfg->on_drv_fault(dev, 2, dev->cfg->on_drv_fault_arg);
 		}
 
 		if (flag.val & SERVO_CONTROLLER_FLAG_DRV8320_FAULT3_BIT)
 		{
-			dev->cfg->on_drv_fault(dev, 3, dev->cfg->callback_arg);
+			dev->cfg->on_drv_fault(dev, 3, dev->cfg->on_drv_fault_arg);
 		}
 
 		SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET, 0xFFFFFFFFu);
