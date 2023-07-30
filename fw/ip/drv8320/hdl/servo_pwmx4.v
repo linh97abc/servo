@@ -35,44 +35,43 @@ output reg measurement_trigger;
 output reg [3:0] pwmx4;
 output reg [3:0] pwmx4_n;
 
-reg [DWIDTH-1:0] pwm_cnt;
-reg pwm_stage;
 reg [DWIDTH-1:0] reg_duty0;
 reg [DWIDTH-1:0] reg_duty1;
 reg [DWIDTH-1:0] reg_duty2;
 reg [DWIDTH-1:0] reg_duty3;
 
+reg pwm_stage;
+reg ovverun;
+
+reg [DWIDTH-1:0] pwm_cnt;
+wire [DWIDTH-1:0] pwm_cnt_next;
 reg [7:0] clk_cnt;
+reg [5:0] trig_level_cnt;
+
+
+
 assign clk_pwm = (clk_cnt == prescaler)? 1'b1: 1'b0;
 
 
-wire ovverun;
-reg ovverun_last;
-wire [DWIDTH-1:0] pwm_cnt_next;
-assign ovverun = (pwm_cnt_next == half_period)? 1'b1: 1'b0;
 
-
-reg [5:0] trig_level_cnt;
 
 always @(posedge clk) begin
     if (~reset_n) begin
         clk_cnt <= 0;
         measurement_trigger <= 1'b0;
-        ovverun_last <= 1'b0;
         trig_level_cnt <= 0;
     end else begin
-        ovverun_last <= ovverun;
 
         if (trig_rate == 0) begin
-            measurement_trigger <= ovverun & ~ovverun_last;
+            measurement_trigger <= ovverun;
         end else begin
             if (trig_level_cnt == trig_rate) begin
                 trig_level_cnt <= 0;
                 measurement_trigger <= 1'b1;
             end else begin
                 measurement_trigger <= 1'b0;
-                if (ovverun & ~ovverun_last) begin
-                        trig_level_cnt <= trig_level_cnt + 1'b1;
+                if (ovverun) begin
+                    trig_level_cnt <= trig_level_cnt + 1'b1;
                 end
             end
             
@@ -124,6 +123,8 @@ always @(posedge clk or negedge reset_n) begin
         reg_duty2 <= 0;
         reg_duty3 <= 0;
     end else begin
+        ovverun <= 1'b0;
+
         if(core_en) begin
             
             if (clk_pwm) begin
@@ -143,6 +144,7 @@ always @(posedge clk or negedge reset_n) begin
                     reg_duty1 <= d1;
                     reg_duty2 <= d2;
                     reg_duty3 <= d3;
+                    ovverun <= 1'b1;
                 end
                 
             end
