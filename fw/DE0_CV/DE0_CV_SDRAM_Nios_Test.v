@@ -135,7 +135,8 @@ wire [5:0] SV4_PHASE;
 wire [3:0] SV_NFAULT;
 wire [3:0] DRV8320_EN;
 
-wire TMP_SCL;
+wire TMP_SCL_T;
+wire TMP_SCL_I;
 wire TMP_SDA_T;
 wire TMP_SDA_I;
 
@@ -203,8 +204,9 @@ assign GPIO_1[29] = SV4_PHASE[0];
 
 assign SV_NFAULT = {GPIO_1[31], GPIO_1[15], GPIO_1[30], GPIO_1[14]};
 
-assign GPIO_0[33] = TMP_SCL;
+assign GPIO_0[33] = TMP_SCL_T? 1'bz: 1'b0;
 assign GPIO_0[35] = TMP_SDA_T? 1'bz: 1'b0;
+assign TMP_SCL_I = GPIO_0[33];
 assign TMP_SDA_I = GPIO_0[35];
 
 //=======================================================
@@ -237,6 +239,10 @@ DE0_CV_QSYS u0(
             .servo_controllerv1_0_conduit_end_nFault(SV_NFAULT),     //                                 .nFault
 		.servo_controllerv1_0_conduit_end_drv8320_en(DRV8320_EN), //                                 .drv8320_en
 
+		.tmp101_i2c_sda_t                            (TMP_SDA_T),                            //                       tmp101_i2c.sda_t
+		.tmp101_i2c_scl_t                            (TMP_SCL_T,                            //                                 .scl_t
+		.tmp101_i2c_sda_i                            (TMP_SDA_I),                            //                                 .sda_i
+		.tmp101_i2c_scl_i                            (TMP_SCL_I)                             //  
             // .avl_drv8320_0_conduit_end_hall_0(GPIO_0[8:6]),     // avl_drv8320_0_conduit_end.hall_0
 		// .avl_drv8320_0_conduit_end_hall_1(GPIO_0[11:9]),     //                          .hall_1
 		// .avl_drv8320_0_conduit_end_hall_2(GPIO_0[14:12]),     //                          .hall_2

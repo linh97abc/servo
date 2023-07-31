@@ -273,6 +273,22 @@
          type = "String";
       }
    }
+   element DE0_CV_QSYS
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element DE0_CV_QSYS
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
    element avl_drv8320_0
    {
       datum _sortIndex
@@ -325,7 +341,7 @@
    {
       datum baseAddress
       {
-         value = "67182952";
+         value = "67183016";
          type = "String";
       }
    }
@@ -410,7 +426,7 @@
    {
       datum baseAddress
       {
-         value = "67182944";
+         value = "67183008";
          type = "String";
       }
    }
@@ -466,7 +482,7 @@
    {
       datum baseAddress
       {
-         value = "67182912";
+         value = "67182976";
          type = "String";
       }
    }
@@ -482,7 +498,23 @@
    {
       datum baseAddress
       {
-         value = "67182848";
+         value = "67182912";
+         type = "String";
+      }
+   }
+   element tmp101
+   {
+      datum _sortIndex
+      {
+         value = "16";
+         type = "int";
+      }
+   }
+   element tmp101.s1
+   {
+      datum baseAddress
+      {
+         value = "67182720";
          type = "String";
       }
    }
@@ -498,7 +530,7 @@
    {
       datum baseAddress
       {
-         value = "67182720";
+         value = "67182784";
          type = "String";
       }
    }
@@ -514,7 +546,7 @@
    {
       datum baseAddress
       {
-         value = "67182784";
+         value = "67182848";
          type = "String";
       }
    }
@@ -550,6 +582,7 @@
    internal="servo_controllerv1_0.conduit_end"
    type="conduit"
    dir="end" />
+ <interface name="tmp101_i2c" internal="tmp101.i2c" type="conduit" dir="end" />
  <interface
    name="uart_debug_conduit_end"
    internal="uart_debug.conduit_end"
@@ -626,7 +659,7 @@
   <parameter name="dataAddrWidth" value="27" />
   <parameter name="dataMasterHighPerformanceAddrWidth" value="1" />
   <parameter name="dataMasterHighPerformanceMapParam" value="" />
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x0' end='0x4000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='tc_instruct_mem.s2' start='0x4000000' end='0x4008000' type='altera_avalon_onchip_memory2.s2' /><slave name='epcs_flash_controller_0.epcs_control_port' start='0x4011000' end='0x4011800' type='altera_avalon_epcs_flash_controller.epcs_control_port' /><slave name='nios2_qsys.debug_mem_slave' start='0x4011800' end='0x4012000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='servo_controllerv1_0.avalon_slave_0' start='0x4012000' end='0x4012080' type='servo_controllerv1.avalon_slave_0' /><slave name='uart_debug.s1' start='0x4012080' end='0x40120C0' type='avl_fifo_uart.s1' /><slave name='uart_rs485.s1' start='0x40120C0' end='0x4012100' type='avl_fifo_uart.s1' /><slave name='timestamp.s1' start='0x4012100' end='0x4012140' type='altera_avalon_timer.s1' /><slave name='timer.s1' start='0x4012140' end='0x4012160' type='altera_avalon_timer.s1' /><slave name='sysid_qsys.control_slave' start='0x4012160' end='0x4012168' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x4012168' end='0x4012170' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x0' end='0x4000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='tc_instruct_mem.s2' start='0x4000000' end='0x4008000' type='altera_avalon_onchip_memory2.s2' /><slave name='epcs_flash_controller_0.epcs_control_port' start='0x4011000' end='0x4011800' type='altera_avalon_epcs_flash_controller.epcs_control_port' /><slave name='nios2_qsys.debug_mem_slave' start='0x4011800' end='0x4012000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='servo_controllerv1_0.avalon_slave_0' start='0x4012000' end='0x4012080' type='servo_controllerv1.avalon_slave_0' /><slave name='tmp101.s1' start='0x4012080' end='0x40120C0' type='avl_tmp101.s1' /><slave name='uart_debug.s1' start='0x40120C0' end='0x4012100' type='avl_fifo_uart.s1' /><slave name='uart_rs485.s1' start='0x4012100' end='0x4012140' type='avl_fifo_uart.s1' /><slave name='timestamp.s1' start='0x4012140' end='0x4012180' type='altera_avalon_timer.s1' /><slave name='timer.s1' start='0x4012180' end='0x40121A0' type='altera_avalon_timer.s1' /><slave name='sysid_qsys.control_slave' start='0x40121A0' end='0x40121A8' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x40121A8' end='0x40121B0' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
   <parameter name="data_master_high_performance_paddr_base" value="0" />
   <parameter name="data_master_high_performance_paddr_size" value="0" />
   <parameter name="data_master_paddr_base" value="0" />
@@ -1142,6 +1175,12 @@
   <parameter name="timeoutPulseOutput" value="false" />
   <parameter name="watchdogPulse" value="2" />
  </module>
+ <module name="tmp101" kind="avl_tmp101" version="1.0" enabled="1">
+  <parameter name="BUS_CLK" value="100000" />
+  <parameter name="FREQ_CLK" value="100000000" />
+  <parameter name="I2C_ADDR" value="0" />
+  <parameter name="UPDATE_FREQ" value="2" />
+ </module>
  <module name="uart_debug" kind="avl_fifo_uart" version="1.0" enabled="1">
   <parameter name="BAUDRATE" value="921600" />
   <parameter name="C_RX_THRESHOLD" value="32" />
@@ -1172,7 +1211,7 @@
    start="nios2_qsys.data_master"
    end="jtag_uart.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04012168" />
+  <parameter name="baseAddress" value="0x040121a8" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1190,7 +1229,7 @@
    start="nios2_qsys.data_master"
    end="sysid_qsys.control_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04012160" />
+  <parameter name="baseAddress" value="0x040121a0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1217,7 +1256,7 @@
    start="nios2_qsys.data_master"
    end="timer.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04012140" />
+  <parameter name="baseAddress" value="0x04012180" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1235,7 +1274,7 @@
    start="nios2_qsys.data_master"
    end="timestamp.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04012100" />
+  <parameter name="baseAddress" value="0x04012140" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1244,7 +1283,7 @@
    start="nios2_qsys.data_master"
    end="uart_rs485.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x040120c0" />
+  <parameter name="baseAddress" value="0x04012100" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1253,7 +1292,7 @@
    start="nios2_qsys.data_master"
    end="uart_debug.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04012080" />
+  <parameter name="baseAddress" value="0x040120c0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1263,6 +1302,15 @@
    end="avl_drv8320_0.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x04012000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="nios2_qsys.data_master"
+   end="tmp101.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x04012080" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1357,6 +1405,7 @@
    version="18.1"
    start="pll.outclk0"
    end="avl_drv8320_0.clock" />
+ <connection kind="clock" version="18.1" start="pll.outclk0" end="tmp101.clock" />
  <connection
    kind="interrupt"
    version="18.1"
@@ -1491,6 +1540,11 @@
    kind="reset"
    version="18.1"
    start="clk_50.clk_reset"
+   end="tmp101.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="clk_50.clk_reset"
    end="tc_instruct_mem.reset1" />
  <connection
    kind="reset"
@@ -1532,6 +1586,11 @@
    version="18.1"
    start="nios2_qsys.debug_reset_request"
    end="avl_drv8320_0.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="nios2_qsys.debug_reset_request"
+   end="tmp101.reset" />
  <connection
    kind="reset"
    version="18.1"
