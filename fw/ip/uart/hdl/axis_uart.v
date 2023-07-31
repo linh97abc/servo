@@ -128,7 +128,7 @@ assign err = {rx_start_err, stop_err, parity_err, overrun_err};
     uart_sfifo_nopipe
         #(
         .DATA_BIT(DATA_BIT),
-        .ADDR_BIT(RX_FIFO_DEPTH)
+        .ADDR_BIT(TX_FIFO_DEPTH)
 
         )
         tx_buff

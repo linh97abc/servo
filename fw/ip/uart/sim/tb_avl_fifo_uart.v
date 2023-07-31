@@ -2,14 +2,17 @@
 module tb_avl_fifo_uart;
 
     parameter CLK_FREQ_HZ  = 100_000_000;
-    parameter BAUDRATE  = 3_000_000;
+    // parameter BAUDRATE  = 3_000_000;
+
+    parameter BAUDRATE  = 921600;
+
     // parameter [15:0] BAUDRATE  = 16'd200_000;
     parameter [15:0] RX_TIMEOUT_US = 100;
     parameter DATA_BIT  = 8; // number of bits in a word
-    parameter [1:0] PARITY_BIT         = 2;                   // 00,01 <=> NONE, 11 <=> Odd, 10 <=> Even
+    parameter [1:0] PARITY_BIT         = 0;                   // 00,01 <=> NONE, 11 <=> Odd, 10 <=> Even
     parameter [1:0] STOP_BIT           = 0;                    // 0 <=> 1 bit, 1 <=> 1,5 bit, 2 <=> 2 bit
     parameter RX_FIFO_DEPTH  = 4;
-    parameter TX_FIFO_DEPTH  = 4;
+    parameter TX_FIFO_DEPTH  = 5;
 
     parameter OVERSAMPLING_RATE = 4;
     parameter RX_TIMEOUT_WORD = 4; // in os_tick

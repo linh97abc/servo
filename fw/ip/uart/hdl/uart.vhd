@@ -63,22 +63,33 @@ ARCHITECTURE logic OF uart IS
   SIGNAL tx_parity    :  STD_LOGIC_VECTOR(d_width DOWNTO 0);  --calculation of transmit parity
   SIGNAL rx_buffer    :  STD_LOGIC_VECTOR(parity+d_width DOWNTO 0) := (OTHERS => '0');   --values received
   SIGNAL tx_buffer    :  STD_LOGIC_VECTOR(parity+d_width+1 DOWNTO 0) := (OTHERS => '1'); --values to be transmitted
+
+  -- SIGNAL debug_rx_sample: INTEGER;
 BEGIN
 
   --generate clock enable pulses at the baud rate and the oversampling rate
   PROCESS(reset_n, clk)
     -- VARIABLE count_baud :  INTEGER RANGE 0 TO clk_freq/baud_rate-1 := 0;         --counter to determine baud rate period
     -- VARIABLE count_os   :  INTEGER RANGE 0 TO clk_freq/baud_rate/os_rate-1 := 0; --counter to determine oversampling period
+    CONSTANT  oversampling_max     :  INTEGER := 2**os_rate-1;                      --number of clocks in one pwm period
 
     VARIABLE count_baud :  INTEGER RANGE 0 TO 65536 := 0;         --counter to determine baud rate period
     VARIABLE count_os   :  INTEGER RANGE 0 TO 65536 := 0; --counter to determine oversampling period
+    VARIABLE count_os_max   :  INTEGER RANGE 0 TO 65536 := 0; --counter to determine oversampling period
+    VARIABLE os_pulse_cnt : INTEGER RANGE 0 TO oversampling_max;
   BEGIN
     IF(reset_n = '0') THEN                            --asynchronous reset asserted
       baud_pulse <= '0';                                --reset baud rate pulse
       os_pulse <= '0';                                  --reset oversampling rate pulse
       count_baud := 0;                                  --reset baud period counter
       count_os := 0;                                    --reset oversampling period counter
+      os_pulse_cnt := 0;
     ELSIF(clk'EVENT AND clk = '1') THEN
+      IF (baud_pres(os_rate-1) = '1') THEN
+        count_os_max := conv_integer(baud_pres(15 DOWNTO os_rate));
+      ELSE
+        count_os_max := conv_integer(baud_pres(15 DOWNTO os_rate)) - 1;
+      END  IF;
       --create baud enable pulse
       IF(count_baud < conv_integer(baud_pres)-1) THEN        --baud period not reached
         count_baud := count_baud + 1;                     --increment baud period counter
@@ -89,13 +100,28 @@ BEGIN
         count_os := 0;                                    --reset oversampling period counter to avoid cumulative error
       END IF;
       --create oversampling enable pulse
-      IF(count_os < conv_integer(baud_pres(15 DOWNTO os_rate))-1) THEN  --oversampling period not reached
+      IF(count_os < count_os_max) THEN  --oversampling period not reached
         count_os := count_os + 1;                         --increment oversampling period counter
-        os_pulse <= '0';                                  --deassert oversampling rate pulse    
+        -- os_pulse <= '0';                                  --deassert oversampling rate pulse    
       ELSE                                              --oversampling period reached
         count_os := 0;                                    --reset oversampling period counter
-        os_pulse <= '1';                                  --assert oversampling pulse
+        -- os_pulse <= '1';                                  --assert oversampling pulse
       END IF;
+
+      IF (count_baud = conv_integer(baud_pres)-1) THEN
+      os_pulse <= '1';
+      os_pulse_cnt := 0;
+      ELSIF (count_os = count_os_max) THEN
+        IF (os_pulse_cnt < oversampling_max) THEN
+          os_pulse <= '1';                                  --assert oversampling rate pulse  
+          os_pulse_cnt := os_pulse_cnt + 1;
+          ELSE
+          os_pulse <= '0';
+          END IF;
+      ELSE
+      os_pulse <= '0';                                  --deassert oversampling rate pulse  
+      END IF;
+
     END IF;
   END PROCESS;
 
@@ -148,6 +174,7 @@ BEGIN
             rx_state <= idle;                                      --return to idle state
           END IF;
       END CASE;
+      -- debug_rx_sample <= os_count;
     END IF;
   END PROCESS;
     

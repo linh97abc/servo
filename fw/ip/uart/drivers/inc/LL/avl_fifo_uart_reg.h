@@ -45,6 +45,6 @@
 #define FIFO_UART_FLAG_RX_IDLE (1u << 0)
 
 #define FIFO_UART_RX_REG_VALID (1u << 31)
-#define FIFO_UART_RX_REG_EMPTY (1u << 31)
+#define FIFO_UART_RX_REG_EMPTY (1u << 30)
 
 #endif

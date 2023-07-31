@@ -165,67 +165,9 @@ module DE0_NANO_SDRAM_Nios_Test (
   inout [33:0] GPIO_1_D;
   input [1:0] GPIO_1_IN;
 
-  wire unused, un2;
-  wire [ 7:0] pio_w5x00_external_connection_export;
-  wire [15:0] pio_missile_id_external_connection_export;
 
-  assign GPIO_0_D[7] = pio_w5x00_external_connection_export[1];
-  assign GPIO_0_D[3]  = pio_w5x00_external_connection_export[0];
-  assign LED[0]       = pio_w5x00_external_connection_export[0];
-  assign LED[1]       = pio_w5x00_external_connection_export[1];
-  assign LED[2]       = pio_w5x00_external_connection_export[2];
-
-  wire [15:0] debouncing_0_conduit_end_d_in;
-  // assign pio_missile_id_external_connection_export = {6'b0, SW};
-  assign debouncing_0_conduit_end_d_in = {
-    GPIO_0_D[8],
-    GPIO_0_D[12],
-    GPIO_0_D[16],
-    GPIO_0_D[20],
-    GPIO_0_D[24],
-    GPIO_0_D[28],
-    GPIO_0_D[31],
-    GPIO_0_D[33],
-    GPIO_0_D[9],
-    GPIO_0_D[10],
-    GPIO_0_D[14],
-    GPIO_0_D[18],
-    GPIO_0_D[22],
-    GPIO_0_D[26],
-    GPIO_0_D[30],
-    GPIO_0_D[32]
-  };
-
-  wire [15:0] misile_id_emu_external_connection_export;
-
- // assign {
- //   GPIO_1_D[18],
- //   GPIO_1_D[20],
- //   GPIO_1_D[22],
- //   GPIO_1_D[24],
- //   GPIO_1_D[26],
- //   GPIO_1_D[28],
- //   GPIO_1_D[30],
- //  GPIO_1_D[32],
- //   GPIO_0_D[18],
- //   GPIO_0_D[20],
- //   GPIO_0_D[22],
- //   GPIO_0_D[24],
- //   GPIO_0_D[26],
- //   GPIO_0_D[28],
- //   GPIO_0_D[30],
- //   GPIO_0_D[32]
- // } = misile_id_emu_external_connection_export;
-
-  wire uart_selector_0_side_b_0_txd;
-  wire uart_selector_0_side_b_0_rxd;
-  wire uart_selector_0_side_b_1_txd;
-  wire uart_selector_0_side_b_1_rxd;
-  
-  assign uart_selector_0_side_b_0_rxd = GPIO_0_D[2];
-  assign uart_selector_0_side_b_1_rxd = GPIO_0_D[6];
-  // assign GPIO_0_IN[1] = uart_selector_0_side_b_1_txd;
-  assign GPIO_0_D[4] = uart_selector_0_side_b_1_txd;
+wire UART_LOOPBACK;
+wire UART_DEBUG_PULSE;
 
   DE0_NANO_QSYS u0 (
       .clk_clk                     (CLOCK_50),    //                      clk.clk
@@ -242,27 +184,15 @@ module DE0_NANO_SDRAM_Nios_Test (
       .sdram_wire_ras_n            (DRAM_RAS_N),  //                         .ras_n
       .sdram_wire_we_n             (DRAM_WE_N),   //                         .we_n
 
-      .spi_w5x00_external_MISO(GPIO_0_IN[0]),  //                   spi_0_external.MISO
-      .spi_w5x00_external_MOSI(GPIO_0_D[1]),  //                                 .MOSI
-      .spi_w5x00_external_SCLK(GPIO_0_D[0]),  //                                 .SCLK
-      .spi_w5x00_external_SS_n(unused),       //                                 .SS_n
-
-      .pio_w5x00_external_connection_export (pio_w5x00_external_connection_export), // w5x00_cs_rst_external_connection.export
-      .pio_missile_id_external_connection_export    (pio_missile_id_external_connection_export),     //    w5x00_int_external_connection.export
-
-      .debouncing_0_conduit_end_d_in (debouncing_0_conduit_end_d_in),
-      .debouncing_0_conduit_end_d_out(pio_missile_id_external_connection_export),
-
-      .uart_selector_0_side_b_0_txd(uart_selector_0_side_b_0_txd),
-      .uart_selector_0_side_b_0_rxd(uart_selector_0_side_b_0_rxd),
-      .uart_selector_0_side_b_1_txd(uart_selector_0_side_b_1_txd),
-      .uart_selector_0_side_b_1_rxd(uart_selector_0_side_b_1_rxd),
-
       .epcs_flash_controller_0_external_dclk(EPCS_DCLK),  //   epcs_flash_controller_0_external.dclk
       .epcs_flash_controller_0_external_sce(EPCS_NCSO),  //                                   .sce
       .epcs_flash_controller_0_external_sdo(EPCS_ASDO),  //                                   .sdo
       .epcs_flash_controller_0_external_data0(EPCS_DATA0),  //  
-      .misile_id_emu_external_connection_export(misile_id_emu_external_connection_export)
+
+
+      .avl_fifo_uart_0_conduit_end_rxd          (UART_LOOPBACK),          //      avl_fifo_uart_0_conduit_end.rxd
+		  .avl_fifo_uart_0_conduit_end_txd          (UART_LOOPBACK),          //                                 .txd
+		  .avl_fifo_uart_0_conduit_end_dbg_os_pulse (UART_DEBUG_PULSE)  //                                 .dbg_os_pulse
   );
 
 
