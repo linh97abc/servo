@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Jul 25, 2023 10:19:42 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1690298382130</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Jul 31, 2023 9:19:07 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1690813147853</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\Project\outsource\DE0_CV_SDRAM_Nios_Test\sw\servo_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\fw\DE0_CV_QSYS.sopcinfo</SopcDesignFile>
@@ -386,7 +386,7 @@
                 <SettingName>hal.make.bsp_cflags_optimization</SettingName>
                 <Identifier>BSP_CFLAGS_OPTIMIZATION</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>-O0</Value>
+                <Value>-O2</Value>
                 <DefaultValue>-O0</DefaultValue>
                 <DestinationFile>makefile_variable</DestinationFile>
                 <Description>C/C++ compiler optimization level. "-O0" = no optimization,"-O2" = "normal" optimization, etc. "-O0" is recommended for code that you want to debug since compiler optimization can remove variables and produce non-sequential execution of code while debugging. This setting defines the value of BSP_CFLAGS_OPTIMIZATION in Makefile.</Description>
@@ -1745,56 +1745,68 @@
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>onchip_memory2</slaveDescriptor>
-                <addressRange>0x04010000 - 0x0401FFFF</addressRange>
-                <addressSpan>65536</addressSpan>
+                <slaveDescriptor>tc_instruct_mem</slaveDescriptor>
+                <addressRange>0x04000000 - 0x04007FFF</addressRange>
+                <addressSpan>32768</addressSpan>
+                <attributes>memory</attributes>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>tc_data_mem</slaveDescriptor>
+                <addressRange>0x04008000 - 0x0400FFFF</addressRange>
+                <addressSpan>32768</addressSpan>
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>epcs_flash_controller_0</slaveDescriptor>
-                <addressRange>0x04021000 - 0x040217FF</addressRange>
+                <addressRange>0x04011000 - 0x040117FF</addressRange>
                 <addressSpan>2048</addressSpan>
                 <attributes>flash, memory, non-volatile</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>avl_drv8320_0</slaveDescriptor>
-                <addressRange>0x04022000 - 0x0402207F</addressRange>
+                <slaveDescriptor>servo_controllerv1_0</slaveDescriptor>
+                <addressRange>0x04012000 - 0x0401207F</addressRange>
                 <addressSpan>128</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
+                <slaveDescriptor>tmp101</slaveDescriptor>
+                <addressRange>0x04012080 - 0x040120BF</addressRange>
+                <addressSpan>64</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
                 <slaveDescriptor>uart_debug</slaveDescriptor>
-                <addressRange>0x04022100 - 0x0402213F</addressRange>
+                <addressRange>0x040120C0 - 0x040120FF</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>uart_rs485</slaveDescriptor>
-                <addressRange>0x04022140 - 0x0402217F</addressRange>
+                <addressRange>0x04012100 - 0x0401213F</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timestamp</slaveDescriptor>
-                <addressRange>0x04022180 - 0x040221BF</addressRange>
+                <addressRange>0x04012140 - 0x0401217F</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timer</slaveDescriptor>
-                <addressRange>0x040221C0 - 0x040221DF</addressRange>
+                <addressRange>0x04012180 - 0x0401219F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid_qsys</slaveDescriptor>
-                <addressRange>0x040221E0 - 0x040221E7</addressRange>
+                <addressRange>0x040121A0 - 0x040121A7</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart</slaveDescriptor>
-                <addressRange>0x040221E8 - 0x040221EF</addressRange>
+                <addressRange>0x040121A8 - 0x040121AF</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
@@ -1820,6 +1832,6 @@
         </LinkerSection>
         <LinkerSection>
                 <sectionName>.stack</sectionName>
-                <regionName>sdram</regionName>
+                <regionName>tc_data_mem</regionName>
         </LinkerSection>
 </sch:Settings>
