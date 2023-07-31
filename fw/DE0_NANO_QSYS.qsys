@@ -37,7 +37,7 @@
    {
       datum baseAddress
       {
-         value = "67149984";
+         value = "67125472";
          type = "String";
       }
    }
@@ -53,7 +53,23 @@
    {
       datum baseAddress
       {
-         value = "67149824";
+         value = "67125312";
+         type = "String";
+      }
+   }
+   element avl_fifo_uart_1
+   {
+      datum _sortIndex
+      {
+         value = "11";
+         type = "int";
+      }
+   }
+   element avl_fifo_uart_1.s1
+   {
+      datum baseAddress
+      {
+         value = "67125248";
          type = "String";
       }
    }
@@ -77,7 +93,7 @@
    {
       datum baseAddress
       {
-         value = "67145728";
+         value = "67121152";
          type = "String";
       }
    }
@@ -93,7 +109,7 @@
    {
       datum baseAddress
       {
-         value = "67150008";
+         value = "67125496";
          type = "String";
       }
    }
@@ -109,7 +125,7 @@
    {
       datum baseAddress
       {
-         value = "67147776";
+         value = "67123200";
          type = "String";
       }
    }
@@ -165,7 +181,7 @@
    {
       datum baseAddress
       {
-         value = "67150000";
+         value = "67125488";
          type = "String";
       }
    }
@@ -181,7 +197,7 @@
    {
       datum baseAddress
       {
-         value = "67149952";
+         value = "67125440";
          type = "String";
       }
    }
@@ -197,7 +213,7 @@
    {
       datum baseAddress
       {
-         value = "67149888";
+         value = "67125376";
          type = "String";
       }
    }
@@ -237,6 +253,11 @@
  <interface
    name="avl_fifo_uart_0_conduit_end"
    internal="avl_fifo_uart_0.conduit_end"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="avl_fifo_uart_1_conduit_end"
+   internal="avl_fifo_uart_1.conduit_end"
    type="conduit"
    dir="end" />
  <interface name="clk" internal="clk_50.clk_in" type="clock" dir="end" />
@@ -424,7 +445,19 @@
   <parameter name="RX_FIFO_DEPTH" value="8" />
   <parameter name="RX_TIMEOUT_WORD" value="4" />
   <parameter name="STOP_BIT" value="0" />
-  <parameter name="TX_FIFO_DEPTH" value="12" />
+  <parameter name="TX_FIFO_DEPTH" value="8" />
+ </module>
+ <module name="avl_fifo_uart_1" kind="avl_fifo_uart" version="1.0" enabled="1">
+  <parameter name="BAUDRATE" value="921600" />
+  <parameter name="C_RX_THRESHOLD" value="32" />
+  <parameter name="DATA_BIT" value="8" />
+  <parameter name="FREQ_CLK" value="100000000" />
+  <parameter name="OVERSAMPLING_RATE" value="4" />
+  <parameter name="PARITY_BIT" value="0" />
+  <parameter name="RX_FIFO_DEPTH" value="8" />
+  <parameter name="RX_TIMEOUT_WORD" value="4" />
+  <parameter name="STOP_BIT" value="0" />
+  <parameter name="TX_FIFO_DEPTH" value="8" />
  </module>
  <module name="clk_50" kind="clock_source" version="18.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
@@ -483,7 +516,7 @@
   <parameter name="dataAddrWidth" value="27" />
   <parameter name="dataMasterHighPerformanceAddrWidth" value="1" />
   <parameter name="dataMasterHighPerformanceMapParam" value="" />
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x2000000' end='0x4000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='onchip_memory2_0.s2' start='0x4000000' end='0x4002000' type='altera_avalon_onchip_memory2.s2' /><slave name='epcs_flash_controller_0.epcs_control_port' start='0x4009000' end='0x4009800' type='altera_avalon_epcs_flash_controller.epcs_control_port' /><slave name='nios2_qsys.debug_mem_slave' start='0x4009800' end='0x400A000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='avl_fifo_uart_0.s1' start='0x400A000' end='0x400A040' type='avl_fifo_uart.s1' /><slave name='timestamp.s1' start='0x400A040' end='0x400A080' type='altera_avalon_timer.s1' /><slave name='timer.s1' start='0x400A080' end='0x400A0A0' type='altera_avalon_timer.s1' /><slave name='altpll.pll_slave' start='0x400A0A0' end='0x400A0B0' type='altpll.pll_slave' /><slave name='sysid_qsys.control_slave' start='0x400A0B0' end='0x400A0B8' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x400A0B8' end='0x400A0C0' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x2000000' end='0x4000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='onchip_memory2_0.s2' start='0x4000000' end='0x4002000' type='altera_avalon_onchip_memory2.s2' /><slave name='epcs_flash_controller_0.epcs_control_port' start='0x4003000' end='0x4003800' type='altera_avalon_epcs_flash_controller.epcs_control_port' /><slave name='nios2_qsys.debug_mem_slave' start='0x4003800' end='0x4004000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='avl_fifo_uart_1.s1' start='0x4004000' end='0x4004040' type='avl_fifo_uart.s1' /><slave name='avl_fifo_uart_0.s1' start='0x4004040' end='0x4004080' type='avl_fifo_uart.s1' /><slave name='timestamp.s1' start='0x4004080' end='0x40040C0' type='altera_avalon_timer.s1' /><slave name='timer.s1' start='0x40040C0' end='0x40040E0' type='altera_avalon_timer.s1' /><slave name='altpll.pll_slave' start='0x40040E0' end='0x40040F0' type='altpll.pll_slave' /><slave name='sysid_qsys.control_slave' start='0x40040F0' end='0x40040F8' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x40040F8' end='0x4004100' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
   <parameter name="data_master_high_performance_paddr_base" value="0" />
   <parameter name="data_master_high_performance_paddr_size" value="0" />
   <parameter name="data_master_paddr_base" value="0" />
@@ -522,14 +555,14 @@
   <parameter name="icache_tagramBlockType" value="Automatic" />
   <parameter name="impl" value="Fast" />
   <parameter name="instAddrWidth" value="27" />
-  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x2000000' end='0x4000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='epcs_flash_controller_0.epcs_control_port' start='0x4009000' end='0x4009800' type='altera_avalon_epcs_flash_controller.epcs_control_port' /><slave name='nios2_qsys.debug_mem_slave' start='0x4009800' end='0x400A000' type='altera_nios2_gen2.debug_mem_slave' /></address-map>]]></parameter>
+  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x2000000' end='0x4000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='epcs_flash_controller_0.epcs_control_port' start='0x4003000' end='0x4003800' type='altera_avalon_epcs_flash_controller.epcs_control_port' /><slave name='nios2_qsys.debug_mem_slave' start='0x4003800' end='0x4004000' type='altera_nios2_gen2.debug_mem_slave' /></address-map>]]></parameter>
   <parameter name="instructionMasterHighPerformanceAddrWidth" value="1" />
   <parameter name="instructionMasterHighPerformanceMapParam" value="" />
   <parameter name="instruction_master_high_performance_paddr_base" value="0" />
   <parameter name="instruction_master_high_performance_paddr_size" value="0" />
   <parameter name="instruction_master_paddr_base" value="0" />
   <parameter name="instruction_master_paddr_size" value="0" />
-  <parameter name="internalIrqMaskSystemInfo" value="31" />
+  <parameter name="internalIrqMaskSystemInfo" value="63" />
   <parameter name="io_regionbase" value="0" />
   <parameter name="io_regionsize" value="0" />
   <parameter name="master_addr_map" value="false" />
@@ -743,7 +776,7 @@
    start="nios2_qsys.data_master"
    end="jtag_uart.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0400a0b8" />
+  <parameter name="baseAddress" value="0x040040f8" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -752,7 +785,7 @@
    start="nios2_qsys.data_master"
    end="sysid_qsys.control_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0400a0b0" />
+  <parameter name="baseAddress" value="0x040040f0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -761,7 +794,7 @@
    start="nios2_qsys.data_master"
    end="nios2_qsys.debug_mem_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04009800" />
+  <parameter name="baseAddress" value="0x04003800" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -770,7 +803,7 @@
    start="nios2_qsys.data_master"
    end="epcs_flash_controller_0.epcs_control_port">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04009000" />
+  <parameter name="baseAddress" value="0x04003000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -779,7 +812,7 @@
    start="nios2_qsys.data_master"
    end="altpll.pll_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0400a0a0" />
+  <parameter name="baseAddress" value="0x040040e0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -788,7 +821,7 @@
    start="nios2_qsys.data_master"
    end="timer.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0400a080" />
+  <parameter name="baseAddress" value="0x040040c0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -806,7 +839,7 @@
    start="nios2_qsys.data_master"
    end="timestamp.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0400a040" />
+  <parameter name="baseAddress" value="0x04004080" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -815,7 +848,16 @@
    start="nios2_qsys.data_master"
    end="avl_fifo_uart_0.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0400a000" />
+  <parameter name="baseAddress" value="0x04004040" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="nios2_qsys.data_master"
+   end="avl_fifo_uart_1.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x04004000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -833,7 +875,7 @@
    start="nios2_qsys.instruction_master"
    end="nios2_qsys.debug_mem_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04009800" />
+  <parameter name="baseAddress" value="0x04003800" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -842,7 +884,7 @@
    start="nios2_qsys.instruction_master"
    end="epcs_flash_controller_0.epcs_control_port">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04009000" />
+  <parameter name="baseAddress" value="0x04003000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -892,6 +934,11 @@
  <connection
    kind="clock"
    version="18.1"
+   start="altpll.c0"
+   end="avl_fifo_uart_1.clock" />
+ <connection
+   kind="clock"
+   version="18.1"
    start="clk_50.clk"
    end="altpll.inclk_interface" />
  <connection
@@ -899,35 +946,42 @@
    version="18.1"
    start="nios2_qsys.irq"
    end="avl_fifo_uart_0.interrupt_sender">
-  <parameter name="irqNumber" value="4" />
- </connection>
- <connection
-   kind="interrupt"
-   version="18.1"
-   start="nios2_qsys.irq"
-   end="timer.irq">
   <parameter name="irqNumber" value="0" />
  </connection>
  <connection
    kind="interrupt"
    version="18.1"
    start="nios2_qsys.irq"
-   end="timestamp.irq">
+   end="avl_fifo_uart_1.interrupt_sender">
+  <parameter name="irqNumber" value="5" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="18.1"
+   start="nios2_qsys.irq"
+   end="timer.irq">
   <parameter name="irqNumber" value="1" />
  </connection>
  <connection
    kind="interrupt"
    version="18.1"
    start="nios2_qsys.irq"
-   end="jtag_uart.irq">
+   end="timestamp.irq">
   <parameter name="irqNumber" value="2" />
  </connection>
  <connection
    kind="interrupt"
    version="18.1"
    start="nios2_qsys.irq"
-   end="epcs_flash_controller_0.irq">
+   end="jtag_uart.irq">
   <parameter name="irqNumber" value="3" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="18.1"
+   start="nios2_qsys.irq"
+   end="epcs_flash_controller_0.irq">
+  <parameter name="irqNumber" value="4" />
  </connection>
  <connection
    kind="reset"
@@ -978,6 +1032,11 @@
    kind="reset"
    version="18.1"
    start="clk_50.clk_reset"
+   end="avl_fifo_uart_1.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="clk_50.clk_reset"
    end="onchip_memory2_0.reset1" />
  <connection
    kind="reset"
@@ -1019,6 +1078,11 @@
    version="18.1"
    start="nios2_qsys.debug_reset_request"
    end="avl_fifo_uart_0.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="nios2_qsys.debug_reset_request"
+   end="avl_fifo_uart_1.reset" />
  <connection
    kind="reset"
    version="18.1"

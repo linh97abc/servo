@@ -14,13 +14,16 @@ OS_STK    task2_stk[TASK_STACKSIZE];
 #define TASK2_PRIORITY      2
 
 FifoUart_Dev *fifoUartDev;
+FifoUart_Dev *fifoUartDev1;
 /* Prints "Hello World" and sleeps for three seconds */
 void task1(void* pdata)
 {
     printf("Hello from task1\n");
 
     fifoUartDev = FifoUart_OpenDev(AVL_FIFO_UART_0_NAME);
-//    FifoUart_SetBaudrate(fifoUartDev, 921600);
+    fifoUartDev1 = FifoUart_OpenDev(AVL_FIFO_UART_1_NAME);
+
+    FifoUart_SetBaudrate(fifoUartDev, 884736);
 //    FifoUart_SetRxThreshold(fifoUartDev, 32);
 
 
@@ -28,7 +31,7 @@ void task1(void* pdata)
 
   while (1)
   {
-	  int len = FifoUart_Read(fifoUartDev, buff, sizeof(buff) - 1);
+	  int len = FifoUart_Read(fifoUartDev1, buff, sizeof(buff) - 1);
 	  buff[len] = '\0';
 
 	  puts(buff);
@@ -48,7 +51,7 @@ void task2(void* pdata)
 	  int len = sprintf(buff, "seq: %d: UART Send", seq++);
 	  FifoUart_Write(fifoUartDev, buff, len);
 
-    OSTimeDlyHMSM(0, 0, 1, 0);
+    OSTimeDlyHMSM(0, 0, 0, 200);
   }
 }
 /* The main function creates two task and starts multi-tasking */

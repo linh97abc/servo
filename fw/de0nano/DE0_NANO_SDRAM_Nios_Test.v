@@ -166,7 +166,8 @@ module DE0_NANO_SDRAM_Nios_Test (
   input [1:0] GPIO_1_IN;
 
 
-wire UART_LOOPBACK;
+  wire UART_LOOPBACK_TX;
+wire UART_LOOPBACK_RX;
 wire UART_DEBUG_PULSE;
 
   DE0_NANO_QSYS u0 (
@@ -190,9 +191,13 @@ wire UART_DEBUG_PULSE;
       .epcs_flash_controller_0_external_data0(EPCS_DATA0),  //  
 
 
-      .avl_fifo_uart_0_conduit_end_rxd          (UART_LOOPBACK),          //      avl_fifo_uart_0_conduit_end.rxd
-		  .avl_fifo_uart_0_conduit_end_txd          (UART_LOOPBACK),          //                                 .txd
-		  .avl_fifo_uart_0_conduit_end_dbg_os_pulse (UART_DEBUG_PULSE)  //                                 .dbg_os_pulse
+      .avl_fifo_uart_0_conduit_end_rxd          (UART_LOOPBACK_TX),          //      avl_fifo_uart_0_conduit_end.rxd
+		  .avl_fifo_uart_0_conduit_end_txd          (UART_LOOPBACK_RX),          //                                 .txd
+		  .avl_fifo_uart_0_conduit_end_dbg_os_pulse (UART_DEBUG_PULSE),  //                                 .dbg_os_pulse
+		  
+		        .avl_fifo_uart_1_conduit_end_rxd          (UART_LOOPBACK_RX),          //      avl_fifo_uart_0_conduit_end.rxd
+		  .avl_fifo_uart_1_conduit_end_txd          (UART_LOOPBACK_TX),          //                                 .txd
+		  .avl_fifo_uart_1_conduit_end_dbg_os_pulse ()  //                                 .dbg_os_pulse
   );
 
 
