@@ -127,6 +127,22 @@ extern "C"
 		uint32_t u32_val;
 	} servo_controller_reg_I16;
 
+	typedef struct
+	{
+		uint32_t hc_0 : 1;
+		uint32_t hb_0 : 1;
+		uint32_t ha_0 : 1;
+		uint32_t hc_1 : 1;
+		uint32_t hb_1 : 1;
+		uint32_t ha_1 : 1;
+		uint32_t hc_2 : 1;
+		uint32_t hb_2 : 1;
+		uint32_t ha_2 : 1;
+		uint32_t hc_3 : 1;
+		uint32_t hb_3 : 1;
+		uint32_t ha_3 : 1;
+	} servo_controller_reg_HALL_SIGNAL;
+
 	struct servo_controller_reg_t
 	{
 		volatile servo_controller_reg_CR cr;
@@ -143,6 +159,8 @@ extern "C"
 		volatile servo_controller_reg_I16 i_max[SERVO_CONTROLLER_NUM_SERVO];
 		const volatile servo_controller_reg_I16 i[SERVO_CONTROLLER_NUM_SERVO];
 		const volatile servo_controller_reg_I16 pos[SERVO_CONTROLLER_NUM_SERVO];
+		const volatile uint32_t pos_phase[SERVO_CONTROLLER_NUM_SERVO];
+		const volatile servo_controller_reg_HALL_SIGNAL hall_sig;
 	};
 
 	struct servo_controller_dev_t;
