@@ -10,12 +10,12 @@
 #define TMP101_FLAG_REG 1
 #define TMP101_TEMPER_REG 2
 
-
 #define TMP101_CR_EN (1u << 0)
 #define TMP101_CR_RESET (1u << 1)
 
-#define TMP101_FLAG_I2C_NACK (1u << 0)
-#define TMP101_FLAG_I2C_BUSY (1u << 1)
+#define TMP101_FLAG_DATA_VALID (1u << 0)
+#define TMP101_FLAG_I2C_NACK (1u << 1)
+#define TMP101_FLAG_I2C_BUSY (1u << 2)
 
 #ifdef __cplusplus
 extern "C"
@@ -50,7 +50,7 @@ extern "C"
 		{
 			int16_t temper;
 		} field;
-		
+
 		uint32_t data;
 	} avl_tmp101_TEMPER_REG;
 
@@ -61,36 +61,28 @@ extern "C"
 		volatile avl_tmp101_TEMPER_REG temper;
 	} TMP101_Reg;
 
-	
-
 	/// @brief Find Uart Device Type
 	typedef struct tag_TMP101_Dev
 	{
 		struct alt_dev_s dev;
-		
+
 		/// @brief UART Base Address
 		struct tag_Tmp101_Reg *const BASE;
-		
+
 		/// @brief Core frequency
 		const unsigned CORE_FREQ;
-		
 
 		const unsigned BUS_CLK;
 		const unsigned UPDATE_FREQ;
 		const unsigned I2C_ADDR;
 
-	
-
 	} TMP101_Dev;
-
 
 	TMP101_Dev *TMP101_OpenDev(const char *name);
 
-	
 	int16_t TMP101_GetTemperature(TMP101_Dev *dev);
 
 	uint32_t TMP101_GetStatus(TMP101_Dev *dev);
-
 
 #ifdef __cplusplus
 }

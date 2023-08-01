@@ -137,6 +137,11 @@ reg [SERVO_NUM-1:0] Fault_sync0;
 reg [SERVO_NUM-1:0] Fault_sync1;
 reg [SERVO_NUM-1:0] drv8320_fault;
 
+reg [5:0] hall_0_sync;
+reg [5:0] hall_1_sync;
+reg [5:0] hall_2_sync;
+reg [5:0] hall_3_sync;
+
 assign irq = |(ie & flag);
 assign flag = {drv8320_fault, stop, adc_data_valid, measurement_trigger_pendding, realtime_err};
 
@@ -216,10 +221,10 @@ servo_pwm_inst
 
 
     // In
-    .hall_0(hall_0), // a, b, c
-    .hall_1(hall_1), // a, b, c
-    .hall_2(hall_2), // a, b, c
-    .hall_3(hall_3), // a, b, c
+    .hall_0(hall_0_sync), // a, b, c
+    .hall_1(hall_1_sync), // a, b, c
+    .hall_2(hall_2_sync), // a, b, c
+    .hall_3(hall_3_sync), // a, b, c
     // Out
     .phase_0(phase_0),
     .phase_1(phase_1),
@@ -279,7 +284,8 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
         POS0_OFFSET = 23,
         POS1_OFFSET = POS0_OFFSET+1,
         POS2_OFFSET = POS0_OFFSET+2,
-        POS3_OFFSET = POS0_OFFSET+3;
+        POS3_OFFSET = POS0_OFFSET+3,
+        HALL_OFFSET = 27;
 
 
 
@@ -297,6 +303,7 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
             half_period <= PWM_HALF_PERIOD;
             start_servo <= 0;
             protected_en <= {SERVO_NUM{1'b1}};
+            trig_rate <= 1;
             u0 <= 0;
             u1 <= 0;
             u2 <= 0;
@@ -434,8 +441,8 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
                     IE_OFFSET: readdata <= ie;
                     FLAG_OFFSET: readdata <= flag;
                     SPI_PRES_OFFSET: readdata <= spi_divisor;
-                    PWM_PRES_OFFSET: readdata <= pwm_prescaler;
-                    PWM_HPERIOD_OFFSET: readdata <= half_period;
+                    PWM_PRES_OFFSET: readdata <= {1'b0, half_period, 1'b0, pwm_prescaler};
+                    PWM_TRIG_RATE: readdata <= trig_rate;
                     PULSE_MODE0_OFFSET: readdata <= mode_0;
                     PULSE_MODE1_OFFSET: readdata <= mode_1;
                     PULSE_MODE2_OFFSET: readdata <= mode_2;
@@ -456,6 +463,7 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
                     POS1_OFFSET: readdata <= {pos1, {16-ADC_WIDTH{1'b0}}};
                     POS2_OFFSET: readdata <= {pos2, {16-ADC_WIDTH{1'b0}}};
                     POS3_OFFSET: readdata <= {pos3, {16-ADC_WIDTH{1'b0}}};
+                    HALL_OFFSET: readdata <= {hall_3_sync, hall_2_sync, hall_1_sync, hall_0_sync};
 
 
                     default: readdata <= 0;
@@ -471,12 +479,24 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
             Fault_sync1 <= 0;
             Fault_sync0 <= 0;
             drv8320_fault <= 0;
+            hall_0_sync <= 0;
+            hall_1_sync <= 0;
+            hall_2_sync <= 0;
+            hall_3_sync <= 0;
         end else begin
             Fault_sync1 <= Fault_sync0;
             Fault_sync0 <= Fault_tmp;
             Fault_tmp <= ~nFault;
 
             drv8320_fault <= Fault_sync0 & Fault_sync1;
+
+            
+            hall_0_sync <= {hall_0_sync[2:0], hall_0};
+            hall_1_sync <= {hall_1_sync[2:0], hall_1};
+            hall_2_sync <= {hall_2_sync[2:0], hall_2};
+            hall_3_sync <= {hall_3_sync[2:0], hall_3};
         end
     end
+
+
 endmodule

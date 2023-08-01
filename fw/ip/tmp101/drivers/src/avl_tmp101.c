@@ -2,7 +2,6 @@
 #include <io.h>
 
 #include <priv/alt_file.h>
-#include <sys/alt_irq.h>
 #include <sys/alt_dev.h>
 #include <sys/alt_debug.h>
 

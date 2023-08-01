@@ -1,7 +1,7 @@
 module avl_tmp101
- (
-    clk,
-    reset_n,
+(
+clk,
+reset_n,
 
 address,
 writedata,
@@ -9,17 +9,20 @@ write_n,
 read_n,
 readdata,
 
-    sda_t,
-    sda_i,
-    scl_t,
-    scl_i
+sda_t,
+sda_i,
+scl_t,
+scl_i
 
 );
     
-        parameter FREQ_CLK = 100_000_000;
-    parameter BUS_CLK = 400_000;
-    parameter UPDATE_FREQ = 2;
-    parameter [2:0] I2C_ADDR = 0;
+parameter FREQ_CLK = 100_000_000;
+parameter BUS_CLK = 400_000;
+parameter UPDATE_FREQ = 2;
+parameter [2:0] I2C_ADDR = 0;
+
+input wire clk;
+input wire reset_n;
 
     //avalon mm interface
 input wire [3:0] address;
@@ -33,16 +36,17 @@ output scl_t;
 input sda_i;
 input scl_i;
 
+reg core_reset;
 reg core_en;
 wire [11:0] temperature;
-wire [1:0] status;
+wire [2:0] status;
 
 tmp101#
 (
 .FREQ_CLK(FREQ_CLK),
 .BUS_CLK(BUS_CLK),
 .UPDATE_FREQ(UPDATE_FREQ),
-.I2C_ADDR(I2C_ADDR),
+.I2C_ADDR(I2C_ADDR)
 
 ) tmp101_inst
  (
@@ -61,14 +65,14 @@ tmp101#
 
     localparam CR_REG = 0;
     localparam FLAG_REG = 1;
-    localparam TEMPER_REG = 1;
+    localparam TEMPER_REG = 2;
 
  //avalon write data 
     always @(posedge clk or negedge reset_n)             //write down to reg
     begin
         if(~reset_n) begin
             core_reset <= 1'b0;
-            core_en <= 1'b1;
+            core_en <= 1'b0;
         end
         else begin 
             core_reset <= (address == CR_REG)? (~write_n & writedata[1]): 1'b0;

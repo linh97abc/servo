@@ -22,7 +22,7 @@ input reset_n;
 input ena;
 
 output [11:0] temperature;
-output [1:0] status; //i2c_busy, i2c_ack_err
+output [2:0] status; //i2c_busy, i2c_ack_err, data_valid
 
 output sda_t;
 output scl_t;
@@ -41,7 +41,12 @@ wire i2c_busy;
 wire ack_error;
 reg i2c_ena;
 
-assign status = {i2c_busy, ack_error};
+reg [7:0] temp0;
+reg [3:0] temp1;
+reg [31:0] update_cnt;
+reg data_valid;
+
+assign status = {i2c_busy, ack_error, data_valid};
 
 i2c_master#
 (
@@ -63,98 +68,116 @@ i2c_master_inst
     .sda_i(sda_i),
     .scl_t(scl_t),
     .scl_i(scl_i)
-)
+);
 
 assign i2c_dout = 0;
 
-reg [1:0] state;
+reg [3:0] state;
 
-localparam SEND_POINTER_STATE = 0;
-localparam WAIT_SEND_ADDR_STATE = 1;
+localparam WAIT_I2C_READY_STATE = 0;
+localparam SEND_POINTER_STATE = 1;
 localparam WAIT_SEND_POINTER_STATE = 2;
 localparam READ_TEMP_STATE = 3;
-localparam WAIT_READ_CMD_STATE = 4;
-localparam WAIT_READ0_STATE = 5;
+localparam WAIT_READ0_STATE = 4;
+localparam WAIT_START_READ1_STATE = 5;
 localparam WAIT_READ1_STATE = 6;
 localparam END_STATE = 7;
 
-reg [7:0] temp0;
-reg [7:0] temp1;
-reg [31:0] update_cnt;
 
-assign temperature = {temp0, temp1[3:0]};
+
+assign temperature = {temp0, temp1};
 
 always @(posedge clk) begin
     if (~reset_n) begin
-        state <= SEND_POINTER_STATE;
+        state <= WAIT_I2C_READY_STATE;
         i2c_ena <= 1'b0;
         update_cnt <= 0;
+        temp0 <= 0;
+        temp1 <= 0;
+        data_valid <= 0;
     end else begin
         if (ena) begin
             case (state)
-                SEND_POINTER_STATE: begin
-                    i2c_ena <= 1'b1;
-                    rw <= 1'b0;
-                    if (i2c_busy) begin
-                        state <= WAIT_SEND_ADDR_STATE;
-                    end
+            WAIT_I2C_READY_STATE: begin
+                if (~i2c_busy) begin
+                    state <= SEND_POINTER_STATE;
                 end
+            end
+            SEND_POINTER_STATE: begin
+                i2c_ena <= 1'b1;
+                rw <= 1'b0;
+                if (i2c_busy) begin
 
-                WAIT_SEND_ADDR_STATE: begin
-                //     i2c_ena <= 1'b0;
-                    if (~i2c_busy) begin
-                        state <= WAIT_SEND_POINTER_STATE;
-                    end
+                    $display("WAIT_SEND_POINTER_STATE");
+                    state <= WAIT_SEND_POINTER_STATE;
                 end
+            end
 
-                WAIT_SEND_POINTER_STATE: begin
-                //     i2c_ena <= 1'b0;
-                    if (~i2c_busy) begin
-                        state <= READ_TEMP_STATE;
-                    end
+
+            WAIT_SEND_POINTER_STATE: begin
+                i2c_ena <= 1'b0;
+                if (ack_error) begin
+                    $display("WAIT_SEND_POINTER_STATE ack err");
+                    state <= WAIT_I2C_READY_STATE;
+                end else if (~i2c_busy) begin
+                    $display("READ_TEMP_STATE");
+                    state <= READ_TEMP_STATE;
                 end
+            end
 
-                READ_TEMP_STATE: begin
-                    i2c_ena <= 1'b1;
-                    rw <= 1'b1;
-                    if (i2c_busy) begin
-                        state <= WAIT_READ_CMD_STATE;
-                    end
+            READ_TEMP_STATE: begin
+                i2c_ena <= 1'b1;
+                rw <= 1'b1;
+                if (i2c_busy) begin
+                    $display("WAIT_READ0_STATE");
+                    state <= WAIT_READ0_STATE;
                 end
+            end
 
-                WAIT_READ_STATE: begin
-                    // i2c_ena <= 1'b0;
-                    if (~i2c_busy) begin
-                        state <= WAIT_READ0_STATE;
-                    end
+            WAIT_READ0_STATE: begin
+                if (~i2c_busy) begin
+                    state <= WAIT_START_READ1_STATE;
+                    temp0 <= i2c_din;
                 end
+            end
 
-                WAIT_READ0_STATE: begin
-                    // i2c_ena <= 1'b0;
-                    if (~i2c_busy) begin
-                        state <= WAIT_READ1_STATE;
-                        temp0 <= i2c_din;
-                    end
+            WAIT_START_READ1_STATE: begin
+                i2c_ena <= 1'b0;
+                if (i2c_busy) begin
+                    state <= WAIT_READ1_STATE;
+                    temp0 <= i2c_din;
                 end
+            end
 
-                WAIT_READ1_STATE: begin
-                    if (~i2c_busy) begin
-                        update_cnt <= 0;
-                        state <= END_STATE;
-                        temp1 <= i2c_din;
-                    end
+
+            WAIT_READ1_STATE: begin
+                if (~i2c_busy) begin
+                    update_cnt <= 0;
+                    state <= END_STATE;
+                    
+                    temp1 <= i2c_din[7:4];
                 end
+            end
 
-                END_STATE: begin
+            END_STATE: begin
 
+                if (ack_error) begin
+                    data_valid <= 1'b0;
+                    state <= WAIT_I2C_READY_STATE;
+                end else begin
+                    data_valid <= 1'b1;
                     if (update_cnt == UPDATE_PRES) begin
-                        state <= SEND_POINTER_STATE;
+                        state <= WAIT_I2C_READY_STATE;
                     end else begin
                         
                         update_cnt <= update_cnt + 1'b1;
                     end
+                    
                 end
-                default: 
+
+            end
+            default: begin
+            end
             endcase
 
         end
