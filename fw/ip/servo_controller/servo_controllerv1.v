@@ -142,8 +142,45 @@ reg [5:0] hall_1_sync;
 reg [5:0] hall_2_sync;
 reg [5:0] hall_3_sync;
 
+wire [31:0] pos_hall_0;
+wire [31:0] pos_hall_1;
+wire [31:0] pos_hall_2;
+wire [31:0] pos_hall_3;
+
 assign irq = |(ie & flag);
 assign flag = {drv8320_fault, stop, adc_data_valid, measurement_trigger_pendding, realtime_err};
+
+detect_hall_pos detect_hall_pos_inst0
+(
+    .clk(clk),
+    .reset_n(reset_n),
+    .hall(hall_0_sync[5:3]),
+    .position(pos_hall_0)
+);
+
+detect_hall_pos detect_hall_pos_inst1
+(
+    .clk(clk),
+    .reset_n(reset_n),
+    .hall(hall_1_sync[5:3]),
+    .position(pos_hall_1)
+);
+
+detect_hall_pos detect_hall_pos_inst2
+(
+    .clk(clk),
+    .reset_n(reset_n),
+    .hall(hall_2_sync[5:3]),
+    .position(pos_hall_2)
+);
+
+detect_hall_pos detect_hall_pos_inst3
+(
+    .clk(clk),
+    .reset_n(reset_n),
+    .hall(hall_3_sync[5:3]),
+    .position(pos_hall_3)
+);
 
 ad7928_top #(
     .CORE_FREQUENCY(FREQ_CLK)
@@ -221,10 +258,10 @@ servo_pwm_inst
 
 
     // In
-    .hall_0(hall_0_sync), // a, b, c
-    .hall_1(hall_1_sync), // a, b, c
-    .hall_2(hall_2_sync), // a, b, c
-    .hall_3(hall_3_sync), // a, b, c
+    .hall_0(hall_0_sync[5:3]), // a, b, c
+    .hall_1(hall_1_sync[5:3]), // a, b, c
+    .hall_2(hall_2_sync[5:3]), // a, b, c
+    .hall_3(hall_3_sync[5:3]), // a, b, c
     // Out
     .phase_0(phase_0),
     .phase_1(phase_1),
@@ -285,7 +322,13 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
         POS1_OFFSET = POS0_OFFSET+1,
         POS2_OFFSET = POS0_OFFSET+2,
         POS3_OFFSET = POS0_OFFSET+3,
-        HALL_OFFSET = 27;
+
+        POS_HALL0_OFFSET = 27,
+        POS_HALL1_OFFSET = POS_HALL0_OFFSET+1,
+        POS_HALL2_OFFSET = POS_HALL0_OFFSET+2,
+        POS_HALL3_OFFSET = POS_HALL0_OFFSET+3,
+
+        HALL_OFFSET = 31;
 
 
 
@@ -463,7 +506,11 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
                     POS1_OFFSET: readdata <= {pos1, {16-ADC_WIDTH{1'b0}}};
                     POS2_OFFSET: readdata <= {pos2, {16-ADC_WIDTH{1'b0}}};
                     POS3_OFFSET: readdata <= {pos3, {16-ADC_WIDTH{1'b0}}};
-                    HALL_OFFSET: readdata <= {hall_3_sync, hall_2_sync, hall_1_sync, hall_0_sync};
+                    POS_HALL0_OFFSET: readdata <= pos_hall_0;
+                    POS_HALL1_OFFSET: readdata <= pos_hall_1;
+                    POS_HALL2_OFFSET: readdata <= pos_hall_2;
+                    POS_HALL3_OFFSET: readdata <= pos_hall_3;
+                    HALL_OFFSET: readdata <= {hall_3_sync[5:3], hall_2_sync[5:3], hall_1_sync[5:3], hall_0_sync[5:3]};
 
 
                     default: readdata <= 0;
