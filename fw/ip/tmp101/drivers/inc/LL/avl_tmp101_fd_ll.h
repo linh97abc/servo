@@ -33,13 +33,13 @@ extern "C"
                 NULL, /* fstat */                                     \
                 NULL, /* ioctl */                                     \
             },                                                        \
-            (FifoUart_Reg *)(NIOS2_DCACHE_BYPASS_MASK | name##_BASE), \
+            (TMP101_Reg *)(NIOS2_DCACHE_BYPASS_MASK | name##_BASE), \
             name##_FREQ,                                              \
             name##_BUS_CLK,                                           \
             name##_UPDATE_FREQ,                                       \
             name##_I2C_ADDR,                                          \
     }
 
-#define AVL_TMP101_INIT(name, dev) FifoUart_Init(&dev)
+#define AVL_TMP101_INIT(name, dev) TMP101_Init(&dev)
 
 #endif // __AVL_TMP101_FD_LL_H__

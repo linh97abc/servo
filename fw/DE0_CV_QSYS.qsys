@@ -289,22 +289,6 @@
          type = "String";
       }
    }
-   element avl_drv8320_0
-   {
-      datum _sortIndex
-      {
-         value = "13";
-         type = "int";
-      }
-   }
-   element avl_drv8320_0.s1
-   {
-      datum baseAddress
-      {
-         value = "67182592";
-         type = "String";
-      }
-   }
    element clk_50
    {
       datum _sortIndex
@@ -365,7 +349,7 @@
    {
       datum _sortIndex
       {
-         value = "14";
+         value = "13";
          type = "int";
       }
    }
@@ -434,7 +418,7 @@
    {
       datum _sortIndex
       {
-         value = "15";
+         value = "14";
          type = "int";
       }
    }
@@ -506,7 +490,7 @@
    {
       datum _sortIndex
       {
-         value = "16";
+         value = "15";
          type = "int";
       }
    }
@@ -571,7 +555,6 @@
  <parameter name="timeStamp" value="0" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
- <interface name="avl_drv8320_0_conduit_end" internal="avl_drv8320_0.conduit_end" />
  <interface name="clk" internal="clk_50.clk_in" type="clock" dir="end" />
  <interface name="clk_sdram" internal="pll.outclk1" type="clock" dir="start" />
  <interface name="pll_locked" internal="pll.locked" type="conduit" dir="end" />
@@ -593,15 +576,6 @@
    internal="uart_rs485.conduit_end"
    type="conduit"
    dir="end" />
- <module name="avl_drv8320_0" kind="avl_drv8320" version="1.0" enabled="0">
-  <parameter name="C_MODE0" value="0" />
-  <parameter name="C_MODE1" value="0" />
-  <parameter name="C_MODE2" value="0" />
-  <parameter name="C_MODE3" value="0" />
-  <parameter name="FREQ_CLK" value="100000000" />
-  <parameter name="PWM_BASE_FREQ" value="10000000" />
-  <parameter name="PWM_FREQ" value="1000" />
- </module>
  <module name="clk_50" kind="clock_source" version="18.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -667,7 +641,7 @@
   <parameter name="dcache_bursts" value="false" />
   <parameter name="dcache_numTCDM" value="1" />
   <parameter name="dcache_ramBlockType" value="Automatic" />
-  <parameter name="dcache_size" value="32768" />
+  <parameter name="dcache_size" value="65536" />
   <parameter name="dcache_tagramBlockType" value="Automatic" />
   <parameter name="dcache_victim_buf_impl" value="ram" />
   <parameter name="debug_OCIOnchipTrace" value="_128" />
@@ -694,7 +668,7 @@
   <parameter name="icache_burstType" value="None" />
   <parameter name="icache_numTCIM" value="1" />
   <parameter name="icache_ramBlockType" value="Automatic" />
-  <parameter name="icache_size" value="32768" />
+  <parameter name="icache_size" value="65536" />
   <parameter name="icache_tagramBlockType" value="Automatic" />
   <parameter name="impl" value="Fast" />
   <parameter name="instAddrWidth" value="27" />
@@ -1191,7 +1165,7 @@
   <parameter name="RX_FIFO_DEPTH" value="4" />
   <parameter name="RX_TIMEOUT_WORD" value="4" />
   <parameter name="STOP_BIT" value="0" />
-  <parameter name="TX_FIFO_DEPTH" value="12" />
+  <parameter name="TX_FIFO_DEPTH" value="11" />
  </module>
  <module name="uart_rs485" kind="avl_fifo_uart" version="1.0" enabled="1">
   <parameter name="BAUDRATE" value="921600" />
@@ -1299,15 +1273,6 @@
    kind="avalon"
    version="18.1"
    start="nios2_qsys.data_master"
-   end="avl_drv8320_0.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04012000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="18.1"
-   start="nios2_qsys.data_master"
    end="tmp101.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x04012080" />
@@ -1400,11 +1365,6 @@
    version="18.1"
    start="pll.outclk0"
    end="uart_debug.clock" />
- <connection
-   kind="clock"
-   version="18.1"
-   start="pll.outclk0"
-   end="avl_drv8320_0.clock" />
  <connection kind="clock" version="18.1" start="pll.outclk0" end="tmp101.clock" />
  <connection
    kind="interrupt"
@@ -1425,13 +1385,6 @@
    version="18.1"
    start="nios2_qsys.irq"
    end="uart_debug.interrupt_sender">
-  <parameter name="irqNumber" value="2" />
- </connection>
- <connection
-   kind="interrupt"
-   version="18.1"
-   start="nios2_qsys.irq"
-   end="avl_drv8320_0.interrupt_sender">
   <parameter name="irqNumber" value="2" />
  </connection>
  <connection
@@ -1535,11 +1488,6 @@
    kind="reset"
    version="18.1"
    start="clk_50.clk_reset"
-   end="avl_drv8320_0.reset" />
- <connection
-   kind="reset"
-   version="18.1"
-   start="clk_50.clk_reset"
    end="tmp101.reset" />
  <connection
    kind="reset"
@@ -1581,11 +1529,6 @@
    version="18.1"
    start="nios2_qsys.debug_reset_request"
    end="uart_debug.reset" />
- <connection
-   kind="reset"
-   version="18.1"
-   start="nios2_qsys.debug_reset_request"
-   end="avl_drv8320_0.reset" />
  <connection
    kind="reset"
    version="18.1"

@@ -39,6 +39,7 @@ add_fileset_file servo_pwmx4.v VERILOG PATH actuator/servo_pwmx4.v
 add_fileset_file servo_protect.v VERILOG PATH actuator/servo_protect.v
 add_fileset_file servo_pwm_control.v VERILOG PATH actuator/servo_pwm_control.v
 add_fileset_file servo_u2duty_wrapper.v VERILOG PATH actuator/servo_u2duty_wrapper.v
+add_fileset_file detect_hall_pos.v VERILOG PATH actuator/detect_hall_pos.v
 
 
 # 

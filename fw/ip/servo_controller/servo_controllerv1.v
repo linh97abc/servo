@@ -43,7 +43,7 @@ parameter [1:0] C_MODE1 = 0;
 parameter [1:0] C_MODE2 = 0;
 parameter [1:0] C_MODE3 = 0;
 
-localparam [7:0] DEAD_TIME = 1;
+
 localparam DUTY_WIDTH = 16;
 localparam ADC_WIDTH = 12;
 localparam SPI_PRESCALER = FREQ_CLK/SPI_SPEED-1;
@@ -215,7 +215,6 @@ ad7928_top #(
 servo_pwm_control #
 (
     .CORE_FREQUENCY(FREQ_CLK),
-    .DEAD_TIME(DEAD_TIME),
     .DUTY_WIDTH(DUTY_WIDTH),
     .ADC_WIDTH(ADC_WIDTH)
 )

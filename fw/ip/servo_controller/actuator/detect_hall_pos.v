@@ -4,7 +4,7 @@ module detect_hall_pos
     reset_n,
     hall, // a, b, c
     position
-)
+);
 
 input clk;
 input reset_n;

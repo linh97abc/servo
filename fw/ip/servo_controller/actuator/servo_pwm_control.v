@@ -52,7 +52,6 @@ module servo_pwm_control (
 );
 
 parameter CORE_FREQUENCY = 100_000_000;
-parameter [7:0] DEAD_TIME = 1;
 parameter DUTY_WIDTH = 16;
 parameter ADC_WIDTH = 12;
 
@@ -113,7 +112,7 @@ wire [SERVO_NUM-1:0] direction;
 
 servo_protect#(
     .ADC_WIDTH(ADC_WIDTH)
-)
+) servo_protect_inst
  (
     .clk(clk),
     .reset_n(reset_n),
@@ -154,7 +153,6 @@ servo_u2duty_wrapper servo_u2duty_wrapper_inst
 );
 
 servo_pwmx4 #(
-        .DEAD_TIME(DEAD_TIME),
         .DWIDTH(DUTY_WIDTH-1)
     ) servo_pwmx4_inst
  (

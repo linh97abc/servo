@@ -190,7 +190,7 @@ assign GPIO_1[1] = DRV8320_EN[2];
 assign GPIO_1[3] = SV3_PHASE[5];
 assign GPIO_1[5] = SV3_PHASE[4];
 assign GPIO_1[7] = SV3_PHASE[3];
-assign GPIO_1[8] = SV3_PHASE[2];
+assign GPIO_1[9] = SV3_PHASE[2];
 assign GPIO_1[11] = SV3_PHASE[1];
 assign GPIO_1[13] = SV3_PHASE[0];
 
@@ -240,9 +240,9 @@ DE0_CV_QSYS u0(
 		.servo_controllerv1_0_conduit_end_drv8320_en(DRV8320_EN), //                                 .drv8320_en
 
 		.tmp101_i2c_sda_t                            (TMP_SDA_T),                            //                       tmp101_i2c.sda_t
-		.tmp101_i2c_scl_t                            (TMP_SCL_T,                            //                                 .scl_t
+		.tmp101_i2c_scl_t                            (TMP_SCL_T),                            //                                 .scl_t
 		.tmp101_i2c_sda_i                            (TMP_SDA_I),                            //                                 .sda_i
-		.tmp101_i2c_scl_i                            (TMP_SCL_I)                             //  
+		.tmp101_i2c_scl_i                            (TMP_SCL_I),                             //  
             // .avl_drv8320_0_conduit_end_hall_0(GPIO_0[8:6]),     // avl_drv8320_0_conduit_end.hall_0
 		// .avl_drv8320_0_conduit_end_hall_1(GPIO_0[11:9]),     //                          .hall_1
 		// .avl_drv8320_0_conduit_end_hall_2(GPIO_0[14:12]),     //                          .hall_2
@@ -258,7 +258,7 @@ DE0_CV_QSYS u0(
 
 		//SDRAM
 		.clk_sdram_clk(DRAM_CLK),                  //               clk_sdram.clk
-	      .sdram_wire_addr(DRAM_ADDR),                //              sdram_wire.addr
+	   .sdram_wire_addr(DRAM_ADDR),                //              sdram_wire.addr
 		.sdram_wire_ba(DRAM_BA),                  //                        .ba
 		.sdram_wire_cas_n(DRAM_CAS_N),               //                        .cas_n
 		.sdram_wire_cke(DRAM_CKE),                 //                        .cke

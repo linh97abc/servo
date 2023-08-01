@@ -37,8 +37,9 @@ extern "C"
 	{
 		struct
 		{
-			uint32_t busy : 1;
-			uint32_t no_ack : 1;
+			uint32_t data_valid : 1;
+			uint32_t i2c_nack : 1;
+			uint32_t i2c_busy : 1;
 
 		} field;
 		uint32_t data;
@@ -57,16 +58,16 @@ extern "C"
 	typedef struct tag_Tmp101_Reg
 	{
 		volatile avl_tmp101_CR_REG cr;
-		volatile avl_tmp101_IE_FLAG_REG ie;
+		volatile avl_tmp101_IE_FLAG_REG flag;
 		volatile avl_tmp101_TEMPER_REG temper;
 	} TMP101_Reg;
 
-	/// @brief Find Uart Device Type
+	/// @brief TMP101 Device Type
 	typedef struct tag_TMP101_Dev
 	{
 		struct alt_dev_s dev;
 
-		/// @brief UART Base Address
+		/// @brief TMP101 Base Address
 		struct tag_Tmp101_Reg *const BASE;
 
 		/// @brief Core frequency

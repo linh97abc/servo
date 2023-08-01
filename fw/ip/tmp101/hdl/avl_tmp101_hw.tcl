@@ -29,10 +29,8 @@ set_fileset_property QUARTUS_SYNTH TOP_LEVEL avl_tmp101
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
 set_fileset_property QUARTUS_SYNTH ENABLE_FILE_OVERWRITE_MODE false
 add_fileset_file avl_tmp101.v VERILOG PATH avl_tmp101.v TOP_LEVEL_FILE
+add_fileset_file i2c_master.vhd VHDL PATH i2c_master.vhd
 add_fileset_file tmp101.v VERILOG PATH tmp101.v
-add_fileset_file i2c_master.vhd VERILOG PATH i2c_master.vhd
-
-
 
 # 
 # parameters
