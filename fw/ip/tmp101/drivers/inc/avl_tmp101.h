@@ -13,9 +13,12 @@
 #define TMP101_CR_EN (1u << 0)
 #define TMP101_CR_RESET (1u << 1)
 
+// status
 #define TMP101_FLAG_DATA_VALID (1u << 0)
 #define TMP101_FLAG_I2C_NACK (1u << 1)
 #define TMP101_FLAG_I2C_BUSY (1u << 2)
+
+#define TMP101_TEMPERATURE_LSB (0.5f/16)
 
 #ifdef __cplusplus
 extern "C"
@@ -73,16 +76,34 @@ extern "C"
 		/// @brief Core frequency
 		const unsigned CORE_FREQ;
 
+		/// @brief I2C Speed
 		const unsigned BUS_CLK;
-		const unsigned UPDATE_FREQ;
+
+		/// @brief Sampling Frequency
+		const unsigned SAMPLE_RATE;
+
 		const unsigned I2C_ADDR;
 
 	} TMP101_Dev;
 
+	/// @brief Find TMP101 Device by device name
+	/// @param name Device name
+	/// @return Pointer to TMP101 Device, NULL if device not found
 	TMP101_Dev *TMP101_OpenDev(const char *name);
 
-	int16_t TMP101_GetTemperature(TMP101_Dev *dev);
+	/// @brief Get temperature (raw data)
+	/// @param dev 
+	/// @return Temperature value
+	int16_t TMP101_GetRawTemperature(TMP101_Dev *dev);
 
+	/// @brief Get temperature (in Celsius)
+	/// @param dev 
+	/// @return Temperature value
+	float TMP101_GetTemperature(TMP101_Dev *dev);
+
+	/// @brief Get device status
+	/// @param dev 
+	/// @return status mask bit: TMP101_FLAG_DATA_VALID, TMP101_FLAG_I2C_NACK, TMP101_FLAG_I2C_BUSY
 	uint32_t TMP101_GetStatus(TMP101_Dev *dev);
 
 #ifdef __cplusplus
