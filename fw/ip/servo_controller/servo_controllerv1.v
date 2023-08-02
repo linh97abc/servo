@@ -471,12 +471,9 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
     end
     
     //avalon read data
-    always @(posedge clk or negedge reset_n)            //read reg value      
+    always @(*)            //read reg value      
     begin
-        if(~reset_n) begin
-            readdata <= 0;
-        end
-        else begin
+
             if(~read_n) begin
                 case (address)
                     CR_OFFSET: readdata <= {drv8320_en, protected_en, filter_level, core_en};
@@ -515,7 +512,7 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
                     default: readdata <= 0;
                 endcase
             end
-        end
+
     end   
 
     // nFault_detect: 

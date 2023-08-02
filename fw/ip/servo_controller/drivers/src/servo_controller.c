@@ -114,6 +114,7 @@ int servo_controller_start(struct servo_controller_dev_t *dev)
 	OS_ENTER_CRITICAL();
 
 	servo_controller_reg_CR crReg;
+	crReg.val = SERVO_IORD(dev, SERVO_CONTROLLER_CR_OFFSET);
 	crReg.field.en = 1;
 	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, crReg.val);
 

@@ -42,7 +42,7 @@ void task1(void* pdata)
 
     int16_t duty[SERVO_CONTROLLER_NUM_SERVO];
 
-    duty[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.7f);
+    duty[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.4f);
     duty[1] = 0;
     duty[2] = 0;
     duty[3] = 0;
