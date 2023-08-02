@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Aug 1, 2023 1:13:49 AM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1690827229310</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Aug 2, 2023 10:33:32 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1690990412823</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\Project\outsource\DE0_CV_SDRAM_Nios_Test\sw\test_de0nano_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>D:\Project\outsource\DE0_CV_SDRAM_Nios_Test\fw\DE0_NANO_QSYS.sopcinfo</SopcDesignFile>
@@ -386,7 +386,7 @@
                 <SettingName>hal.make.bsp_cflags_optimization</SettingName>
                 <Identifier>BSP_CFLAGS_OPTIMIZATION</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>-O2</Value>
+                <Value>-O0</Value>
                 <DefaultValue>-O0</DefaultValue>
                 <DestinationFile>makefile_variable</DestinationFile>
                 <Description>C/C++ compiler optimization level. "-O0" = no optimization,"-O2" = "normal" optimization, etc. "-O0" is recommended for code that you want to debug since compiler optimization can remove variables and produce non-sequential execution of code while debugging. This setting defines the value of BSP_CFLAGS_OPTIMIZATION in Makefile.</Description>
@@ -1757,16 +1757,10 @@
                 <attributes>flash, memory, non-volatile</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>avl_fifo_uart_1</slaveDescriptor>
-                <addressRange>0x04004000 - 0x0400403F</addressRange>
-                <addressSpan>64</addressSpan>
-                <attributes>printable</attributes>
-        </MemoryMap>
-        <MemoryMap>
-                <slaveDescriptor>avl_fifo_uart_0</slaveDescriptor>
-                <addressRange>0x04004040 - 0x0400407F</addressRange>
-                <addressSpan>64</addressSpan>
-                <attributes>printable</attributes>
+                <slaveDescriptor>servo4x</slaveDescriptor>
+                <addressRange>0x04004000 - 0x0400407F</addressRange>
+                <addressSpan>128</addressSpan>
+                <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timestamp</slaveDescriptor>

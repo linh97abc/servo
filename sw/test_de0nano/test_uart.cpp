@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <ucos_ii.h>
 #include <system.h>
+
+#ifdef TEST_UART
+
 #include <avl_fifo_uart.h>
 
 /* Definition of Task Stacks */
@@ -83,3 +86,5 @@ int main(void)
   OSStart();
   return 0;
 }
+
+#endif

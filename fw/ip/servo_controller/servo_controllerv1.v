@@ -153,7 +153,7 @@ assign flag = {drv8320_fault, stop, adc_data_valid, measurement_trigger_pendding
 detect_hall_pos detect_hall_pos_inst0
 (
     .clk(clk),
-    .reset_n(reset_n),
+    .reset_n(reset_n & ~core_reset),
     .hall(hall_0_sync[5:3]),
     .position(pos_hall_0)
 );
@@ -161,7 +161,7 @@ detect_hall_pos detect_hall_pos_inst0
 detect_hall_pos detect_hall_pos_inst1
 (
     .clk(clk),
-    .reset_n(reset_n),
+    .reset_n(reset_n & ~core_reset),
     .hall(hall_1_sync[5:3]),
     .position(pos_hall_1)
 );
@@ -169,7 +169,7 @@ detect_hall_pos detect_hall_pos_inst1
 detect_hall_pos detect_hall_pos_inst2
 (
     .clk(clk),
-    .reset_n(reset_n),
+    .reset_n(reset_n & ~core_reset),
     .hall(hall_2_sync[5:3]),
     .position(pos_hall_2)
 );
@@ -177,7 +177,7 @@ detect_hall_pos detect_hall_pos_inst2
 detect_hall_pos detect_hall_pos_inst3
 (
     .clk(clk),
-    .reset_n(reset_n),
+    .reset_n(reset_n & ~core_reset),
     .hall(hall_3_sync[5:3]),
     .position(pos_hall_3)
 );
@@ -188,7 +188,7 @@ ad7928_top #(
  measure_inst
 (
     .clk(clk),
-    .reset_n(reset_n),
+    .reset_n(reset_n & ~core_reset),
     .core_en(core_en),
     .spi_divisor(spi_divisor),
     .adc_init(adc_init),
@@ -221,7 +221,7 @@ servo_pwm_control #
 servo_pwm_inst
 (
     .clk(clk),
-    .reset_n(reset_n),
+    .reset_n(reset_n & ~core_reset),
     .core_en(core_en),
     .prescaler(pwm_prescaler),
     .half_period(half_period),
@@ -395,58 +395,58 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
                 end
                 IE_OFFSET: ie <= writedata;
                 SPI_PRES_OFFSET: begin
-                   if (core_en) begin
+                   if (~core_en) begin
                         spi_divisor <= writedata;
                    end 
                 end 
                 PWM_PRES_OFFSET: begin
-                   if (core_en) begin
+                   if (~core_en) begin
                         pwm_prescaler <= writedata[14:0];
                         half_period <= writedata[30:16];
                    end 
                 end 
                 PWM_TRIG_RATE: begin
-                   if (core_en) begin
+                   if (~core_en) begin
                         trig_rate <= writedata;
                    end 
                 end 
                 PULSE_MODE0_OFFSET: begin
-                   if (core_en) begin
+                   if (~core_en) begin
                         mode_0 <= writedata;
                    end 
                 end 
                 PULSE_MODE1_OFFSET: begin
-                   if (core_en) begin
+                   if (~core_en) begin
                         mode_1 <= writedata;
                    end 
                 end 
                 PULSE_MODE2_OFFSET: begin
-                   if (core_en) begin
+                   if (~core_en) begin
                         mode_2 <= writedata;
                    end 
                 end 
                 PULSE_MODE3_OFFSET: begin
-                   if (core_en) begin
+                   if (~core_en) begin
                         mode_3 <= writedata;
                    end 
                 end
                 I0_MAX_OFFSET: begin
-                   if (core_en) begin
+                   if (~core_en) begin
                         i0_max <= writedata[14:16-ADC_WIDTH];
                    end 
                 end
                 I1_MAX_OFFSET: begin
-                   if (core_en) begin
+                   if (~core_en) begin
                         i1_max <= writedata[14:16-ADC_WIDTH];
                    end 
                 end
                 I2_MAX_OFFSET: begin
-                   if (core_en) begin
+                   if (~core_en) begin
                         i2_max <= writedata[14:16-ADC_WIDTH];
                    end 
                 end
                 I3_MAX_OFFSET: begin
-                   if (core_en) begin
+                   if (~core_en) begin
                         i3_max <= writedata[14:16-ADC_WIDTH];
                    end 
                 end

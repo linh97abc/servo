@@ -143,7 +143,8 @@ ELF := test_de0nano.elf
 
 # Paths to C, C++, and assembly source files.
 C_SRCS :=
-CXX_SRCS := main.cpp
+CXX_SRCS += test_uart.cpp
+CXX_SRCS += test_servo.cpp
 ASM_SRCS :=
 
 

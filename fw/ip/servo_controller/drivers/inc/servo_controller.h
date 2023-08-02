@@ -11,7 +11,14 @@ extern "C"
 {
 #endif
 
+/// @brief Maximun channel supported
 #define SERVO_CONTROLLER_NUM_SERVO 4
+
+/// @brief Convert float number to fixed(16, 0) number
+#define SERVO_CONTROLLER_FLOAT_TO_FIXED(num) ((int16_t)((num)*INT16_MAX))
+
+/// @brief Convert fixed(16, 0) number to float number
+#define SERVO_CONTROLLER_FIXED_TO_FLOAT(num) ((float) (num)/INT16_MAX)
 
 	enum Servo_controller_filter_level_t
 	{
