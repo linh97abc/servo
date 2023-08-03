@@ -90,6 +90,10 @@ reg [3:0] filter_level;
 reg [5:0] trig_rate;
 
 // m
+reg [ADC_WIDTH-1:0]  i0_sample;
+reg [ADC_WIDTH-1:0]  i1_sample;
+reg [ADC_WIDTH-1:0]  i2_sample;
+reg [ADC_WIDTH-1:0]  i3_sample;
 wire  [ADC_WIDTH-1:0]  i0;
 wire  [ADC_WIDTH-1:0]  i1;
 wire  [ADC_WIDTH-1:0]  i2;
@@ -146,6 +150,8 @@ wire [31:0] pos_hall_0;
 wire [31:0] pos_hall_1;
 wire [31:0] pos_hall_2;
 wire [31:0] pos_hall_3;
+
+
 
 assign irq = |(ie & flag);
 assign flag = {drv8320_fault, stop, adc_data_valid, measurement_trigger_pendding, realtime_err};
@@ -240,10 +246,10 @@ servo_pwm_inst
     .measurement_trigger(measurement_trigger),
 
     //
-    .i0(i0),
-    .i1(i1),
-    .i2(i2),
-    .i3(i3),
+    .i0(i0_sample),
+    .i1(i1_sample),
+    .i2(i2_sample),
+    .i3(i3_sample),
 
     .i0_max(i0_max),
     .i1_max(i1_max),
@@ -378,7 +384,7 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
 
             
             realtime_err <= 
-                (measurement_trigger_pendding & measurement_trigger)
+                ((measurement_trigger_pendding & measurement_trigger) | realtime_err)
                 & ( (address == FLAG_OFFSET)? (write_n | ~writedata[FLAG_REAL_TIME_BIT]): 1'b1);
 
 
@@ -494,10 +500,10 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
                     I1_MAX_OFFSET: readdata <= {i1_max, {16-ADC_WIDTH{1'b0}}};
                     I2_MAX_OFFSET: readdata <= {i2_max, {16-ADC_WIDTH{1'b0}}};
                     I3_MAX_OFFSET: readdata <= {i3_max, {16-ADC_WIDTH{1'b0}}};
-                    I0_OFFSET: readdata <= {i0, {16-ADC_WIDTH{1'b0}}};
-                    I1_OFFSET: readdata <= {i1, {16-ADC_WIDTH{1'b0}}};
-                    I2_OFFSET: readdata <= {i2, {16-ADC_WIDTH{1'b0}}};
-                    I3_OFFSET: readdata <= {i3, {16-ADC_WIDTH{1'b0}}};
+                    I0_OFFSET: readdata <= {i0_sample, {16-ADC_WIDTH{1'b0}}};
+                    I1_OFFSET: readdata <= {i1_sample, {16-ADC_WIDTH{1'b0}}};
+                    I2_OFFSET: readdata <= {i2_sample, {16-ADC_WIDTH{1'b0}}};
+                    I3_OFFSET: readdata <= {i3_sample, {16-ADC_WIDTH{1'b0}}};
                     POS0_OFFSET: readdata <= {pos0, {16-ADC_WIDTH{1'b0}}};
                     POS1_OFFSET: readdata <= {pos1, {16-ADC_WIDTH{1'b0}}};
                     POS2_OFFSET: readdata <= {pos2, {16-ADC_WIDTH{1'b0}}};
@@ -517,7 +523,7 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
 
     // nFault_detect: 
     always @(posedge clk) begin
-        if (~reset_n) begin
+        if (~reset_n | core_reset) begin
             Fault_tmp <= 0;
             Fault_sync1 <= 0;
             Fault_sync0 <= 0;
@@ -541,5 +547,20 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
         end
     end
 
-
+    always @(posedge clk) begin
+        if (~reset_n | core_reset) begin
+            i0_sample <= 0;
+            i1_sample <= 0;
+            i2_sample <= 0;
+            i3_sample <= 0;
+        end else begin
+            if (measurement_trigger) begin
+                i0_sample <= i0;
+                i1_sample <= i1;
+                i2_sample <= i2;
+                i3_sample <= i3;
+                
+            end
+        end
+    end
 endmodule
