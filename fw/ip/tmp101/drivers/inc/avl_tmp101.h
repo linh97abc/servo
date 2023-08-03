@@ -18,7 +18,8 @@
 #define TMP101_FLAG_I2C_NACK (1u << 1)
 #define TMP101_FLAG_I2C_BUSY (1u << 2)
 
-#define TMP101_TEMPERATURE_LSB (0.5f/16)
+// LSB = 0.5, shift = 128
+#define TMP101_TEMPERATURE_FIXED_2_FLOAT(x) ((x)*(1.0f/256))
 
 #ifdef __cplusplus
 extern "C"
@@ -91,10 +92,10 @@ extern "C"
 	/// @return Pointer to TMP101 Device, NULL if device not found
 	TMP101_Dev *TMP101_OpenDev(const char *name);
 
-	/// @brief Get temperature (raw data)
+	/// @brief Get temperature (in fixed(16, 8), in Celsius)
 	/// @param dev 
 	/// @return Temperature value
-	int16_t TMP101_GetRawTemperature(TMP101_Dev *dev);
+	int16_t TMP101_GetFixedTemperature(TMP101_Dev *dev);
 
 	/// @brief Get temperature (in Celsius)
 	/// @param dev 

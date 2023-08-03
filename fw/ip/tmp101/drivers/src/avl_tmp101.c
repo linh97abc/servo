@@ -31,7 +31,7 @@ int TMP101_Init(TMP101_Dev *dev)
 	return 0;
 }
 
-int16_t TMP101_GetRawTemperature(TMP101_Dev *dev)
+int16_t TMP101_GetFixedTemperature(TMP101_Dev *dev)
 {
 	ALT_DEBUG_ASSERT((dev));
 	avl_tmp101_TEMPER_REG temper;
@@ -47,7 +47,7 @@ float TMP101_GetTemperature(TMP101_Dev *dev)
 
 	temper.data = TMP101_IORD(dev, TMP101_TEMPER_REG);
 
-	return temper.data * TMP101_TEMPERATURE_LSB;
+	return TMP101_TEMPERATURE_FIXED_2_FLOAT(temper.data);
 }
 
 uint32_t TMP101_GetStatus(TMP101_Dev *dev)
