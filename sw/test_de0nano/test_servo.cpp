@@ -42,6 +42,7 @@ void task1(void* pdata)
     SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].U_lsb = 1;
     SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].dT = 1;
     SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].kp = 100;
+    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].ramp_rate = 1000;
 
     servo_controller_apply_configure(servoDev);
 
