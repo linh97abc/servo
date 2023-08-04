@@ -11,6 +11,47 @@
 #define SERVO_IOWR(dev, reg, data) IOWR((uintptr_t)dev->BASE, reg, data)
 #define SERVO_IORD(dev, reg) IORD((uintptr_t)dev->BASE, reg)
 
+static int servo_controller_get_phase_position_in_critical(
+	struct servo_controller_dev_t *dev,
+	int16_t position[SERVO_CONTROLLER_NUM_SERVO]) __attribute__((section(".exceptions")));
+
+static int servo_controller_update_duty_in_critical(
+	struct servo_controller_dev_t *dev,
+	int16_t duty[SERVO_CONTROLLER_NUM_SERVO]) __attribute__((section(".exceptions")));
+
+static int servo_controller_get_phase_position_in_critical(
+	struct servo_controller_dev_t *dev,
+	int16_t position[SERVO_CONTROLLER_NUM_SERVO])
+{
+	servo_controller_reg_I16 i16Reg;
+
+	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE0_OFFSET);
+	position[0] = i16Reg.i16_val;
+	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE1_OFFSET);
+	position[1] = i16Reg.i16_val;
+	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE2_OFFSET);
+	position[2] = i16Reg.i16_val;
+	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE3_OFFSET);
+	position[3] = i16Reg.i16_val;
+
+	return 0;
+}
+
+static int servo_controller_update_duty_in_critical(
+	struct servo_controller_dev_t *dev,
+	int16_t duty[SERVO_CONTROLLER_NUM_SERVO])
+{
+	SERVO_IOWR(dev, SERVO_CONTROLLER_U0_OFFSET, duty[0]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_U1_OFFSET, duty[1]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_U2_OFFSET, duty[2]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_U3_OFFSET, duty[3]);
+
+	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET,
+			   SERVO_CONTROLLER_TR_U_VALID_BIT);
+
+	return 0;
+}
+
 struct servo_controller_dev_t *servo_controller_open_dev(const char *name)
 {
 	extern alt_llist alt_dev_list;
@@ -46,7 +87,6 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 					return stt;
 				}
 			}
-			
 		}
 	}
 
@@ -170,19 +210,14 @@ int servo_controller_update_duty(
 	ALT_DEBUG_ASSERT((dev));
 	ALT_DEBUG_ASSERT((duty));
 
+	int err;
 	OS_CPU_SR cpu_sr = 0;
 	OS_ENTER_CRITICAL();
 
-	SERVO_IOWR(dev, SERVO_CONTROLLER_U0_OFFSET, duty[0]);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_U1_OFFSET, duty[1]);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_U2_OFFSET, duty[2]);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_U3_OFFSET, duty[3]);
-
-	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET,
-			   SERVO_CONTROLLER_TR_U_VALID_BIT);
+	err = servo_controller_update_duty_in_critical(dev, duty);
 	OS_EXIT_CRITICAL();
 
-	return 0;
+	return err;
 }
 
 int servo_controller_get_position(
@@ -281,7 +316,7 @@ static void servo_controller_irq_handler(void *arg)
 			int16_t pos[SERVO_CONTROLLER_NUM_SERVO];
 			int16_t controlVal[SERVO_CONTROLLER_NUM_SERVO];
 
-			servo_controller_get_phase_position(dev, pos);
+			servo_controller_get_phase_position_in_critical(dev, pos);
 			unsigned i;
 
 			for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
@@ -290,10 +325,9 @@ static void servo_controller_irq_handler(void *arg)
 				{
 					controlVal[i] = PID_Step(&dev->data->pidState[i], dev->data->position_sp[i], pos[i]);
 				}
-				
 			}
 
-			servo_controller_update_duty(dev, controlVal);
+			servo_controller_update_duty_in_critical(dev, controlVal);
 		}
 
 		if (dev->cfg->on_new_process)
@@ -398,21 +432,11 @@ int servo_controller_get_phase_position(
 {
 	ALT_DEBUG_ASSERT((dev));
 	ALT_DEBUG_ASSERT((position));
-
+	int err;
 	OS_CPU_SR cpu_sr = 0;
-	servo_controller_reg_I16 i16Reg;
 	OS_ENTER_CRITICAL();
-
-	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE0_OFFSET);
-	position[0] = i16Reg.i16_val;
-	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE1_OFFSET);
-	position[1] = i16Reg.i16_val;
-	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE2_OFFSET);
-	position[2] = i16Reg.i16_val;
-	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE3_OFFSET);
-	position[3] = i16Reg.i16_val;
-
+	err = servo_controller_get_phase_position_in_critical(dev, position);
 	OS_EXIT_CRITICAL();
 
-	return 0;
+	return err;
 }

@@ -29,6 +29,6 @@ struct FixedPIDArgument
 
 int PID_Init(struct FixedPID *self, struct FixedPIDArgument *arg);
 
-int16_t PID_Step(struct FixedPID *self, int16_t sp, int16_t pv);
+int16_t PID_Step(struct FixedPID *self, int16_t sp, int16_t pv) __attribute__((section(".exceptions")));
 
 #endif // __FIXEDPID_H__
