@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "FixedPID.h"
-
+#include <errno.h>
 
 int PID_Init(struct FixedPID *self, struct FixedPIDArgument *arg)
 {
@@ -19,14 +19,34 @@ int PID_Init(struct FixedPID *self, struct FixedPIDArgument *arg)
 		return -EINVAL;
 	}
 
-	self->A = (int32_t)(arg->E_lsb / arg->U_lsb) * (arg->kp + arg->ki * arg->dT + arg->kd / arg->dT);
-	self->B = (int32_t) - (arg->E_lsb / arg->U_lsb) * (arg->kp - arg->ki * arg->dT + 2 * arg->kd / arg->dT);
-	self->C = (int32_t)(arg->E_lsb / arg->U_lsb) * (arg->kd / arg->dT);
+	// Caculate Kp, Ki, Kd and convert to fixed(32,16)
+	float a = UINT16_MAX * (arg->E_lsb / arg->U_lsb) * (arg->kp + arg->ki * arg->dT + arg->kd / arg->dT);
+	float b = -UINT16_MAX * (arg->E_lsb / arg->U_lsb) * (arg->kp - arg->ki * arg->dT + 2 * arg->kd / arg->dT);
+	float c = UINT16_MAX * (arg->E_lsb / arg->U_lsb) * (arg->kd / arg->dT);
 
-	// convert to fixed(32,16)
-	self->A <<= 16;
-	self->B <<= 16;
-	self->C <<= 16;
+	int64_t a64 = (int64_t)a;
+	int64_t b64 = (int64_t)b;
+	int64_t c64 = (int64_t)c;
+
+	// check overflow
+	if ((a64 > INT32_MAX) || (a64 < -INT32_MAX))
+	{
+		return -EINVAL;
+	}
+
+	if ((b64 > INT32_MAX) || (b64 < -INT32_MAX))
+	{
+		return -EINVAL;
+	}
+
+	if ((c64 > INT32_MAX) || (c64 < -INT32_MAX))
+	{
+		return -EINVAL;
+	}
+
+	self->A = (int32_t)a64;
+	self->B = (int32_t)b64;
+	self->C = (int32_t)c64;
 
 	self->uk1 = 0;
 	self->ek1 = 0;
