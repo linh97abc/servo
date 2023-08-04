@@ -38,8 +38,10 @@ set_sw_property supported_interrupt_apis "legacy_interrupt_api enhanced_interrup
 
 # C/C++ source files
 add_sw_property c_source src/servo_controller.c
+add_sw_property c_source src/servo_controller_fixedPID.c
 
 # Include files
+add_sw_property include_source inc/FixedPID.h
 add_sw_property include_source inc/servo_controller.h
 add_sw_property include_source inc/servo_controllerv1.h
 add_sw_property include_source inc/LL/servo_controller_reg.h

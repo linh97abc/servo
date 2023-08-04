@@ -29,30 +29,50 @@ void task1(void* pdata)
     SERVO_CONTROLLER_CFG(servoDev)->spi_speed = 1000000;
     SERVO_CONTROLLER_CFG(servoDev)->pwm_base_freq = 1000000;
     SERVO_CONTROLLER_CFG(servoDev)->pwm_freq = 5000;
-    SERVO_CONTROLLER_CFG(servoDev)->pwm_trig_rate = 5;
+    SERVO_CONTROLLER_CFG(servoDev)->pwm_trig_rate = 10;
+//    SERVO_CONTROLLER_CFG(servoDev)->pwm_trig_rate = 1;
 
     SERVO_CONTROLLER_CFG(servoDev)->i_max[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.5f);
     SERVO_CONTROLLER_CFG(servoDev)->i_max[1] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.5f);
     SERVO_CONTROLLER_CFG(servoDev)->i_max[2] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.5f);
     SERVO_CONTROLLER_CFG(servoDev)->i_max[3] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.5f);
 
+    SERVO_CONTROLLER_CFG(servoDev)->closed_loop_en = true;
+    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].E_lsb = 1;
+    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].U_lsb = 1;
+    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].dT = 1;
+    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].kp = 100;
+
     servo_controller_apply_configure(servoDev);
 
     servo_controller_start(servoDev);
 
     int16_t duty[SERVO_CONTROLLER_NUM_SERVO];
+//
+//    duty[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.4f);
+//    duty[1] = 0;
+//    duty[2] = 0;
+//    duty[3] = 0;
+//
+//    servo_controller_update_duty(servoDev, duty);
 
-    duty[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.4f);
-    duty[1] = 0;
-    duty[2] = 0;
-    duty[3] = 0;
+//    servo_controller_set_position(servoDev, SERVO_CONTROLLER_SERVO_ID_0, 1000);
+    servo_controller_set_position(servoDev, SERVO_CONTROLLER_SERVO_ID_0, 200);
 
-    servo_controller_update_duty(servoDev, duty);
 
   while (1)
   {
 	  OSTimeDly(100);
+
+	  servo_controller_get_duty(servoDev, duty);
 	  printf("pos = %ld\n", servoDev->BASE->pos_phase[0]);
+	  printf("duty = %d\n", duty[0]);
+	  printf("realtime_err = %d\n", servoDev->BASE->flag.field.realtime_err);
+
+	  if (servoDev->BASE->pos_phase[0] > 1000)
+	  {
+		  servo_controller_stop(servoDev);
+	  }
   }
 }
 /* Prints "Hello World" and sleeps for three seconds */

@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <sys/alt_dev.h>
 
+#include "FixedPID.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -18,31 +20,31 @@ extern "C"
 #define SERVO_CONTROLLER_FLOAT_TO_FIXED(num) ((int16_t)((num)*INT16_MAX))
 
 /// @brief Convert fixed(16, 0) number to float number
-#define SERVO_CONTROLLER_FIXED_TO_FLOAT(num) ((float) (num)/INT16_MAX)
+#define SERVO_CONTROLLER_FIXED_TO_FLOAT(num) ((float)(num) / INT16_MAX)
 
 	enum Servo_controller_filter_level_t
 	{
-		SERVO_CONTROLLER_FILTER_LEVEL_0,
 		SERVO_CONTROLLER_FILTER_LEVEL_1,
 		SERVO_CONTROLLER_FILTER_LEVEL_2,
-		SERVO_CONTROLLER_FILTER_LEVEL_3,
 		SERVO_CONTROLLER_FILTER_LEVEL_4,
-		SERVO_CONTROLLER_FILTER_LEVEL_5,
-		SERVO_CONTROLLER_FILTER_LEVEL_6,
-		SERVO_CONTROLLER_FILTER_LEVEL_7,
 		SERVO_CONTROLLER_FILTER_LEVEL_8,
-		SERVO_CONTROLLER_FILTER_LEVEL_9,
-		SERVO_CONTROLLER_FILTER_LEVEL_10,
-		SERVO_CONTROLLER_FILTER_LEVEL_11,
-		SERVO_CONTROLLER_FILTER_LEVEL_12,
-		SERVO_CONTROLLER_FILTER_LEVEL_13,
-		SERVO_CONTROLLER_FILTER_LEVEL_14,
-		SERVO_CONTROLLER_FILTER_LEVEL_15,
+		SERVO_CONTROLLER_FILTER_LEVEL_16,
+		SERVO_CONTROLLER_FILTER_LEVEL_32,
+		SERVO_CONTROLLER_FILTER_LEVEL_64,
+		SERVO_CONTROLLER_FILTER_LEVEL_128,
+		SERVO_CONTROLLER_FILTER_LEVEL_256,
+		SERVO_CONTROLLER_FILTER_LEVEL_512,
+		SERVO_CONTROLLER_FILTER_LEVEL_1024,
+		SERVO_CONTROLLER_FILTER_LEVEL_2048,
+		SERVO_CONTROLLER_FILTER_LEVEL_4096,
+		SERVO_CONTROLLER_FILTER_LEVEL_8192,
+		SERVO_CONTROLLER_FILTER_LEVEL_16384,
+		SERVO_CONTROLLER_FILTER_LEVEL_32768,
 	};
 
 	enum Servo_controller_servo_id_t
 	{
-		SERVO_CONTROLLER_SERVO_ID_0,
+		SERVO_CONTROLLER_SERVO_ID_0 = 0,
 		SERVO_CONTROLLER_SERVO_ID_1,
 		SERVO_CONTROLLER_SERVO_ID_2,
 		SERVO_CONTROLLER_SERVO_ID_3
@@ -182,6 +184,10 @@ extern "C"
 		/// @brief enable motor driver
 		bool drv_en[SERVO_CONTROLLER_NUM_SERVO];
 
+		struct FixedPIDArgument pidArgument[SERVO_CONTROLLER_NUM_SERVO];
+
+		bool closed_loop_en;
+
 		/// @brief spi speed of measurement IC
 		uint32_t spi_speed;
 
@@ -219,6 +225,14 @@ extern "C"
 		void *callback_arg;
 	};
 
+	struct servo_controller_data_t
+	{
+		struct FixedPID pidState[SERVO_CONTROLLER_NUM_SERVO];
+
+		/// @brief Set point
+		int16_t position_sp[SERVO_CONTROLLER_NUM_SERVO];
+	};
+
 	struct servo_controller_dev_t
 	{
 		struct alt_dev_s dev;
@@ -227,6 +241,7 @@ extern "C"
 		const uint8_t IC_ID;
 		const unsigned CORE_FREQ;
 		struct servo_controller_config_t *const cfg;
+		struct servo_controller_data_t *const data;
 	};
 
 #define SERVO_CONTROLLER_CFG(dev) ((dev)->cfg)
@@ -287,6 +302,14 @@ extern "C"
 		struct servo_controller_dev_t *dev,
 		int16_t position[SERVO_CONTROLLER_NUM_SERVO]);
 
+	/// @brief Get motor phase postion
+	/// @param dev Pointer to servo device
+	/// @param position Motor position in fixed number (16, 0) , range [-1, 1)
+	/// @return Error code
+	int servo_controller_get_phase_position(
+		struct servo_controller_dev_t *dev,
+		int16_t position[SERVO_CONTROLLER_NUM_SERVO]);
+
 	/// @brief Get motor current
 	/// @param dev Pointer to servo device
 	/// @param current Motor current in fixed number (16, 0) , range [-1, 1)
@@ -303,6 +326,14 @@ extern "C"
 		struct servo_controller_dev_t *dev,
 		int16_t duty[SERVO_CONTROLLER_NUM_SERVO]);
 
+	/// @brief Set position
+	/// @param dev Pointer to servo device
+	/// @param pos Position in fixed number (16, 0) , range [-1, 1)
+	/// @return Error code
+	int servo_controller_set_position(
+		struct servo_controller_dev_t *dev,
+		enum Servo_controller_servo_id_t channel,
+		int16_t pos);
 #ifdef __cplusplus
 }
 #endif

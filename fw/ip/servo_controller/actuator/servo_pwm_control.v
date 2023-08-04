@@ -158,7 +158,7 @@ servo_pwmx4 #(
  (
     .clk(clk),
     .reset_n(reset_n),
-    .core_en(core_en),
+    .core_en(core_en & |(~stop)),
     .prescaler(prescaler),
     .half_period(half_period),
     .trig_rate(trig_rate),
@@ -233,7 +233,7 @@ always @(posedge clk) begin
     if (~reset_n) begin
         stop <= {SERVO_NUM{1'b1}};
     end else begin
-        stop <= (stop | signal_overload) & ~start_servo & protected_en;
+        stop <= (stop | (signal_overload & protected_en)) & ~start_servo;
         
     end
 end

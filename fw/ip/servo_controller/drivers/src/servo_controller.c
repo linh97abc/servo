@@ -24,6 +24,8 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 	servo_controller_reg_CR crReg;
 	uint32_t prescale;
 	servo_controller_reg_IE ieReg;
+	int stt;
+	unsigned i;
 
 	ALT_DEBUG_ASSERT((dev));
 
@@ -31,6 +33,22 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 	ALT_DEBUG_ASSERT((dev->cfg->i_max[1] > 0));
 	ALT_DEBUG_ASSERT((dev->cfg->i_max[2] > 0));
 	ALT_DEBUG_ASSERT((dev->cfg->i_max[3] > 0));
+
+	if (dev->cfg->closed_loop_en)
+	{
+		for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
+		{
+			if (dev->cfg->drv_en[i])
+			{
+				stt = PID_Init(&dev->data->pidState[i], &dev->cfg->pidArgument[i]);
+				if (stt < 0)
+				{
+					return stt;
+				}
+			}
+			
+		}
+	}
 
 	crReg.val = 0;
 	crReg.field.en = 0;
@@ -53,7 +71,7 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 
 	servo_controller_reg_PWM_PRES pwm_pres;
 	pwm_pres.field.base_pres = dev->CORE_FREQ / dev->cfg->pwm_base_freq - 1;
-	pwm_pres.field.half_period = dev->cfg->pwm_base_freq/ (dev->cfg->pwm_freq << 1) - 1;
+	pwm_pres.field.half_period = dev->cfg->pwm_base_freq / (dev->cfg->pwm_freq << 1) - 1;
 	SERVO_IOWR(dev, SERVO_CONTROLLER_PWM_PRES_OFFSET, pwm_pres.val);
 
 	SERVO_IOWR(dev, SERVO_CONTROLLER_PWM_TRIG_RATE_OFFSET, dev->cfg->pwm_trig_rate);
@@ -73,7 +91,7 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 
 	ieReg.val = 0;
 	ieReg.field.adc_valid = dev->cfg->on_adc_valid ? 1 : 0;
-	ieReg.field.mea_trig = dev->cfg->on_new_process ? 1 : 0;
+	ieReg.field.mea_trig = (dev->cfg->closed_loop_en || dev->cfg->on_new_process) ? 1 : 0;
 	ieReg.field.realtime_err = dev->cfg->on_realtime_err ? 1 : 0;
 
 	if (dev->cfg->on_stop_err)
@@ -242,6 +260,8 @@ int servo_controller_get_duty(
 	return 0;
 }
 
+static void servo_controller_irq_handler(void *arg) __attribute__((section(".exceptions")));
+
 static void servo_controller_irq_handler(void *arg)
 {
 	servo_controller_reg_FLAG flag;
@@ -255,7 +275,31 @@ static void servo_controller_irq_handler(void *arg)
 
 	if (flag.val & SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT)
 	{
-		dev->cfg->on_new_process(dev, dev->cfg->callback_arg);
+
+		if (dev->cfg->closed_loop_en)
+		{
+			int16_t pos[SERVO_CONTROLLER_NUM_SERVO];
+			int16_t controlVal[SERVO_CONTROLLER_NUM_SERVO];
+
+			servo_controller_get_phase_position(dev, pos);
+			unsigned i;
+
+			for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
+			{
+				if (dev->cfg->drv_en[i])
+				{
+					controlVal[i] = PID_Step(&dev->data->pidState[i], dev->data->position_sp[i], pos[i]);
+				}
+				
+			}
+
+			servo_controller_update_duty(dev, controlVal);
+		}
+
+		if (dev->cfg->on_new_process)
+		{
+			dev->cfg->on_new_process(dev, dev->cfg->callback_arg);
+		}
 	}
 
 	if (flag.val & ~SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT)
@@ -330,4 +374,45 @@ void servo_controller_init(struct servo_controller_dev_t *dev)
 
 	alt_ic_isr_register(dev->IC_ID, dev->IRQ, servo_controller_irq_handler, dev, 0);
 	alt_dev_reg(&dev->dev);
+}
+
+int servo_controller_set_position(
+	struct servo_controller_dev_t *dev,
+	enum Servo_controller_servo_id_t channel,
+	int16_t pos)
+{
+	ALT_DEBUG_ASSERT((dev));
+
+	OS_CPU_SR cpu_sr = 0;
+	OS_ENTER_CRITICAL();
+
+	dev->data->position_sp[channel] = pos;
+	OS_EXIT_CRITICAL();
+
+	return 0;
+}
+
+int servo_controller_get_phase_position(
+	struct servo_controller_dev_t *dev,
+	int16_t position[SERVO_CONTROLLER_NUM_SERVO])
+{
+	ALT_DEBUG_ASSERT((dev));
+	ALT_DEBUG_ASSERT((position));
+
+	OS_CPU_SR cpu_sr = 0;
+	servo_controller_reg_I16 i16Reg;
+	OS_ENTER_CRITICAL();
+
+	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE0_OFFSET);
+	position[0] = i16Reg.i16_val;
+	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE1_OFFSET);
+	position[1] = i16Reg.i16_val;
+	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE2_OFFSET);
+	position[2] = i16Reg.i16_val;
+	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE3_OFFSET);
+	position[3] = i16Reg.i16_val;
+
+	OS_EXIT_CRITICAL();
+
+	return 0;
 }

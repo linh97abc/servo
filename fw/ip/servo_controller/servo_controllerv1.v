@@ -235,6 +235,7 @@ servo_pwm_inst
     // start
     .start_servo(start_servo),
     .protected_en(protected_en),
+    .trig_rate(trig_rate),
 
     // slave 
     .u0(u0), // -1 .. 1
