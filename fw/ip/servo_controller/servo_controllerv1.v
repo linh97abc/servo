@@ -146,10 +146,10 @@ reg [5:0] hall_1_sync;
 reg [5:0] hall_2_sync;
 reg [5:0] hall_3_sync;
 
-wire [31:0] pos_hall_0;
-wire [31:0] pos_hall_1;
-wire [31:0] pos_hall_2;
-wire [31:0] pos_hall_3;
+wire [15:0] pos_hall_0;
+wire [15:0] pos_hall_1;
+wire [15:0] pos_hall_2;
+wire [15:0] pos_hall_3;
 
 
 
@@ -161,7 +161,8 @@ detect_hall_pos detect_hall_pos_inst0
     .clk(clk),
     .reset_n(reset_n & ~core_reset),
     .hall(hall_0_sync[5:3]),
-    .position(pos_hall_0)
+    .mea_trigger(measurement_trigger),
+    .delta_pos(pos_hall_0)
 );
 
 detect_hall_pos detect_hall_pos_inst1
@@ -169,7 +170,8 @@ detect_hall_pos detect_hall_pos_inst1
     .clk(clk),
     .reset_n(reset_n & ~core_reset),
     .hall(hall_1_sync[5:3]),
-    .position(pos_hall_1)
+    .mea_trigger(measurement_trigger),
+    .delta_pos(pos_hall_1)
 );
 
 detect_hall_pos detect_hall_pos_inst2
@@ -177,7 +179,8 @@ detect_hall_pos detect_hall_pos_inst2
     .clk(clk),
     .reset_n(reset_n & ~core_reset),
     .hall(hall_2_sync[5:3]),
-    .position(pos_hall_2)
+    .mea_trigger(measurement_trigger),
+    .delta_pos(pos_hall_2)
 );
 
 detect_hall_pos detect_hall_pos_inst3
@@ -185,7 +188,8 @@ detect_hall_pos detect_hall_pos_inst3
     .clk(clk),
     .reset_n(reset_n & ~core_reset),
     .hall(hall_3_sync[5:3]),
-    .position(pos_hall_3)
+    .mea_trigger(measurement_trigger),
+    .delta_pos(pos_hall_3)
 );
 
 ad7928_top #(

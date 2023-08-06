@@ -185,6 +185,9 @@ extern "C"
 		bool drv_en[SERVO_CONTROLLER_NUM_SERVO];
 
 		struct FixedPIDArgument pidArgument[SERVO_CONTROLLER_NUM_SERVO];
+		uint8_t n_motor_pole[SERVO_CONTROLLER_NUM_SERVO];
+		uint8_t n_motor_ratio[SERVO_CONTROLLER_NUM_SERVO];
+		int16_t K_position_filter[SERVO_CONTROLLER_NUM_SERVO];
 
 		bool closed_loop_en;
 
@@ -231,6 +234,12 @@ extern "C"
 
 		/// @brief Set point
 		int16_t position_sp[SERVO_CONTROLLER_NUM_SERVO];
+
+		int32_t filter_position[SERVO_CONTROLLER_NUM_SERVO];
+		/// @brief fixed(16,0)
+		int16_t K_filter[SERVO_CONTROLLER_NUM_SERVO];
+		/// @brief fixed(32,16)
+		int32_t K_phase_to_mea[SERVO_CONTROLLER_NUM_SERVO];
 	};
 
 	struct servo_controller_dev_t

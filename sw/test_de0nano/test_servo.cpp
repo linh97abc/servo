@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <ucos_ii.h>
 #include <system.h>
+#include <sys/alt_debug.h>
 
 #define TEST_SERVO
 #ifdef TEST_SERVO
@@ -21,6 +22,7 @@ struct servo_controller_dev_t *servoDev;
 
 void task1(void* pdata)
 {
+	int stt;
     printf("Hello from task1\n");
 
     servoDev = servo_controller_open_dev(SERVO4X_NAME);
@@ -38,19 +40,24 @@ void task1(void* pdata)
     SERVO_CONTROLLER_CFG(servoDev)->i_max[3] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.5f);
 
     SERVO_CONTROLLER_CFG(servoDev)->closed_loop_en = true;
-    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].E_lsb = 1;
+    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].E_lsb = 0.010986;
     SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].U_lsb = 1;
-    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].dT = 1;
+    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].dT = 1.0/500;
     SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].kp = 100;
     SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].ramp_rate = 1000;
 
-    servo_controller_apply_configure(servoDev);
+    SERVO_CONTROLLER_CFG(servoDev)->n_motor_pole[0] = 7;
+    SERVO_CONTROLLER_CFG(servoDev)->n_motor_ratio[0] = 7;
+    SERVO_CONTROLLER_CFG(servoDev)->K_position_filter[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0);
+
+    stt = servo_controller_apply_configure(servoDev);
+    ALT_DEBUG_ASSERT((stt == 0));
 
     servo_controller_start(servoDev);
 
     int16_t duty[SERVO_CONTROLLER_NUM_SERVO];
 //
-//    duty[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.4f);
+    duty[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(-0.4f);
 //    duty[1] = 0;
 //    duty[2] = 0;
 //    duty[3] = 0;
@@ -58,7 +65,8 @@ void task1(void* pdata)
 //    servo_controller_update_duty(servoDev, duty);
 
 //    servo_controller_set_position(servoDev, SERVO_CONTROLLER_SERVO_ID_0, 1000);
-    servo_controller_set_position(servoDev, SERVO_CONTROLLER_SERVO_ID_0, 200);
+    servo_controller_set_position(servoDev, SERVO_CONTROLLER_SERVO_ID_0,
+    		-180/SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].E_lsb);
 
 
   while (1)
@@ -66,14 +74,14 @@ void task1(void* pdata)
 	  OSTimeDly(100);
 
 	  servo_controller_get_duty(servoDev, duty);
-	  printf("pos = %ld\n", servoDev->BASE->pos_phase[0]);
+	  printf("pos = %ld\n", servoDev->data->filter_position[0] >> 15);
 	  printf("duty = %d\n", duty[0]);
 	  printf("realtime_err = %d\n", servoDev->BASE->flag.field.realtime_err);
 
-	  if (servoDev->BASE->pos_phase[0] > 1000)
-	  {
-		  servo_controller_stop(servoDev);
-	  }
+//	  if (servoDev->BASE->pos_phase[0] > 1000)
+//	  {
+//		  servo_controller_stop(servoDev);
+//	  }
   }
 }
 /* Prints "Hello World" and sleeps for three seconds */
