@@ -2,11 +2,11 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Aug 6, 2023 8:58:07 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1691330287415</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>D:\Project\outsource\DE0_CV_SDRAM_Nios_Test\sw\test_de0nano_bsp</BspGeneratedLocation>
+        <BspGeneratedTimeStamp>Aug 26, 2023 11:56:35 AM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1693025795717</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>C:\Users\DELL\Documents\outsource\DE0_CV_SDRAM_Nios_Test\sw\test_de0nano_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
-        <SopcDesignFile>D:\Project\outsource\DE0_CV_SDRAM_Nios_Test\fw\DE0_NANO_QSYS.sopcinfo</SopcDesignFile>
+        <SopcDesignFile>..\..\fw\DE0_NANO_QSYS.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
         <Cpu>nios2_qsys</Cpu>
         <SchemaVersion>1.9</SchemaVersion>
@@ -1763,32 +1763,38 @@
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>timestamp</slaveDescriptor>
+                <slaveDescriptor>avl_fifo_uart_0</slaveDescriptor>
                 <addressRange>0x04004080 - 0x040040BF</addressRange>
+                <addressSpan>64</addressSpan>
+                <attributes>printable</attributes>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>timestamp</slaveDescriptor>
+                <addressRange>0x040040C0 - 0x040040FF</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timer</slaveDescriptor>
-                <addressRange>0x040040C0 - 0x040040DF</addressRange>
+                <addressRange>0x04004100 - 0x0400411F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>altpll</slaveDescriptor>
-                <addressRange>0x040040E0 - 0x040040EF</addressRange>
+                <addressRange>0x04004120 - 0x0400412F</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid_qsys</slaveDescriptor>
-                <addressRange>0x040040F0 - 0x040040F7</addressRange>
+                <addressRange>0x04004130 - 0x04004137</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart</slaveDescriptor>
-                <addressRange>0x040040F8 - 0x040040FF</addressRange>
+                <addressRange>0x04004138 - 0x0400413F</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>

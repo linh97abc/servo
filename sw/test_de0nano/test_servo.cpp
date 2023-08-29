@@ -7,18 +7,22 @@
 #ifdef TEST_SERVO
 
 #include <servo_controller.h>
+#include <avl_fifo_uart.h>
 
 /* Definition of Task Stacks */
 #define   TASK_STACKSIZE       2048
 OS_STK    task1_stk[TASK_STACKSIZE];
 OS_STK    task2_stk[TASK_STACKSIZE];
+OS_STK    task_servo_stk[TASK_STACKSIZE];
 
 /* Definition of Task Priorities */
 
-#define TASK1_PRIORITY      1
-#define TASK2_PRIORITY      2
+#define TASK_SERVO_PRIORITY      2
+#define TASK1_PRIORITY      4
+#define TASK2_PRIORITY      3
 
 struct servo_controller_dev_t *servoDev;
+FifoUart_Dev *fifoUartDev;
 
 void task1(void* pdata)
 {
@@ -52,6 +56,8 @@ void task1(void* pdata)
 
     stt = servo_controller_apply_configure(servoDev);
     ALT_DEBUG_ASSERT((stt == 0));
+
+
 
     servo_controller_start(servoDev);
 
@@ -87,11 +93,20 @@ void task1(void* pdata)
 /* Prints "Hello World" and sleeps for three seconds */
 void task2(void* pdata)
 {
-	OSTaskSuspend(OS_PRIO_SELF);
+	fifoUartDev = FifoUart_OpenDev(AVL_FIFO_UART_0_NAME);
+	char hello[] = "Hello\n";
+	char buff[64] = "Hello world\n";
+
+	FifoUart_SetBaudrate(fifoUartDev, 921600);
+	FifoUart_Write(fifoUartDev, hello, sizeof(hello)-1);
 
   while (1)
   {
+//	  FifoUart_Write(fifoUartDev, hello, sizeof(hello)-1);
+//	  OSTimeDlyHMSM(0,0,1,0);
+	  int len = FifoUart_Read(fifoUartDev, buff, sizeof(buff) - 1);
 
+	  FifoUart_Write(fifoUartDev, buff, len);
   }
 }
 /* The main function creates two task and starts multi-tasking */
@@ -120,6 +135,17 @@ int main(void)
                   TASK_STACKSIZE,
                   NULL,
                   0);
+
+  OSTaskCreateExt(task_servo_business,
+		          (void*) SERVO4X_NAME,
+				  &task_servo_stk[TASK_STACKSIZE-1],
+				  TASK_SERVO_PRIORITY,
+				  TASK_SERVO_PRIORITY,
+				  task_servo_stk,
+                  TASK_STACKSIZE,
+                  NULL,
+                  0);
+
   OSStart();
   return 0;
 }

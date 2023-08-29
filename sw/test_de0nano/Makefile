@@ -178,7 +178,7 @@ CRT0 :=
 SYS_LIB :=
 
 # Define path to the root of the BSP.
-BSP_ROOT_DIR := D:/Project/outsource/DE0_CV_SDRAM_Nios_Test/sw/test_de0nano_bsp/
+BSP_ROOT_DIR := ../test_de0nano_bsp/
 
 # List of application specific include directories, library directories and library names
 APP_INCLUDE_DIRS :=
@@ -189,7 +189,7 @@ APP_LIBRARY_NAMES :=
 BUILD_PRE_PROCESS :=
 BUILD_POST_PROCESS :=
 
-QUARTUS_PROJECT_DIR := D:/Project/outsource/DE0_CV_SDRAM_Nios_Test/fw/
+QUARTUS_PROJECT_DIR := ../../fw
 
 
 #END GENERATED

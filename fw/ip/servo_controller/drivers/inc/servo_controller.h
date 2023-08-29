@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <errno.h>
 #include <sys/alt_dev.h>
+#include <ucos_ii.h>
 
 #include "FixedPID.h"
 
@@ -230,6 +231,7 @@ extern "C"
 
 	struct servo_controller_data_t
 	{
+		OS_FLAG_GRP *flag;
 		struct FixedPID pidState[SERVO_CONTROLLER_NUM_SERVO];
 
 		/// @brief Set point
@@ -343,6 +345,22 @@ extern "C"
 		struct servo_controller_dev_t *dev,
 		enum Servo_controller_servo_id_t channel,
 		int16_t pos);
+
+	/// @brief Task Servo Business
+	/// @param arg Pointer to servo device
+	/// @example
+	///    OSTaskCreateExt(task_servo_business, ... )
+	void task_servo_business(void *arg) __attribute__((section(".exceptions")));
+
+	/// @brief Update PID Parameter
+	/// @param dev Pointer to servo device
+	/// @param channel Servo channel
+	/// @param pidParameter PID parameter
+	/// @return error code
+	int servo_controller_update_pid_parameter(struct servo_controller_dev_t *dev,
+											  enum Servo_controller_servo_id_t channel,
+											  const struct FixedPIDArgument *pidParameter);
+
 #ifdef __cplusplus
 }
 #endif

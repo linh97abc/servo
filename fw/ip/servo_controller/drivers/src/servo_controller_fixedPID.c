@@ -5,7 +5,7 @@
 #define INT32_ALMOST_MAX (INT32_MAX - 1)
 #define INT16_ALMOST_MAX (INT16_MAX - 1)
 
-int PID_Init(struct FixedPID *self, struct FixedPIDArgument *arg)
+int PID_Init(struct FixedPID *self, const struct FixedPIDArgument *arg)
 {
 	if (arg->dT == 0)
 	{

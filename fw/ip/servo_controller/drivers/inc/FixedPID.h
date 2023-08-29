@@ -32,7 +32,7 @@ struct FixedPIDArgument
 	float sp0; // Setpoint initial value
 };
 
-int PID_Init(struct FixedPID *self, struct FixedPIDArgument *arg);
+int PID_Init(struct FixedPID *self, const struct FixedPIDArgument *arg);
 
 int16_t PID_Step(struct FixedPID *self, int16_t sp, int16_t pv) __attribute__((section(".exceptions")));
 

@@ -166,8 +166,8 @@ module DE0_NANO_SDRAM_Nios_Test (
   input [1:0] GPIO_1_IN;
 
 
-  wire UART_LOOPBACK_TX;
-wire UART_LOOPBACK_RX;
+wire UART_TX;
+wire UART_RX;
 wire UART_DEBUG_PULSE;
 
 wire SV1_HALL_A, SV1_HALL_B, SV1_HALL_C;
@@ -232,6 +232,9 @@ assign GPIO_1_D[25] = SV4_PHASE[2];
 assign GPIO_1_D[27] = SV4_PHASE[1];
 assign GPIO_1_D[29] = SV4_PHASE[0];
 
+assign UART_RX = GPIO_0_D[3];
+assign GPIO_0_D[5] = UART_TX;
+
 assign SV_NFAULT = {GPIO_1_D[31], GPIO_1_D[15], GPIO_1_D[30], GPIO_1_D[14]};
 
   DE0_NANO_QSYS u0 (
@@ -255,9 +258,9 @@ assign SV_NFAULT = {GPIO_1_D[31], GPIO_1_D[15], GPIO_1_D[30], GPIO_1_D[14]};
       .epcs_flash_controller_0_external_data0(EPCS_DATA0),  //  
 
 
-      // .avl_fifo_uart_0_conduit_end_rxd          (UART_LOOPBACK_TX),          //      avl_fifo_uart_0_conduit_end.rxd
-		  // .avl_fifo_uart_0_conduit_end_txd          (UART_LOOPBACK_RX),          //                                 .txd
-		  // .avl_fifo_uart_0_conduit_end_dbg_os_pulse (UART_DEBUG_PULSE),  //                                 .dbg_os_pulse
+      .avl_fifo_uart_0_conduit_end_rxd          (UART_RX),          //      avl_fifo_uart_0_conduit_end.rxd
+		.avl_fifo_uart_0_conduit_end_txd          (UART_TX),          //                                 .txd
+		.avl_fifo_uart_0_conduit_end_dbg_os_pulse (),  //                                 .dbg_os_pulse
 		  
       // .avl_fifo_uart_1_conduit_end_rxd          (UART_LOOPBACK_RX),          //      avl_fifo_uart_0_conduit_end.rxd
 		  // .avl_fifo_uart_1_conduit_end_txd          (UART_LOOPBACK_TX),          //                                 .txd
