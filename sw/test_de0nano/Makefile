@@ -143,8 +143,14 @@ ELF := test_de0nano.elf
 
 # Paths to C, C++, and assembly source files.
 C_SRCS :=
-CXX_SRCS += test_uart.cpp
-CXX_SRCS += test_servo.cpp
+CXX_SRCS += helper/os_wrapper.cpp
+CXX_SRCS += main.cpp
+CXX_SRCS += system_init.cpp
+CXX_SRCS += Service/Command.cpp
+CXX_SRCS += Service/Servo.cpp
+CXX_SRCS += Service/Alt_Flash.cpp
+CXX_SRCS += Service/service.cpp
+CXX_SRCS += Service/ucosAnalyzerService.cpp
 ASM_SRCS :=
 
 
@@ -181,7 +187,7 @@ SYS_LIB :=
 BSP_ROOT_DIR := ../test_de0nano_bsp/
 
 # List of application specific include directories, library directories and library names
-APP_INCLUDE_DIRS :=
+APP_INCLUDE_DIRS := inc
 APP_LIBRARY_DIRS :=
 APP_LIBRARY_NAMES :=
 
