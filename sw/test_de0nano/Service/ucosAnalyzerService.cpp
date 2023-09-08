@@ -1,5 +1,6 @@
 #include <Service/OSAnalyzer.h>
 #include <os_wrapper.h>
+#include "ucoshook.h"
 
 namespace service
 {
@@ -23,7 +24,7 @@ static bool UpdateTaskInfo(os::TaskInfo *taskInfo)
 	return false;
 }
 
-void os_hook()
+void OSTaskStatHook (void)
 {
 	uint8_t cpuUsage = os::GetCpuUsage();
 	inst->OnCpuUsageChanged(cpuUsage);

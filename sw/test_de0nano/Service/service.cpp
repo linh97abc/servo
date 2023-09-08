@@ -10,7 +10,8 @@ service::ICommandService *service::GetCommandService()
 }
 service::IServoService *service::GetServoService()
 {
-	return service::Get_HwServoService();
+//	return service::Get_HwServoService();
+	return service::Get_MockServoService();
 }
 
 service::IMonitorService *service::GetMonitorService()

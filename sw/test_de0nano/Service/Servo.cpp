@@ -3,6 +3,12 @@
 #include <system.h>
 #include <sys/alt_debug.h>
 
+#include <appconfig.h>
+#include <os_wrapper.h>
+#include <Logging.h>
+
+OS_STACK_DEF(servoTaskStk);
+
 namespace service
 {
 class ServoService : public IServoService
@@ -14,10 +20,29 @@ class ServoService : public IServoService
 	int Stop();
 	int SetPosition(int16_t pos[CONFIG_NUM_SERVO]);
 	int GetPosition(int16_t pos[CONFIG_NUM_SERVO]);
+//	static void TaskServoBusiness(void *arg);
 
+//	void DoBusiness();
 public:
 	ServoService();
 };
+}
+
+//void service::ServoService::TaskServoBusiness(void *arg)
+//{
+//	ServoService *self = (ServoService*)arg;
+//	self->DoBusiness();
+//}
+//
+//void service::ServoService::DoBusiness()
+//{
+//	servo_controller_
+//}
+
+void task_servo_wrppaer(servo_controller_dev_t *dev, void *arg)
+{
+	int16_t duty[4] = {0};
+	servo_controller_update_duty(dev, duty );
 }
 
 service::ServoService::ServoService()
@@ -48,6 +73,13 @@ service::ServoService::ServoService()
     SERVO_CONTROLLER_CFG(servoDev)->n_motor_pole[0] = 7;
     SERVO_CONTROLLER_CFG(servoDev)->n_motor_ratio[0] = 7;
     SERVO_CONTROLLER_CFG(servoDev)->K_position_filter[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0);
+
+    SERVO_CONTROLLER_CFG(servoDev)->on_new_process = task_servo_wrppaer;
+//    SERVO_CONTROLLER_CFG(servoDev)->callback_arg = (void*) SERVO4X_NAME;
+
+
+//    task_servo_business
+    os::CreateTask("TaskServo", task_servo_business, (void*) SERVO4X_NAME, servoTaskStk, SERVO_TASK_PRIO);
 }
 
 int service::ServoService::ApplyConfig(ServoConfigArg &arg)
@@ -64,11 +96,13 @@ int service::ServoService::ApplyConfig(ServoConfigArg &arg)
 
 int service::ServoService::Start()
 {
+	LOG_DEBUG("Servo Start\n");
 	return servo_controller_start(this->servoDev);
 }
 
 int service::ServoService::Stop()
 {
+	LOG_DEBUG("Servo Stop\n");
 	return servo_controller_stop(this->servoDev);
 }
 

@@ -24,6 +24,8 @@ int main(void)
 static void _MainTask(void* arg)
 {
 	(void)arg;
+	OSTimeDly(10);
+	OSStatInit();
 
 	InitSystem();
 

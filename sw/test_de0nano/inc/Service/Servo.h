@@ -19,4 +19,5 @@ public:
 };
 
 IServoService *Get_HwServoService();
+IServoService *Get_MockServoService();
 }

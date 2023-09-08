@@ -151,6 +151,8 @@ CXX_SRCS += Service/Servo.cpp
 CXX_SRCS += Service/Alt_Flash.cpp
 CXX_SRCS += Service/service.cpp
 CXX_SRCS += Service/ucosAnalyzerService.cpp
+CXX_SRCS += Service/MockServo.cpp
+CXX_SRCS += Service/Monitor.cpp
 ASM_SRCS :=
 
 

@@ -8,6 +8,7 @@ namespace service
 {
 class IMonitorService
 {
+protected:
 	ICommandService *commandService;
 	IServoService *servoService;
 	IOSAnalyzerService *osAnalyzerService;
@@ -18,6 +19,8 @@ public:
 
 	void SetCommandService(ICommandService *commandService) { this->commandService = commandService; }
 	void SetServoService(IServoService *servoService) { this->servoService = servoService; }
-	void SetOSAnalyzerService(IOSAnalyzerService *osAnalyzerService) { this->osAnalyzerService = osAnalyzerService; }
+	virtual void SetOSAnalyzerService(IOSAnalyzerService *osAnalyzerService) { this->osAnalyzerService = osAnalyzerService; }
 };
+
+IMonitorService* Get_MonitorService();
 }

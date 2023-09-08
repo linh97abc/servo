@@ -7,12 +7,16 @@
 #include <appconfig.h>
 
 #include "Servo.h"
+#include "Flash.h"
 
 namespace service
 {
 class ICommandService
 {
+protected:
 	IServoService *servoService;
+	IFlashService *flashService;
+
 public:
 	virtual void SendCpuUsage(uint8_t seq, uint8_t cpuUsage) = 0;
 	virtual void SendTaskInfo(const os::TaskInfo &taskInfo) = 0;
@@ -24,6 +28,11 @@ public:
 	void SetServoService(IServoService *servoService)
 	{
 		this->servoService = servoService;
+	}
+
+	void SetFlashService(IFlashService *flashService)
+	{
+		this->flashService = flashService;
 	}
 };
 
