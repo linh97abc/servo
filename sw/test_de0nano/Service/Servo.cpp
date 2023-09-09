@@ -74,12 +74,12 @@ service::ServoService::ServoService()
     SERVO_CONTROLLER_CFG(servoDev)->n_motor_ratio[0] = 7;
     SERVO_CONTROLLER_CFG(servoDev)->K_position_filter[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0);
 
-    SERVO_CONTROLLER_CFG(servoDev)->on_new_process = task_servo_wrppaer;
+//    SERVO_CONTROLLER_CFG(servoDev)->on_new_process = task_servo_wrppaer;
 //    SERVO_CONTROLLER_CFG(servoDev)->callback_arg = (void*) SERVO4X_NAME;
 
 
 //    task_servo_business
-    os::CreateTask("TaskServo", task_servo_business, (void*) SERVO4X_NAME, servoTaskStk, SERVO_TASK_PRIO);
+//    os::CreateTask("TaskServo", task_servo_business, (void*) SERVO4X_NAME, servoTaskStk, SERVO_TASK_PRIO);
 }
 
 int service::ServoService::ApplyConfig(ServoConfigArg &arg)
@@ -97,6 +97,14 @@ int service::ServoService::ApplyConfig(ServoConfigArg &arg)
 int service::ServoService::Start()
 {
 	LOG_DEBUG("Servo Start\n");
+
+	// servo_controller_start(this->servoDev);
+
+    // int16_t duty[SERVO_CONTROLLER_NUM_SERVO];
+    // duty[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(-0.4f);
+	// servo_controller_update_duty(this->servoDev, duty);
+	// return 0;
+
 	return servo_controller_start(this->servoDev);
 }
 

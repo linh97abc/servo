@@ -4,7 +4,7 @@ JedecChain;
 	DefaultMfr(6E);
 
 	P ActionCode(Cfg)
-		Device PartName(EP4CE22F17) Path("D:/Project/outsource/DE0_CV_SDRAM_Nios_Test/fw/de0nano/") File("DE0_NANO_SDRAM_Nios_Test.sof") MfrSpec(OpMask(1));
+		Device PartName(EP4CE22F17) Path("C:/Users/DELL/Documents/outsource/DE0_CV_SDRAM_Nios_Test/fw/de0nano/") File("DE0_NANO_SDRAM_Nios_Test.sof") MfrSpec(OpMask(1));
 
 ChainEnd;
 
