@@ -434,6 +434,7 @@ static void servo_controller_irq_handler(void *arg)
 
 	ie.val = SERVO_IORD(dev, SERVO_CONTROLLER_IE_OFFSET);
 	flag.val = SERVO_IORD(dev, SERVO_CONTROLLER_FLAG_OFFSET);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET, 0xFFFFFFFFu);
 
 	flag.val &= ie.val;
 
@@ -502,7 +503,7 @@ static void servo_controller_irq_handler(void *arg)
 			dev->cfg->on_drv_fault(dev, 3, dev->cfg->callback_arg);
 		}
 
-		SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET, 0xFFFFFFFFu);
+		
 	}
 }
 
