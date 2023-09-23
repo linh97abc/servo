@@ -140,74 +140,79 @@ wire TMP_SCL_I;
 wire TMP_SDA_T;
 wire TMP_SDA_I;
 
-assign UART_RX_A = GPIO_1[34];
-assign GPIO_1[35] = UART_TX_A;
-assign GPIO_1[32] = UART_PWREN;
-assign GPIO_1[33] = UART_SUSPEND;
+assign UART_RX_A = GPIO_1[11];
+assign GPIO_1[17] = UART_TX_A;
+assign GPIO_1[13] = UART_PWREN;
+assign GPIO_1[15] = UART_SUSPEND;
 
 assign UART_PWREN = 1'b0;
 assign UART_SUSPEND = 1'b1;
 
-assign GPIO_0[17] = ADC_CLK;
-assign ADC_DIN = GPIO_0[19];
-assign GPIO_0[21] = ADC_CS;
-assign GPIO_0[23] = ADC_DOUT;
+assign GPIO_0[14] = ADC_CLK;
+assign ADC_DIN = GPIO_0[17];
+assign GPIO_0[15] = ADC_CS;
+assign GPIO_0[16] = ADC_DOUT;
 
 
-assign SV1_HALL_A = GPIO_0[0];
-assign SV1_HALL_B = GPIO_0[2];
-assign SV1_HALL_C = GPIO_0[4];
+assign SV1_HALL_A = GPIO_1[6];
+assign SV1_HALL_B = GPIO_1[8];
+assign SV1_HALL_C = GPIO_1[10];
 
-assign SV2_HALL_A = GPIO_0[6];
-assign SV2_HALL_B = GPIO_0[8];
-assign SV2_HALL_C = GPIO_0[10];
+assign SV2_HALL_A = GPIO_1[12];
+assign SV2_HALL_B = GPIO_1[14];
+assign SV2_HALL_C = GPIO_1[16];
 
-assign SV3_HALL_A = GPIO_0[12];
-assign SV3_HALL_B = GPIO_0[14];
-assign SV3_HALL_C = GPIO_0[16];
+assign SV3_HALL_A = GPIO_1[18];
+assign SV3_HALL_B = GPIO_1[20];
+assign SV3_HALL_C = GPIO_1[22];
 
-assign SV4_HALL_A = GPIO_0[18];
-assign SV4_HALL_B = GPIO_0[20];
-assign SV4_HALL_C = GPIO_0[22];
+assign SV4_HALL_A = GPIO_1[24];
+assign SV4_HALL_B = GPIO_1[26];
+assign SV4_HALL_C = GPIO_1[28];
 
-assign GPIO_1[0] = DRV8320_EN[0];
-assign GPIO_1[2] = SV1_PHASE[5];
-assign GPIO_1[4] = SV1_PHASE[4];
-assign GPIO_1[6] = SV1_PHASE[3];
-assign GPIO_1[8] = SV1_PHASE[2];
-assign GPIO_1[10] = SV1_PHASE[1];
-assign GPIO_1[12] = SV1_PHASE[0];
+assign GPIO_1[7] = DRV8320_EN[0];
+assign GPIO_1[4] = SV1_PHASE[5];
+assign GPIO_1[5] = SV1_PHASE[4];
+assign GPIO_1[2] = SV1_PHASE[3];
+assign GPIO_1[3] = SV1_PHASE[2];
+assign GPIO_1[0] = SV1_PHASE[1];
+assign GPIO_1[1] = SV1_PHASE[0];
 
-assign GPIO_1[16] = DRV8320_EN[1];
-assign GPIO_1[18] = SV2_PHASE[5];
-assign GPIO_1[20] = SV2_PHASE[4];
-assign GPIO_1[22] = SV2_PHASE[3];
-assign GPIO_1[24] = SV2_PHASE[2];
-assign GPIO_1[26] = SV2_PHASE[1];
-assign GPIO_1[28] = SV2_PHASE[0];
+assign GPIO_0[7] = DRV8320_EN[1];
+assign GPIO_0[4] = SV2_PHASE[5];
+assign GPIO_0[5] = SV2_PHASE[4];
+assign GPIO_0[2] = SV2_PHASE[3];
+assign GPIO_0[3] = SV2_PHASE[2];
+assign GPIO_0[0] = SV2_PHASE[1];
+assign GPIO_0[1] = SV2_PHASE[0];
 
-assign GPIO_1[1] = DRV8320_EN[2];
-assign GPIO_1[3] = SV3_PHASE[5];
-assign GPIO_1[5] = SV3_PHASE[4];
-assign GPIO_1[7] = SV3_PHASE[3];
-assign GPIO_1[9] = SV3_PHASE[2];
-assign GPIO_1[11] = SV3_PHASE[1];
-assign GPIO_1[13] = SV3_PHASE[0];
+assign GPIO_0[25] = DRV8320_EN[2];
+assign GPIO_0[22] = SV3_PHASE[5];
+assign GPIO_0[23] = SV3_PHASE[4];
+assign GPIO_0[20] = SV3_PHASE[3];
+assign GPIO_0[21] = SV3_PHASE[2];
+assign GPIO_0[18] = SV3_PHASE[1];
+assign GPIO_0[19] = SV3_PHASE[0];
 
-assign GPIO_1[17] = DRV8320_EN[3];
-assign GPIO_1[19] = SV4_PHASE[5];
-assign GPIO_1[21] = SV4_PHASE[4];
-assign GPIO_1[23] = SV4_PHASE[3];
-assign GPIO_1[25] = SV4_PHASE[2];
-assign GPIO_1[27] = SV4_PHASE[1];
-assign GPIO_1[29] = SV4_PHASE[0];
+assign GPIO_0[35] = DRV8320_EN[3];
+assign GPIO_0[32] = SV4_PHASE[5];
+assign GPIO_0[33] = SV4_PHASE[4];
+assign GPIO_0[30] = SV4_PHASE[3];
+assign GPIO_0[31] = SV4_PHASE[2];
+assign GPIO_0[28] = SV4_PHASE[1];
+assign GPIO_0[29] = SV4_PHASE[0];
 
-assign SV_NFAULT = {GPIO_1[31], GPIO_1[15], GPIO_1[30], GPIO_1[14]};
+assign SV_NFAULT = {GPIO_0[34], GPIO_0[24], GPIO_0[6], GPIO_1[9]};
 
-assign GPIO_0[33] = TMP_SCL_T? 1'bz: 1'b0;
-assign GPIO_0[35] = TMP_SDA_T? 1'bz: 1'b0;
-assign TMP_SCL_I = GPIO_0[33];
-assign TMP_SDA_I = GPIO_0[35];
+assign GPIO_0[11] = TMP_SCL_T? 1'bz: 1'b0;
+assign GPIO_0[10] = TMP_SDA_T? 1'bz: 1'b0;
+assign TMP_SCL_I = GPIO_0[11];
+assign TMP_SDA_I = GPIO_0[10];
+
+assign GPIO_1[34] = LTC2992_SCL_T;
+assign GPIO_1[32] = LTC2992_SDA_T;
+assign LTC2992_SCL_I = GPIO_1[34];
+assign LTC2992_SDA_I = GPIO_1[32];
 
 //=======================================================
 //  REG/WIRE declarations
@@ -243,6 +248,12 @@ DE0_CV_QSYS u0(
 		.tmp101_i2c_scl_t                            (TMP_SCL_T),                            //                                 .scl_t
 		.tmp101_i2c_sda_i                            (TMP_SDA_I),                            //                                 .sda_i
 		.tmp101_i2c_scl_i                            (TMP_SCL_I),                             //  
+            
+            .ltc2992_i2c_sda_t                           (LTC2992_SDA_T),                           //                      ltc2992_i2c.sda_t
+		.ltc2992_i2c_scl_t                           (LTC2992_SCL_T),                           //                                 .scl_t
+		.ltc2992_i2c_sda_i                           (LTC2992_SDA_I),                           //                                 .sda_i
+		.ltc2992_i2c_scl_i                           (LTC2992_SCL_I)                            //   
+            
             // .avl_drv8320_0_conduit_end_hall_0(GPIO_0[8:6]),     // avl_drv8320_0_conduit_end.hall_0
 		// .avl_drv8320_0_conduit_end_hall_1(GPIO_0[11:9]),     //                          .hall_1
 		// .avl_drv8320_0_conduit_end_hall_2(GPIO_0[14:12]),     //                          .hall_2
