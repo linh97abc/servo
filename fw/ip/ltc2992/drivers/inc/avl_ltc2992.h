@@ -86,7 +86,7 @@ extern "C"
 		struct alt_dev_s dev;
 
 		/// @brief LTC2992 Base Address
-		struct tag_LTC2992_Reg *const BASE;
+		LTC2992_Reg *const BASE;
 
 		/// @brief Interrupt ID
 		const uint8_t IRQ;
