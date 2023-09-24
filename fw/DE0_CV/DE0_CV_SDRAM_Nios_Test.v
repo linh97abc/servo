@@ -221,12 +221,12 @@ DE0_CV_QSYS u0(
 		.clk_clk(CLOCK_50),                        //                     clk.clk
 		.reset_reset_n(1'b1),                  //                   reset.reset_n
 
-		.uart_debug_conduit_end_rxd(UART_DEBUG_RX),                  //           uart_debug_conduit_end.rxd
-		.uart_debug_conduit_end_txd(UART_DEBUG_TX),                  //                                 .txd
-		.uart_debug_conduit_end_dbg_os_pulse(),
-            .uart_rs485_conduit_end_rxd(UART_RX_A),                  //           uart_rs485_conduit_end.rxd
+		//.uart_debug_conduit_end_rxd(UART_DEBUG_RX),                  //           uart_debug_conduit_end.rxd
+		//.uart_debug_conduit_end_txd(UART_DEBUG_TX),                  //                                 .txd
+		//.uart_debug_conduit_end_dbg_os_pulse(),
+      .uart_rs485_conduit_end_rxd(UART_RX_A),                  //           uart_rs485_conduit_end.rxd
 		.uart_rs485_conduit_end_txd(UART_TX_A),                   //                                 .txd
-            .uart_rs485_conduit_end_dbg_os_pulse(),
+      .uart_rs485_conduit_end_dbg_os_pulse(),
 
             //
             .servo_controllerv1_0_conduit_end_spi_sclk(ADC_CLK), // servo_controllerv1_0_conduit_end.spi_sclk
@@ -252,7 +252,7 @@ DE0_CV_QSYS u0(
             .ltc2992_i2c_sda_t                           (LTC2992_SDA_T),                           //                      ltc2992_i2c.sda_t
 		.ltc2992_i2c_scl_t                           (LTC2992_SCL_T),                           //                                 .scl_t
 		.ltc2992_i2c_sda_i                           (LTC2992_SDA_I),                           //                                 .sda_i
-		.ltc2992_i2c_scl_i                           (LTC2992_SCL_I)                            //   
+		.ltc2992_i2c_scl_i                           (LTC2992_SCL_I),                            //   
             
             // .avl_drv8320_0_conduit_end_hall_0(GPIO_0[8:6]),     // avl_drv8320_0_conduit_end.hall_0
 		// .avl_drv8320_0_conduit_end_hall_1(GPIO_0[11:9]),     //                          .hall_1
