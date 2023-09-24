@@ -140,6 +140,11 @@ wire TMP_SCL_I;
 wire TMP_SDA_T;
 wire TMP_SDA_I;
 
+wire LTC2992_SCL_T;
+wire LTC2992_SCL_I;
+wire LTC2992_SDA_T;
+wire LTC2992_SDA_I;
+
 assign UART_RX_A = GPIO_1[11];
 assign GPIO_1[17] = UART_TX_A;
 assign GPIO_1[13] = UART_PWREN;
@@ -214,12 +219,28 @@ assign GPIO_1[32] = LTC2992_SDA_T;
 assign LTC2992_SCL_I = GPIO_1[34];
 assign LTC2992_SDA_I = GPIO_1[32];
 
+
+//(* keep *) reg clock_debug = 0;
+//reg[7:0] clock_debug_cnt = 0;
+//always @(posedge CLOCK_50)
+//begin 
+//   if (clock_debug_cnt < 25) begin 
+//		clock_debug_cnt <= clock_debug_cnt + 1'b1;
+//	end else begin
+//		clock_debug_cnt <= 0;
+//		clock_debug <= ~clock_debug;
+//	end
+//	
+//end
+(* keep *) wire CLK_5M;
+
 //=======================================================
 //  REG/WIRE declarations
 //=======================================================
 DE0_CV_QSYS u0(
 		.clk_clk(CLOCK_50),                        //                     clk.clk
 		.reset_reset_n(1'b1),                  //                   reset.reset_n
+		.clk_5m_clk(CLK_5M),
 
 		//.uart_debug_conduit_end_rxd(UART_DEBUG_RX),                  //           uart_debug_conduit_end.rxd
 		//.uart_debug_conduit_end_txd(UART_DEBUG_TX),                  //                                 .txd
