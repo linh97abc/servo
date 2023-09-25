@@ -130,10 +130,10 @@ static int servo_controller_update_duty_in_critical(
 	struct servo_controller_dev_t *dev,
 	int16_t duty[SERVO_CONTROLLER_NUM_SERVO])
 {
-	SERVO_IOWR(dev, SERVO_CONTROLLER_U0_OFFSET, duty[0]);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_U1_OFFSET, duty[1]);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_U2_OFFSET, duty[2]);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_U3_OFFSET, duty[3]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_U0_OFFSET, -duty[0]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_U1_OFFSET, -duty[1]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_U2_OFFSET, -duty[2]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_U3_OFFSET, -duty[3]);
 
 	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET,
 			   SERVO_CONTROLLER_TR_U_VALID_BIT);
@@ -436,9 +436,9 @@ static void servo_controller_irq_handler(void *arg)
 	flag.val = SERVO_IORD(dev, SERVO_CONTROLLER_FLAG_OFFSET);
 	SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET, 0xFFFFFFFFu);
 
+	OSFlagPost(dev->data->flag, flag.val, OS_FLAG_SET, &err);
 	flag.val &= ie.val;
 
-	OSFlagPost(dev->data->flag, flag.val, OS_FLAG_SET, &err);
 	ALT_DEBUG_ASSERT((err == OS_ERR_NONE));
 
 	if (flag.val & SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT)
