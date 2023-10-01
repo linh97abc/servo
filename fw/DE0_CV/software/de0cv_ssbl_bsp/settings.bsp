@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Oct 1, 2023 6:24:28 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1696159468695</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Oct 1, 2023 10:42:10 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1696174930359</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\outsource\servo\fw\DE0_CV\software\de0cv_ssbl_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\..\DE0_CV_QSYS.sopcinfo</SopcDesignFile>
@@ -62,7 +62,7 @@
                 <SettingName>hal.linker.allow_code_at_reset</SettingName>
                 <Identifier>ALT_ALLOW_CODE_AT_RESET</Identifier>
                 <Type>Boolean</Type>
-                <Value>0</Value>
+                <Value>1</Value>
                 <DefaultValue>0</DefaultValue>
                 <DestinationFile>none</DestinationFile>
                 <Description>Indicates if initialization code is allowed at the reset address. If true, defines the macro ALT_ALLOW_CODE_AT_RESET in linker.h.</Description>
