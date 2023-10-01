@@ -24,8 +24,7 @@ static int servo_controller_get_position_in_critical(
 	int16_t position[SERVO_CONTROLLER_NUM_SERVO]) __attribute__((section(".exceptions")));
 
 static int32_t predict_position1x_step(
-	int32_t pk1, int16_t K_filter, int32_t K_predict_to_mea,
-	int16_t deltaP, int16_t measured_val) __attribute__((section(".exceptions")));
+	int32_t pk1, int32_t K_predict_to_mea, int16_t deltaP) __attribute__((section(".exceptions")));
 
 static void servo_controller_predict_pos_step(
 	struct servo_controller_dev_t *dev) __attribute__((section(".exceptions")));
@@ -67,12 +66,10 @@ static int servo_controller_get_position_in_critical(
 }
 
 static int32_t predict_position1x_step(
-	int32_t pk1, int16_t K_filter, int32_t K_predict_to_mea,
-	int16_t deltaP, int16_t measured_val)
+	int32_t pk1, int32_t K_predict_to_mea,
+	int16_t deltaP)
 {
 	int32_t pk = pk1 + K_predict_to_mea * deltaP;
-	int32_t error = measured_val - (pk >> 15);
-	pk = pk + K_filter * error;
 
 	return pk;
 }
@@ -81,10 +78,8 @@ static void servo_controller_predict_pos_step(
 	struct servo_controller_dev_t *dev)
 {
 	int16_t delta_pos[SERVO_CONTROLLER_NUM_SERVO];
-	int16_t pos[SERVO_CONTROLLER_NUM_SERVO];
 
 	servo_controller_get_phase_position_in_critical(dev, delta_pos);
-	servo_controller_get_position_in_critical(dev, pos);
 	unsigned i;
 	struct servo_controller_data_t *data = dev->data;
 
@@ -94,10 +89,8 @@ static void servo_controller_predict_pos_step(
 		{
 			int32_t pk = predict_position1x_step(
 				data->filter_position[i],
-				data->K_filter[i],
 				data->K_phase_to_mea[i],
-				delta_pos[i],
-				pos[i]);
+				delta_pos[i]);
 			data->filter_position[i] = pk;
 		}
 	}
@@ -216,26 +209,6 @@ static int caculate_I_max(struct servo_controller_config_t *cfg,
 	return 0;
 }
 
-static int caculate_K_filter(
-	struct servo_controller_dev_t *dev,
-	enum Servo_controller_servo_id_t channel)
-{
-	float tmp = dev->cfg->K_position_filter[channel] * INT16_MAX;
-
-	if (tmp > (INT16_MAX - 1))
-	{
-		return -EINVAL;
-	}
-	else if (tmp < 0)
-	{
-		return -EINVAL;
-	}
-
-	dev->data->K_filter[channel] = (int16_t)tmp;
-
-	return 0;
-}
-
 int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 {
 	ALT_DEBUG_ASSERT((dev));
@@ -268,12 +241,6 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 			}
 
 			ret = caculate_I_max(cfg, i, &i_max[i]);
-			if (ret)
-			{
-				return ret;
-			}
-
-			ret = caculate_K_filter(dev, i);
 			if (ret)
 			{
 				return ret;

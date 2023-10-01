@@ -190,9 +190,6 @@ extern "C"
 		uint8_t n_motor_pole[SERVO_CONTROLLER_NUM_SERVO];
 		uint8_t n_motor_ratio[SERVO_CONTROLLER_NUM_SERVO];
 
-		/// @brief pos = p_predict + K_position_filter * (p_adc - p_predict)
-		float K_position_filter[SERVO_CONTROLLER_NUM_SERVO];
-
 		/// @brief spi speed of measurement IC
 		uint32_t spi_speed;
 

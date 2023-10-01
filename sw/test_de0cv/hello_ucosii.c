@@ -48,7 +48,6 @@ void task1(void* pdata)
 
     SERVO_CONTROLLER_CFG(servoDev)->n_motor_pole[0] = 5;
     SERVO_CONTROLLER_CFG(servoDev)->n_motor_ratio[0] = 1;
-    SERVO_CONTROLLER_CFG(servoDev)->K_position_filter[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0);
 
     stt = servo_controller_apply_configure(servoDev);
     ALT_DEBUG_ASSERT((stt == 0));
