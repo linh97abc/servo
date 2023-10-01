@@ -106,6 +106,7 @@ static void servo_controller_predict_pos_step(
 void task_servo_business(void *arg)
 {
 	struct servo_controller_dev_t *dev = servo_controller_open_dev((const char *)arg);
+	servo_controller_reg_IE ie;
 	ALT_DEBUG_ASSERT((dev != NULL));
 
 	struct servo_controller_data_t *data = (struct servo_controller_data_t *)dev->data;
@@ -126,8 +127,12 @@ void task_servo_business(void *arg)
 		}
 		else
 		{
+			SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET, SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT);
 			OSSchedUnlock();
 		}
+
+		ie.val = SERVO_IORD(dev, SERVO_CONTROLLER_IE_OFFSET);
+		SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val | SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT);
 	}
 }
 
@@ -495,12 +500,16 @@ static void servo_controller_irq_handler(void *arg)
 
 	ie.val = SERVO_IORD(dev, SERVO_CONTROLLER_IE_OFFSET);
 	flag.val = SERVO_IORD(dev, SERVO_CONTROLLER_FLAG_OFFSET);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET, 0xFFFFFFFFu);
 
 	OSFlagPost(dev->data->flag, flag.val, OS_FLAG_SET, &err);
 	flag.val &= ie.val;
 
 	ALT_DEBUG_ASSERT((err == OS_ERR_NONE));
+
+	if (flag.val & SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT)
+	{
+		SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val & ~SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT);
+	}
 
 	if (flag.val & ~SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT)
 	{
@@ -514,6 +523,7 @@ static void servo_controller_irq_handler(void *arg)
 		if (flag.val & SERVO_CONTROLLER_FLAG_REALTIME_ERR_BIT)
 		{
 			dev->cfg->on_realtime_err(dev, dev->cfg->callback_arg);
+			SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET, SERVO_CONTROLLER_FLAG_REALTIME_ERR_BIT);
 		}
 
 		if (flag.val & SERVO_CONTROLLER_FLAG_STOP0_BIT)
