@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="DE0_CV_QSYS" kind="DE0_CV_QSYS" version="1.0" fabric="QSYS">
  <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2023.09.30.12:47:27 -->
+ <!-- 2023.10.01.18:00:48 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1696052846</value>
+  <value>1696158047</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -3908,7 +3908,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.RESET_ADDR</name>
-   <value>0x0800b000</value>
+   <value>0x08008000</value>
   </assignment>
   <assignment>
    <name>embeddedsw.configuration.DataCacheVictimBufImpl</name>
@@ -3944,7 +3944,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.configuration.resetSlave</name>
-   <value>epcs_flash_controller_0.epcs_control_port</value>
+   <value>boot_rom.s1</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -3980,7 +3980,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.altr,reset-addr</name>
-   <value>0x0800b000</value>
+   <value>0x08008000</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.clock-frequency</name>
@@ -4416,7 +4416,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="resetSlave">
    <type>java.lang.String</type>
-   <value>epcs_flash_controller_0.epcs_control_port</value>
+   <value>boot_rom.s1</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -5136,7 +5136,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="resetAbsoluteAddr">
    <type>int</type>
-   <value>134262784</value>
+   <value>134250496</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -15255,7 +15255,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1696052846</value>
+   <value>1696158047</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -15275,7 +15275,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1696052846</value>
+   <value>1696158047</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -15291,7 +15291,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1696052846</value>
+   <value>1696158047</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>

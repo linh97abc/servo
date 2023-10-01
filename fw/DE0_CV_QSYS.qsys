@@ -792,7 +792,7 @@
   <parameter name="regfile_ramBlockType" value="Automatic" />
   <parameter name="register_file_por" value="false" />
   <parameter name="resetOffset" value="0" />
-  <parameter name="resetSlave">epcs_flash_controller_0.epcs_control_port</parameter>
+  <parameter name="resetSlave" value="boot_rom.s1" />
   <parameter name="resetrequest_enabled" value="true" />
   <parameter name="setting_HBreakTest" value="false" />
   <parameter name="setting_HDLSimCachesCleared" value="true" />
