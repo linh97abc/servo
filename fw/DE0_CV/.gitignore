@@ -10,10 +10,8 @@
 /*.sof
 /*.pof
 /*.sta.summary
-/DE0_CV_QSYS/
 /*.sopcinfo
 /incremental_db/
 /*.rpt
 /*.sld
-*.sopcinfo
 /.qsys_edit/
