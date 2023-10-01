@@ -1,0 +1,7 @@
+/.settings
+/create-this-app
+/*.elf
+/*.map
+/*.objdump
+/obj/
+/mem_init/
