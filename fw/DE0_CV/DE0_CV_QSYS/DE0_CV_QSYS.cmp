@@ -1,0 +1,48 @@
+	component DE0_CV_QSYS is
+		port (
+			clk_clk                                     : in    std_logic                     := 'X';             -- clk
+			clk_5m_clk                                  : out   std_logic;                                        -- clk
+			clk_sdram_clk                               : out   std_logic;                                        -- clk
+			ltc2992_i2c_sda_t                           : out   std_logic;                                        -- sda_t
+			ltc2992_i2c_scl_t                           : out   std_logic;                                        -- scl_t
+			ltc2992_i2c_sda_i                           : in    std_logic                     := 'X';             -- sda_i
+			ltc2992_i2c_scl_i                           : in    std_logic                     := 'X';             -- scl_i
+			pll_locked_export                           : out   std_logic;                                        -- export
+			reset_reset_n                               : in    std_logic                     := 'X';             -- reset_n
+			sdram_wire_addr                             : out   std_logic_vector(12 downto 0);                    -- addr
+			sdram_wire_ba                               : out   std_logic_vector(1 downto 0);                     -- ba
+			sdram_wire_cas_n                            : out   std_logic;                                        -- cas_n
+			sdram_wire_cke                              : out   std_logic;                                        -- cke
+			sdram_wire_cs_n                             : out   std_logic;                                        -- cs_n
+			sdram_wire_dq                               : inout std_logic_vector(15 downto 0) := (others => 'X'); -- dq
+			sdram_wire_dqm                              : out   std_logic_vector(1 downto 0);                     -- dqm
+			sdram_wire_ras_n                            : out   std_logic;                                        -- ras_n
+			sdram_wire_we_n                             : out   std_logic;                                        -- we_n
+			servo_controllerv1_0_conduit_end_spi_sclk   : out   std_logic;                                        -- spi_sclk
+			servo_controllerv1_0_conduit_end_spi_cs     : out   std_logic;                                        -- spi_cs
+			servo_controllerv1_0_conduit_end_spi_miso   : in    std_logic                     := 'X';             -- spi_miso
+			servo_controllerv1_0_conduit_end_spi_mosi   : out   std_logic;                                        -- spi_mosi
+			servo_controllerv1_0_conduit_end_hall_0     : in    std_logic_vector(2 downto 0)  := (others => 'X'); -- hall_0
+			servo_controllerv1_0_conduit_end_hall_1     : in    std_logic_vector(2 downto 0)  := (others => 'X'); -- hall_1
+			servo_controllerv1_0_conduit_end_hall_2     : in    std_logic_vector(2 downto 0)  := (others => 'X'); -- hall_2
+			servo_controllerv1_0_conduit_end_hall_3     : in    std_logic_vector(2 downto 0)  := (others => 'X'); -- hall_3
+			servo_controllerv1_0_conduit_end_phase_0    : out   std_logic_vector(5 downto 0);                     -- phase_0
+			servo_controllerv1_0_conduit_end_phase_1    : out   std_logic_vector(5 downto 0);                     -- phase_1
+			servo_controllerv1_0_conduit_end_phase_2    : out   std_logic_vector(5 downto 0);                     -- phase_2
+			servo_controllerv1_0_conduit_end_phase_3    : out   std_logic_vector(5 downto 0);                     -- phase_3
+			servo_controllerv1_0_conduit_end_nFault     : in    std_logic_vector(3 downto 0)  := (others => 'X'); -- nFault
+			servo_controllerv1_0_conduit_end_drv8320_en : out   std_logic_vector(3 downto 0);                     -- drv8320_en
+			spi_ad7928_external_MISO                    : in    std_logic                     := 'X';             -- MISO
+			spi_ad7928_external_MOSI                    : out   std_logic;                                        -- MOSI
+			spi_ad7928_external_SCLK                    : out   std_logic;                                        -- SCLK
+			spi_ad7928_external_SS_n                    : out   std_logic;                                        -- SS_n
+			tmp101_i2c_sda_t                            : out   std_logic;                                        -- sda_t
+			tmp101_i2c_scl_t                            : out   std_logic;                                        -- scl_t
+			tmp101_i2c_sda_i                            : in    std_logic                     := 'X';             -- sda_i
+			tmp101_i2c_scl_i                            : in    std_logic                     := 'X';             -- scl_i
+			uart_rs485_conduit_end_rxd                  : in    std_logic                     := 'X';             -- rxd
+			uart_rs485_conduit_end_txd                  : out   std_logic;                                        -- txd
+			uart_rs485_conduit_end_dbg_os_pulse         : out   std_logic                                         -- dbg_os_pulse
+		);
+	end component DE0_CV_QSYS;
+

@@ -1,0 +1,240 @@
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate D:\outsource\servo\fw\DE0_CV_QSYS.qsys --block-symbol-file --output-directory=D:\outsource\servo\fw\DE0_CV\DE0_CV_QSYS --family="Cyclone V" --part=5CEBA4F23C7
+Progress: Loading fw/DE0_CV_QSYS.qsys
+Progress: Reading input file
+Progress: Adding boot_rom [altera_avalon_onchip_memory2 18.1]
+Progress: Parameterizing module boot_rom
+Progress: Adding clk_50 [clock_source 18.1]
+Progress: Parameterizing module clk_50
+Progress: Adding epcs_flash_controller_0 [altera_avalon_epcs_flash_controller 18.1]
+Progress: Parameterizing module epcs_flash_controller_0
+Progress: Adding jtag_uart [altera_avalon_jtag_uart 18.1]
+Progress: Parameterizing module jtag_uart
+Progress: Adding ltc2992 [avl_ltc2992 1.0]
+Progress: Parameterizing module ltc2992
+Progress: Adding nios2_qsys [altera_nios2_gen2 18.1]
+Progress: Parameterizing module nios2_qsys
+Progress: Adding nios_custom_instr_floating_point_2_0 [altera_nios_custom_instr_floating_point_2 18.1]
+Progress: Parameterizing module nios_custom_instr_floating_point_2_0
+Progress: Adding pll [altera_pll 18.1]
+Progress: Parameterizing module pll
+Progress: Adding sdram [altera_avalon_new_sdram_controller 18.1]
+Progress: Parameterizing module sdram
+Progress: Adding servo_controllerv1_0 [servo_controllerv1 1.0]
+Progress: Parameterizing module servo_controllerv1_0
+Progress: Adding spi_ad7928 [altera_avalon_spi 18.1]
+Progress: Parameterizing module spi_ad7928
+Progress: Adding sysid_qsys [altera_avalon_sysid_qsys 18.1]
+Progress: Parameterizing module sysid_qsys
+Progress: Adding tc_instruct_mem [altera_avalon_onchip_memory2 18.1]
+Progress: Parameterizing module tc_instruct_mem
+Progress: Adding timer [altera_avalon_timer 18.1]
+Progress: Parameterizing module timer
+Progress: Adding timestamp [altera_avalon_timer 18.1]
+Progress: Parameterizing module timestamp
+Progress: Adding tmp101 [avl_tmp101 1.0]
+Progress: Parameterizing module tmp101
+Progress: Adding uart_debug [avl_fifo_uart 1.0]
+Progress: Parameterizing module uart_debug
+Progress: Adding uart_rs485 [avl_fifo_uart 1.0]
+Progress: Parameterizing module uart_rs485
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: DE0_CV_QSYS.epcs_flash_controller_0: Legacy EPCS/EPCQx1 Flash Controller will only be supported in Quartus Prime Standard Edition in the future release.
+Info: DE0_CV_QSYS.jtag_uart: JTAG UART IP input clock need to be at least double (2x) the operating frequency of JTAG TCK on board
+Info: DE0_CV_QSYS.pll: The legal reference clock frequency is 5.0 MHz..700.0 MHz
+Warning: DE0_CV_QSYS.pll: Able to implement PLL - Actual settings differ from Requested settings
+Info: DE0_CV_QSYS.sdram: SDRAM Controller will only be supported in Quartus Prime Standard Edition in the future release.
+Info: DE0_CV_QSYS.sysid_qsys: System ID is not assigned automatically. Edit the System ID parameter to provide a unique ID
+Info: DE0_CV_QSYS.sysid_qsys: Time stamp will be automatically updated when this component is generated.
+Info: qsys-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate D:\outsource\servo\fw\DE0_CV_QSYS.qsys --synthesis=VERILOG --output-directory=D:\outsource\servo\fw\DE0_CV\DE0_CV_QSYS\synthesis --family="Cyclone V" --part=5CEBA4F23C7
+Progress: Loading fw/DE0_CV_QSYS.qsys
+Progress: Reading input file
+Progress: Adding boot_rom [altera_avalon_onchip_memory2 18.1]
+Progress: Parameterizing module boot_rom
+Progress: Adding clk_50 [clock_source 18.1]
+Progress: Parameterizing module clk_50
+Progress: Adding epcs_flash_controller_0 [altera_avalon_epcs_flash_controller 18.1]
+Progress: Parameterizing module epcs_flash_controller_0
+Progress: Adding jtag_uart [altera_avalon_jtag_uart 18.1]
+Progress: Parameterizing module jtag_uart
+Progress: Adding ltc2992 [avl_ltc2992 1.0]
+Progress: Parameterizing module ltc2992
+Progress: Adding nios2_qsys [altera_nios2_gen2 18.1]
+Progress: Parameterizing module nios2_qsys
+Progress: Adding nios_custom_instr_floating_point_2_0 [altera_nios_custom_instr_floating_point_2 18.1]
+Progress: Parameterizing module nios_custom_instr_floating_point_2_0
+Progress: Adding pll [altera_pll 18.1]
+Progress: Parameterizing module pll
+Progress: Adding sdram [altera_avalon_new_sdram_controller 18.1]
+Progress: Parameterizing module sdram
+Progress: Adding servo_controllerv1_0 [servo_controllerv1 1.0]
+Progress: Parameterizing module servo_controllerv1_0
+Progress: Adding spi_ad7928 [altera_avalon_spi 18.1]
+Progress: Parameterizing module spi_ad7928
+Progress: Adding sysid_qsys [altera_avalon_sysid_qsys 18.1]
+Progress: Parameterizing module sysid_qsys
+Progress: Adding tc_instruct_mem [altera_avalon_onchip_memory2 18.1]
+Progress: Parameterizing module tc_instruct_mem
+Progress: Adding timer [altera_avalon_timer 18.1]
+Progress: Parameterizing module timer
+Progress: Adding timestamp [altera_avalon_timer 18.1]
+Progress: Parameterizing module timestamp
+Progress: Adding tmp101 [avl_tmp101 1.0]
+Progress: Parameterizing module tmp101
+Progress: Adding uart_debug [avl_fifo_uart 1.0]
+Progress: Parameterizing module uart_debug
+Progress: Adding uart_rs485 [avl_fifo_uart 1.0]
+Progress: Parameterizing module uart_rs485
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: DE0_CV_QSYS.epcs_flash_controller_0: Legacy EPCS/EPCQx1 Flash Controller will only be supported in Quartus Prime Standard Edition in the future release.
+Info: DE0_CV_QSYS.jtag_uart: JTAG UART IP input clock need to be at least double (2x) the operating frequency of JTAG TCK on board
+Info: DE0_CV_QSYS.pll: The legal reference clock frequency is 5.0 MHz..700.0 MHz
+Warning: DE0_CV_QSYS.pll: Able to implement PLL - Actual settings differ from Requested settings
+Info: DE0_CV_QSYS.sdram: SDRAM Controller will only be supported in Quartus Prime Standard Edition in the future release.
+Info: DE0_CV_QSYS.sysid_qsys: System ID is not assigned automatically. Edit the System ID parameter to provide a unique ID
+Info: DE0_CV_QSYS.sysid_qsys: Time stamp will be automatically updated when this component is generated.
+Info: DE0_CV_QSYS: Generating DE0_CV_QSYS "DE0_CV_QSYS" for QUARTUS_SYNTH
+Info: Interconnect is inserted between master nios2_qsys.tightly_coupled_instruction_master_0 and slave tc_instruct_mem.s1 because the master has address signal 28 bit wide, but the slave is 13 bit wide.
+Info: Interconnect is inserted between master nios2_qsys.tightly_coupled_instruction_master_0 and slave tc_instruct_mem.s1 because the master has read signal 1 bit wide, but the slave is 0 bit wide.
+Info: Interconnect is inserted between master nios2_qsys.tightly_coupled_instruction_master_1 and slave boot_rom.s1 because the master has address signal 28 bit wide, but the slave is 11 bit wide.
+Info: Interconnect is inserted between master nios2_qsys.tightly_coupled_instruction_master_1 and slave boot_rom.s1 because the master has read signal 1 bit wide, but the slave is 0 bit wide.
+Warning: DE0_CV_QSYS: "No matching role found for nios2_qsys_custom_instruction_master_multi_xconnect:ci_slave:ci_slave_ipending (ipending)"
+Warning: DE0_CV_QSYS: "No matching role found for nios2_qsys_custom_instruction_master_multi_xconnect:ci_slave:ci_slave_estatus (estatus)"
+Info: boot_rom: Starting RTL generation for module 'DE0_CV_QSYS_boot_rom'
+Info: boot_rom:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=DE0_CV_QSYS_boot_rom --dir=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0002_boot_rom_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0002_boot_rom_gen//DE0_CV_QSYS_boot_rom_component_configuration.pl  --do_build_sim=0  ]
+Info: boot_rom: Done RTL generation for module 'DE0_CV_QSYS_boot_rom'
+Info: boot_rom: "DE0_CV_QSYS" instantiated altera_avalon_onchip_memory2 "boot_rom"
+Info: epcs_flash_controller_0: Starting RTL generation for module 'DE0_CV_QSYS_epcs_flash_controller_0'
+Info: epcs_flash_controller_0:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_epcs_flash_controller -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_epcs_flash_controller/generate_rtl.pl --name=DE0_CV_QSYS_epcs_flash_controller_0 --dir=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0003_epcs_flash_controller_0_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0003_epcs_flash_controller_0_gen//DE0_CV_QSYS_epcs_flash_controller_0_component_configuration.pl  --do_build_sim=0  ]
+Info: epcs_flash_controller_0: Done RTL generation for module 'DE0_CV_QSYS_epcs_flash_controller_0'
+Info: epcs_flash_controller_0: "DE0_CV_QSYS" instantiated altera_avalon_epcs_flash_controller "epcs_flash_controller_0"
+Info: jtag_uart: Starting RTL generation for module 'DE0_CV_QSYS_jtag_uart'
+Info: jtag_uart:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart/generate_rtl.pl --name=DE0_CV_QSYS_jtag_uart --dir=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0004_jtag_uart_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0004_jtag_uart_gen//DE0_CV_QSYS_jtag_uart_component_configuration.pl  --do_build_sim=0  ]
+Info: jtag_uart: Done RTL generation for module 'DE0_CV_QSYS_jtag_uart'
+Info: jtag_uart: "DE0_CV_QSYS" instantiated altera_avalon_jtag_uart "jtag_uart"
+Info: ltc2992: "DE0_CV_QSYS" instantiated avl_ltc2992 "ltc2992"
+Info: nios2_qsys: "DE0_CV_QSYS" instantiated altera_nios2_gen2 "nios2_qsys"
+Info: nios_custom_instr_floating_point_2_0: "DE0_CV_QSYS" instantiated altera_nios_custom_instr_floating_point_2 "nios_custom_instr_floating_point_2_0"
+Info: pll: "DE0_CV_QSYS" instantiated altera_pll "pll"
+Info: sdram: Starting RTL generation for module 'DE0_CV_QSYS_sdram'
+Info: sdram:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_new_sdram_controller -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_new_sdram_controller/generate_rtl.pl --name=DE0_CV_QSYS_sdram --dir=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0007_sdram_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0007_sdram_gen//DE0_CV_QSYS_sdram_component_configuration.pl  --do_build_sim=0  ]
+Info: sdram: Done RTL generation for module 'DE0_CV_QSYS_sdram'
+Info: sdram: "DE0_CV_QSYS" instantiated altera_avalon_new_sdram_controller "sdram"
+Info: servo_controllerv1_0: "DE0_CV_QSYS" instantiated servo_controllerv1 "servo_controllerv1_0"
+Info: spi_ad7928: Starting RTL generation for module 'DE0_CV_QSYS_spi_ad7928'
+Info: spi_ad7928:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_spi -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_spi/generate_rtl.pl --name=DE0_CV_QSYS_spi_ad7928 --dir=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0009_spi_ad7928_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0009_spi_ad7928_gen//DE0_CV_QSYS_spi_ad7928_component_configuration.pl  --do_build_sim=0  ]
+Info: spi_ad7928: Done RTL generation for module 'DE0_CV_QSYS_spi_ad7928'
+Info: spi_ad7928: "DE0_CV_QSYS" instantiated altera_avalon_spi "spi_ad7928"
+Info: sysid_qsys: "DE0_CV_QSYS" instantiated altera_avalon_sysid_qsys "sysid_qsys"
+Info: tc_instruct_mem: Starting RTL generation for module 'DE0_CV_QSYS_tc_instruct_mem'
+Info: tc_instruct_mem:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=DE0_CV_QSYS_tc_instruct_mem --dir=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0011_tc_instruct_mem_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0011_tc_instruct_mem_gen//DE0_CV_QSYS_tc_instruct_mem_component_configuration.pl  --do_build_sim=0  ]
+Info: tc_instruct_mem: Done RTL generation for module 'DE0_CV_QSYS_tc_instruct_mem'
+Info: tc_instruct_mem: "DE0_CV_QSYS" instantiated altera_avalon_onchip_memory2 "tc_instruct_mem"
+Info: timer: Starting RTL generation for module 'DE0_CV_QSYS_timer'
+Info: timer:   Generation command is [exec C:/intelFPGA_lite/18.1/quartus/bin64//perl/bin/perl.exe -I C:/intelFPGA_lite/18.1/quartus/bin64//perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_timer -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_timer/generate_rtl.pl --name=DE0_CV_QSYS_timer --dir=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0012_timer_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0012_timer_gen//DE0_CV_QSYS_timer_component_configuration.pl  --do_build_sim=0  ]
+Info: timer: Done RTL generation for module 'DE0_CV_QSYS_timer'
+Info: timer: "DE0_CV_QSYS" instantiated altera_avalon_timer "timer"
+Info: timestamp: Starting RTL generation for module 'DE0_CV_QSYS_timestamp'
+Info: timestamp:   Generation command is [exec C:/intelFPGA_lite/18.1/quartus/bin64//perl/bin/perl.exe -I C:/intelFPGA_lite/18.1/quartus/bin64//perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_timer -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_timer/generate_rtl.pl --name=DE0_CV_QSYS_timestamp --dir=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0013_timestamp_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0013_timestamp_gen//DE0_CV_QSYS_timestamp_component_configuration.pl  --do_build_sim=0  ]
+Info: timestamp: Done RTL generation for module 'DE0_CV_QSYS_timestamp'
+Info: timestamp: "DE0_CV_QSYS" instantiated altera_avalon_timer "timestamp"
+Info: tmp101: "DE0_CV_QSYS" instantiated avl_tmp101 "tmp101"
+Info: Reusing file D:/outsource/servo/fw/DE0_CV/DE0_CV_QSYS/synthesis/submodules/i2c_master.vhd
+Info: uart_rs485: "DE0_CV_QSYS" instantiated avl_fifo_uart "uart_rs485"
+Info: nios2_qsys_custom_instruction_master_translator: "DE0_CV_QSYS" instantiated altera_customins_master_translator "nios2_qsys_custom_instruction_master_translator"
+Info: nios2_qsys_custom_instruction_master_comb_xconnect: "DE0_CV_QSYS" instantiated altera_customins_xconnect "nios2_qsys_custom_instruction_master_comb_xconnect"
+Info: nios2_qsys_custom_instruction_master_comb_slave_translator0: "DE0_CV_QSYS" instantiated altera_customins_slave_translator "nios2_qsys_custom_instruction_master_comb_slave_translator0"
+Info: nios2_qsys_custom_instruction_master_multi_xconnect: "DE0_CV_QSYS" instantiated altera_customins_xconnect "nios2_qsys_custom_instruction_master_multi_xconnect"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_003: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_004: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_005: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_006: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_007: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_008: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_009: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_010: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_011: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_012: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_013: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_0: "DE0_CV_QSYS" instantiated altera_mm_interconnect "mm_interconnect_0"
+Info: mm_interconnect_1: "DE0_CV_QSYS" instantiated altera_mm_interconnect "mm_interconnect_1"
+Info: mm_interconnect_2: "DE0_CV_QSYS" instantiated altera_mm_interconnect "mm_interconnect_2"
+Info: irq_mapper: "DE0_CV_QSYS" instantiated altera_irq_mapper "irq_mapper"
+Info: rst_controller: "DE0_CV_QSYS" instantiated altera_reset_controller "rst_controller"
+Info: cpu: Starting RTL generation for module 'DE0_CV_QSYS_nios2_qsys_cpu'
+Info: cpu:   Generation command is [exec C:/intelFPGA_lite/18.1/quartus/bin64//eperlcmd.exe -I C:/intelFPGA_lite/18.1/quartus/bin64//perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/cpu_lib -I C:/intelfpga_lite/18.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/nios_lib -I C:/intelfpga_lite/18.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2 -I C:/intelfpga_lite/18.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2 -- C:/intelfpga_lite/18.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/generate_rtl.epl --name=DE0_CV_QSYS_nios2_qsys_cpu --dir=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0022_cpu_gen/ --quartus_bindir=C:/intelFPGA_lite/18.1/quartus/bin64/ --verilog --config=C:/Users/DELL/AppData/Local/Temp/alt9631_8724417078129501083.dir/0022_cpu_gen//DE0_CV_QSYS_nios2_qsys_cpu_processor_configuration.pl  --do_build_sim=0  ]
+Info: cpu: # 2023.10.01 18:01:17 (*) Starting Nios II generation
+Info: cpu: # 2023.10.01 18:01:17 (*)   Checking for plaintext license.
+Info: cpu: # 2023.10.01 18:01:18 (*)   Plaintext license not found.
+Info: cpu: # 2023.10.01 18:01:18 (*)   Checking for encrypted license (non-evaluation).
+Info: cpu: # 2023.10.01 18:01:18 (*)   Encrypted license found.  SOF will not be time-limited.
+Info: cpu: # 2023.10.01 18:01:18 (*)   Elaborating CPU configuration settings
+Info: cpu: # 2023.10.01 18:01:18 (*)   Creating all objects for CPU
+Info: cpu: # 2023.10.01 18:01:18 (*)     Testbench
+Info: cpu: # 2023.10.01 18:01:18 (*)     Instruction decoding
+Info: cpu: # 2023.10.01 18:01:18 (*)       Instruction fields
+Info: cpu: # 2023.10.01 18:01:19 (*)       Instruction decodes
+Info: cpu: # 2023.10.01 18:01:19 (*)       Signals for RTL simulation waveforms
+Info: cpu: # 2023.10.01 18:01:19 (*)       Instruction controls
+Info: cpu: # 2023.10.01 18:01:19 (*)     Pipeline frontend
+Info: cpu: # 2023.10.01 18:01:19 (*)   Master tightly_coupled_instruction_master_0 address range (0x8000000, 0x8007fff) overlaps with master instruction_master address range (0x4000000, 0xfffffff)
+Info: cpu: # 2023.10.01 18:01:19 (*)   Master tightly_coupled_instruction_master_1 address range (0x8008000, 0x8009fff) overlaps with master instruction_master address range (0x4000000, 0xfffffff)
+Info: cpu: # 2023.10.01 18:01:19 (*)   Master instruction_master address range (0x4000000, 0xfffffff) overlaps with master tightly_coupled_instruction_master_0 address range (0x8000000, 0x8007fff)
+Info: cpu: # 2023.10.01 18:01:19 (*)   Master instruction_master address range (0x4000000, 0xfffffff) overlaps with master tightly_coupled_instruction_master_1 address range (0x8008000, 0x8009fff)
+Info: cpu: # 2023.10.01 18:01:19 (*)   Generating non-optimal tightly-coupled master logic due to overlap
+Info: cpu: # 2023.10.01 18:01:19 (*)     Pipeline backend
+Info: cpu: # 2023.10.01 18:01:21 (*)   Generating RTL from CPU objects
+Info: cpu: # 2023.10.01 18:01:22 (*)   Creating encrypted RTL
+Info: cpu: # 2023.10.01 18:01:22 (*) Done Nios II generation
+Info: cpu: Done RTL generation for module 'DE0_CV_QSYS_nios2_qsys_cpu'
+Info: cpu: "nios2_qsys" instantiated altera_nios2_gen2_unit "cpu"
+Info: fpci_combi: "nios_custom_instr_floating_point_2_0" instantiated altera_nios_custom_instr_floating_point_2_combi "fpci_combi"
+Info: fpci_multi: "nios_custom_instr_floating_point_2_0" instantiated altera_nios_custom_instr_floating_point_2_multi "fpci_multi"
+Info: nios2_qsys_data_master_translator: "mm_interconnect_0" instantiated altera_merlin_master_translator "nios2_qsys_data_master_translator"
+Info: jtag_uart_avalon_jtag_slave_translator: "mm_interconnect_0" instantiated altera_merlin_slave_translator "jtag_uart_avalon_jtag_slave_translator"
+Info: nios2_qsys_data_master_agent: "mm_interconnect_0" instantiated altera_merlin_master_agent "nios2_qsys_data_master_agent"
+Info: jtag_uart_avalon_jtag_slave_agent: "mm_interconnect_0" instantiated altera_merlin_slave_agent "jtag_uart_avalon_jtag_slave_agent"
+Info: jtag_uart_avalon_jtag_slave_agent_rsp_fifo: "mm_interconnect_0" instantiated altera_avalon_sc_fifo "jtag_uart_avalon_jtag_slave_agent_rsp_fifo"
+Info: router: "mm_interconnect_0" instantiated altera_merlin_router "router"
+Info: router_001: "mm_interconnect_0" instantiated altera_merlin_router "router_001"
+Info: router_002: "mm_interconnect_0" instantiated altera_merlin_router "router_002"
+Info: router_003: "mm_interconnect_0" instantiated altera_merlin_router "router_003"
+Info: router_008: "mm_interconnect_0" instantiated altera_merlin_router "router_008"
+Info: nios2_qsys_data_master_limiter: "mm_interconnect_0" instantiated altera_merlin_traffic_limiter "nios2_qsys_data_master_limiter"
+Info: Reusing file D:/outsource/servo/fw/DE0_CV/DE0_CV_QSYS/synthesis/submodules/altera_avalon_sc_fifo.v
+Info: sdram_s1_burst_adapter: "mm_interconnect_0" instantiated altera_merlin_burst_adapter "sdram_s1_burst_adapter"
+Info: Reusing file D:/outsource/servo/fw/DE0_CV/DE0_CV_QSYS/synthesis/submodules/altera_avalon_st_pipeline_base.v
+Info: cmd_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_demux_001: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux_001"
+Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: cmd_mux_001: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux_001"
+Info: Reusing file D:/outsource/servo/fw/DE0_CV/DE0_CV_QSYS/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux"
+Info: rsp_demux_001: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux_001"
+Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file D:/outsource/servo/fw/DE0_CV/DE0_CV_QSYS/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_mux_001: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux_001"
+Info: Reusing file D:/outsource/servo/fw/DE0_CV/DE0_CV_QSYS/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: sdram_s1_rsp_width_adapter: "mm_interconnect_0" instantiated altera_merlin_width_adapter "sdram_s1_rsp_width_adapter"
+Info: Reusing file D:/outsource/servo/fw/DE0_CV/DE0_CV_QSYS/synthesis/submodules/altera_merlin_address_alignment.sv
+Info: Reusing file D:/outsource/servo/fw/DE0_CV/DE0_CV_QSYS/synthesis/submodules/altera_merlin_burst_uncompressor.sv
+Info: avalon_st_adapter: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter"
+Info: avalon_st_adapter_006: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter_006"
+Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
+Info: error_adapter_0: "avalon_st_adapter_006" instantiated error_adapter "error_adapter_0"
+Info: DE0_CV_QSYS: Done "DE0_CV_QSYS" with 54 modules, 119 files
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis
