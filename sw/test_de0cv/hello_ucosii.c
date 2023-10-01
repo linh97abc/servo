@@ -27,12 +27,10 @@ OS_STK    task_servo_stk[TASK_STACKSIZE];
 #define TASK2_PRIORITY      3
 
 struct servo_controller_dev_t *servoDev;
-FifoUart_Dev *fifoUartDev;
 
 void task1(void* pdata)
 {
 	int stt;
-    printf("Hello from task1\n");
 
     servoDev = servo_controller_open_dev(SERVO4X_NAME);
 
@@ -41,19 +39,17 @@ void task1(void* pdata)
     SERVO_CONTROLLER_CFG(servoDev)->pwm_base_freq = 1000000;
     SERVO_CONTROLLER_CFG(servoDev)->pwm_freq = 5000;
     SERVO_CONTROLLER_CFG(servoDev)->pwm_trig_rate = 10;
-//    SERVO_CONTROLLER_CFG(servoDev)->pwm_trig_rate = 1;
 
     SERVO_CONTROLLER_CFG(servoDev)->i_max[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.5f);
     SERVO_CONTROLLER_CFG(servoDev)->i_max[1] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.5f);
     SERVO_CONTROLLER_CFG(servoDev)->i_max[2] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.5f);
     SERVO_CONTROLLER_CFG(servoDev)->i_max[3] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.5f);
 
-    SERVO_CONTROLLER_CFG(servoDev)->closed_loop_en = true;
-    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].E_lsb = 0.2;
-    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].U_lsb = 1;
-    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].dT = 1.0/500;
-    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].kp = 10;
-    SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].ramp_rate = 1000;
+    SERVO_CONTROLLER_CFG(servoDev)->Pos_lsb[0] = 0.2;
+    SERVO_CONTROLLER_CFG(servoDev)->Pos_lsb[1] = 0.2;
+    SERVO_CONTROLLER_CFG(servoDev)->Pos_lsb[2] = 0.2;
+    SERVO_CONTROLLER_CFG(servoDev)->Pos_lsb[3] = 0.2;
+
 
     SERVO_CONTROLLER_CFG(servoDev)->n_motor_pole[0] = 5;
     SERVO_CONTROLLER_CFG(servoDev)->n_motor_ratio[0] = 1;
@@ -61,8 +57,6 @@ void task1(void* pdata)
 
     stt = servo_controller_apply_configure(servoDev);
     ALT_DEBUG_ASSERT((stt == 0));
-
-
 
     servo_controller_start(servoDev);
 
@@ -75,11 +69,6 @@ void task1(void* pdata)
 //    duty[3] = 0;
 //
     servo_controller_update_duty(servoDev, duty);
-//    servo_controller_update_duty(servoDev, 0);
-
-//    servo_controller_set_position(servoDev, SERVO_CONTROLLER_SERVO_ID_0, 1000);
-//    servo_controller_set_position(servoDev, SERVO_CONTROLLER_SERVO_ID_0,
-//    		-180/SERVO_CONTROLLER_CFG(servoDev)->pidArgument[0].E_lsb);
 
 
   while (1)
@@ -90,26 +79,9 @@ void task1(void* pdata)
 	  printf("pos = %ld\n", servoDev->data->filter_position[0] >> 15);
 	  printf("duty = %d\n", duty[0]);
 	  printf("realtime_err = %d\n", servoDev->BASE->flag.field.realtime_err);
-
-//	  printf("pos_phase = %d\n", servoDev->BASE->pos_phase[0]);
-//	  printf("ha=%d, hb=%d, hc=%d\n",
-//			  servoDev->BASE->hall_sig.ha_0,
-//			  servoDev->BASE->hall_sig.hb_0,
-//			  servoDev->BASE->hall_sig.hc_0
-//			  );
-
-
-//	  if (servoDev->BASE->pos_phase[0] > 1000)
-//	  {
-//		  servo_controller_stop(servoDev);
-//	  }
   }
 }
-/* Prints "Hello World" and sleeps for three seconds */
-void task2(void* pdata)
-{
 
-}
 /* The main function creates two task and starts multi-tasking */
 int main(void)
 {
@@ -125,17 +97,6 @@ int main(void)
                   TASK_STACKSIZE,
                   NULL,
                   0);
-
-
-//  OSTaskCreateExt(task2,
-//                  NULL,
-//                  &task2_stk[TASK_STACKSIZE-1],
-//                  TASK2_PRIORITY,
-//                  TASK2_PRIORITY,
-//                  task2_stk,
-//                  TASK_STACKSIZE,
-//                  NULL,
-//                  0);
 
   OSTaskCreateExt(task_servo_business,
 		          (void*) SERVO4X_NAME,

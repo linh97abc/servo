@@ -27,7 +27,7 @@ static int32_t predict_position1x_step(
 	int32_t pk1, int16_t K_filter, int32_t K_predict_to_mea,
 	int16_t deltaP, int16_t measured_val) __attribute__((section(".exceptions")));
 
-static void servo_controller_process_step(
+static void servo_controller_predict_pos_step(
 	struct servo_controller_dev_t *dev) __attribute__((section(".exceptions")));
 
 static int servo_controller_get_phase_position_in_critical(
@@ -77,12 +77,11 @@ static int32_t predict_position1x_step(
 	return pk;
 }
 
-static void servo_controller_process_step(
+static void servo_controller_predict_pos_step(
 	struct servo_controller_dev_t *dev)
 {
 	int16_t delta_pos[SERVO_CONTROLLER_NUM_SERVO];
 	int16_t pos[SERVO_CONTROLLER_NUM_SERVO];
-	int16_t controlVal[SERVO_CONTROLLER_NUM_SERVO];
 
 	servo_controller_get_phase_position_in_critical(dev, delta_pos);
 	servo_controller_get_position_in_critical(dev, pos);
@@ -91,16 +90,14 @@ static void servo_controller_process_step(
 
 	for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
 	{
-		if (dev->cfg->drv_en[i])
-		{
-			int32_t pk = predict_position1x_step(
-				data->filter_position[i], data->K_filter[i], data->K_phase_to_mea[i], delta_pos[i], pos[i]);
-			data->filter_position[i] = pk;
-			controlVal[i] = PID_Step(&data->pidState[i], data->position_sp[i], pk >> 15);
-		}
+		int32_t pk = predict_position1x_step(
+			data->filter_position[i],
+			data->K_filter[i],
+			data->K_phase_to_mea[i],
+			delta_pos[i],
+			pos[i]);
+		data->filter_position[i] = pk;
 	}
-
-	servo_controller_update_duty_in_critical(dev, controlVal);
 }
 
 void task_servo_business(void *arg)
@@ -111,18 +108,24 @@ void task_servo_business(void *arg)
 	struct servo_controller_data_t *data = (struct servo_controller_data_t *)dev->data;
 	INT8U err;
 
-	OSFlagPend(data->flag, SERVO_CONTROLLER_FLAG_ADC_VALID_BIT, OS_FLAG_WAIT_SET_ANY, 0, &err);
-	ALT_DEBUG_ASSERT((err == OS_ERR_NONE));
-
 	for (;;)
 	{
 		OSFlagPend(data->flag, SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT, OS_FLAG_WAIT_SET_ANY + OS_FLAG_CONSUME, 0, &err);
 		ALT_DEBUG_ASSERT((err == OS_ERR_NONE));
 
-		if (dev->cfg->closed_loop_en)
+		OSSchedLock();
+		servo_controller_predict_pos_step(dev);
+
+		if (dev->cfg->on_new_process)
 		{
-			servo_controller_process_step(dev);
+			OSSchedUnlock();
+			dev->cfg->on_new_process(dev, dev->cfg->callback_arg);
 		}
+		else
+		{
+			OSSchedUnlock();
+		}
+		
 	}
 }
 
@@ -149,13 +152,14 @@ struct servo_controller_dev_t *servo_controller_open_dev(const char *name)
 	return dev;
 }
 
-static int do_servo_controller_update_pid_parameter(struct servo_controller_dev_t *dev,
-													enum Servo_controller_servo_id_t channel,
-													const struct FixedPIDArgument *pidParameter)
+static int caculate_K_phase_to_mea(struct servo_controller_dev_t *dev,
+								   enum Servo_controller_servo_id_t channel)
 {
 	struct servo_controller_config_t *cfg = dev->cfg;
 	float K_phase_to_mea = (60 << 15) /
-						   (cfg->n_motor_pole[channel] * cfg->n_motor_ratio[channel] * pidParameter->E_lsb);
+						   (cfg->n_motor_pole[channel] *
+							cfg->n_motor_ratio[channel] *
+							cfg->Pos_lsb[channel]);
 
 	if (K_phase_to_mea > (INT32_MAX - 1))
 	{
@@ -167,25 +171,10 @@ static int do_servo_controller_update_pid_parameter(struct servo_controller_dev_
 	}
 	else
 	{
-		int stt = PID_Init(&dev->data->pidState[channel], pidParameter);
-		if (stt < 0)
-		{
-			return stt;
-		}
-
 		dev->data->K_phase_to_mea[channel] = (int32_t)K_phase_to_mea;
 	}
 
 	return 0;
-}
-
-int servo_controller_update_pid_parameter(struct servo_controller_dev_t *dev,
-										  enum Servo_controller_servo_id_t channel,
-										  const struct FixedPIDArgument *pidParameter)
-{
-	ALT_DEBUG_ASSERT(((channel >= 0) && (channel < +SERVO_CONTROLLER_NUM_SERVO)));
-	memcpy(&dev->cfg->pidArgument[channel], pidParameter, sizeof(struct FixedPIDArgument));
-	return do_servo_controller_update_pid_parameter(dev, channel, pidParameter);
 }
 
 int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
@@ -203,15 +192,18 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 	ALT_DEBUG_ASSERT((cfg->i_max[2] > 0));
 	ALT_DEBUG_ASSERT((cfg->i_max[3] > 0));
 
-	if (cfg->closed_loop_en)
+	for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
 	{
-		for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
+		if (cfg->drv_en[i])
 		{
-			if (cfg->drv_en[i])
+			int ret = caculate_K_phase_to_mea(dev, i);
+
+			if (ret)
 			{
-				do_servo_controller_update_pid_parameter(dev, i, &cfg->pidArgument[i]);
-				dev->data->K_filter[i] = cfg->K_position_filter[i];
+				return ret;
 			}
+
+			dev->data->K_filter[i] = cfg->K_position_filter[i];
 		}
 	}
 
@@ -256,7 +248,7 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 
 	ieReg.val = 0;
 	ieReg.field.adc_valid = cfg->on_adc_valid ? 1 : 0;
-	ieReg.field.mea_trig = (cfg->closed_loop_en || cfg->on_new_process) ? 1 : 0;
+	ieReg.field.mea_trig = 1;
 	ieReg.field.realtime_err = cfg->on_realtime_err ? 1 : 0;
 
 	if (cfg->on_stop_err)
@@ -441,14 +433,6 @@ static void servo_controller_irq_handler(void *arg)
 
 	ALT_DEBUG_ASSERT((err == OS_ERR_NONE));
 
-	if (flag.val & SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT)
-	{
-		if (dev->cfg->on_new_process)
-		{
-			dev->cfg->on_new_process(dev, dev->cfg->callback_arg);
-		}
-	}
-
 	if (flag.val & ~SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT)
 	{
 		if (flag.val & SERVO_CONTROLLER_FLAG_ADC_VALID_BIT)
@@ -502,8 +486,6 @@ static void servo_controller_irq_handler(void *arg)
 		{
 			dev->cfg->on_drv_fault(dev, 3, dev->cfg->callback_arg);
 		}
-
-		
 	}
 }
 
@@ -528,22 +510,6 @@ void servo_controller_init(struct servo_controller_dev_t *dev)
 	alt_dev_reg(&dev->dev);
 }
 
-int servo_controller_set_position(
-	struct servo_controller_dev_t *dev,
-	enum Servo_controller_servo_id_t channel,
-	int16_t pos)
-{
-	ALT_DEBUG_ASSERT((dev));
-
-	OS_CPU_SR cpu_sr = 0;
-	OS_ENTER_CRITICAL();
-
-	dev->data->position_sp[channel] = pos;
-	OS_EXIT_CRITICAL();
-
-	return 0;
-}
-
 int servo_controller_get_phase_position(
 	struct servo_controller_dev_t *dev,
 	int16_t position[SERVO_CONTROLLER_NUM_SERVO])
@@ -559,6 +525,45 @@ int servo_controller_get_phase_position(
 	{
 		position[i] = dev->data->filter_position[i] >> 15;
 	}
+
+	OS_EXIT_CRITICAL();
+
+	return 0;
+}
+
+int servo_controller_update_duty_1channel(
+	struct servo_controller_dev_t *dev,
+	enum Servo_controller_servo_id_t chanel,
+	int16_t duty)
+{
+	if (!dev)
+	{
+		return -EINVAL;
+	}
+
+	if (chanel < 0)
+	{
+		return -EINVAL;
+	}
+
+	if (chanel >= SERVO_CONTROLLER_NUM_SERVO)
+	{
+		return -EINVAL;
+	}
+
+	OS_CPU_SR cpu_sr = 0;
+	OS_ENTER_CRITICAL();
+
+	uint8_t offset[] = {
+		SERVO_CONTROLLER_U0_OFFSET,
+		SERVO_CONTROLLER_U1_OFFSET,
+		SERVO_CONTROLLER_U2_OFFSET,
+		SERVO_CONTROLLER_U3_OFFSET};
+
+	SERVO_IOWR(dev, offset[chanel], -duty);
+
+	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET,
+			   SERVO_CONTROLLER_TR_U_VALID_BIT);
 
 	OS_EXIT_CRITICAL();
 

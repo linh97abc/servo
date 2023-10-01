@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Sep 24, 2023 11:32:08 AM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1695529928030</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Oct 1, 2023 4:17:45 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1696151865459</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\outsource\servo\sw\test_de0cv_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\fw\DE0_CV_QSYS.sopcinfo</SopcDesignFile>
@@ -1740,73 +1740,79 @@
         </Setting>
         <MemoryMap>
                 <slaveDescriptor>sdram</slaveDescriptor>
-                <addressRange>0x00000000 - 0x03FFFFFF</addressRange>
+                <addressRange>0x04000000 - 0x07FFFFFF</addressRange>
                 <addressSpan>67108864</addressSpan>
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>tc_instruct_mem</slaveDescriptor>
-                <addressRange>0x04000000 - 0x04004097</addressRange>
+                <addressRange>0x08000000 - 0x08004097</addressRange>
                 <addressSpan>16536</addressSpan>
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>boot_rom</slaveDescriptor>
-                <addressRange>0x04008000 - 0x04009FFF</addressRange>
+                <addressRange>0x08008000 - 0x08009FFF</addressRange>
                 <addressSpan>8192</addressSpan>
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>epcs_flash_controller_0</slaveDescriptor>
-                <addressRange>0x0400B000 - 0x0400B7FF</addressRange>
+                <addressRange>0x0800B000 - 0x0800B7FF</addressRange>
                 <addressSpan>2048</addressSpan>
                 <attributes>flash, memory, non-volatile</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>servo_controllerv1_0</slaveDescriptor>
-                <addressRange>0x0400C000 - 0x0400C07F</addressRange>
+                <addressRange>0x0800C000 - 0x0800C07F</addressRange>
                 <addressSpan>128</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>ltc2992</slaveDescriptor>
-                <addressRange>0x0400C080 - 0x0400C0BF</addressRange>
+                <addressRange>0x0800C080 - 0x0800C0BF</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>tmp101</slaveDescriptor>
-                <addressRange>0x0400C0C0 - 0x0400C0FF</addressRange>
+                <addressRange>0x0800C0C0 - 0x0800C0FF</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>uart_rs485</slaveDescriptor>
-                <addressRange>0x0400C100 - 0x0400C13F</addressRange>
+                <addressRange>0x0800C100 - 0x0800C13F</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timestamp</slaveDescriptor>
-                <addressRange>0x0400C140 - 0x0400C17F</addressRange>
+                <addressRange>0x0800C140 - 0x0800C17F</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
+                <slaveDescriptor>spi_ad7928</slaveDescriptor>
+                <addressRange>0x0800C180 - 0x0800C19F</addressRange>
+                <addressSpan>32</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
                 <slaveDescriptor>timer</slaveDescriptor>
-                <addressRange>0x0400C180 - 0x0400C19F</addressRange>
+                <addressRange>0x0800C1A0 - 0x0800C1BF</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid_qsys</slaveDescriptor>
-                <addressRange>0x0400C1A8 - 0x0400C1AF</addressRange>
+                <addressRange>0x0800C1C8 - 0x0800C1CF</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart</slaveDescriptor>
-                <addressRange>0x0400C1B0 - 0x0400C1B7</addressRange>
+                <addressRange>0x0800C1D0 - 0x0800C1D7</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>

@@ -7,8 +7,6 @@
 #include <sys/alt_dev.h>
 #include <ucos_ii.h>
 
-#include "FixedPID.h"
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -22,6 +20,8 @@ extern "C"
 
 /// @brief Convert fixed(16, 0) number to float number
 #define SERVO_CONTROLLER_FIXED_TO_FLOAT(num) ((float)(num) / INT16_MAX)
+
+
 
 	enum Servo_controller_filter_level_t
 	{
@@ -185,12 +185,11 @@ extern "C"
 		/// @brief enable motor driver
 		bool drv_en[SERVO_CONTROLLER_NUM_SERVO];
 
-		struct FixedPIDArgument pidArgument[SERVO_CONTROLLER_NUM_SERVO];
+		float Pos_lsb[SERVO_CONTROLLER_NUM_SERVO];
+		float Current_lsb[SERVO_CONTROLLER_NUM_SERVO];
 		uint8_t n_motor_pole[SERVO_CONTROLLER_NUM_SERVO];
 		uint8_t n_motor_ratio[SERVO_CONTROLLER_NUM_SERVO];
 		int16_t K_position_filter[SERVO_CONTROLLER_NUM_SERVO];
-
-		bool closed_loop_en;
 
 		/// @brief spi speed of measurement IC
 		uint32_t spi_speed;
@@ -232,10 +231,6 @@ extern "C"
 	struct servo_controller_data_t
 	{
 		OS_FLAG_GRP *flag;
-		struct FixedPID pidState[SERVO_CONTROLLER_NUM_SERVO];
-
-		/// @brief Set point
-		int16_t position_sp[SERVO_CONTROLLER_NUM_SERVO];
 
 		int32_t filter_position[SERVO_CONTROLLER_NUM_SERVO];
 		/// @brief fixed(16,0)
@@ -305,6 +300,16 @@ extern "C"
 		struct servo_controller_dev_t *dev,
 		int16_t duty[SERVO_CONTROLLER_NUM_SERVO]);
 
+	/// @brief Update duty cycle for 1 channel
+	/// @param dev Pointer to servo device
+	/// @param chanel Channel
+	/// @param duty Duty cycle in fixed number (16, 0) , range [-1, 1)
+	/// @return Error code
+	int servo_controller_update_duty_1channel(
+		struct servo_controller_dev_t *dev,
+		enum Servo_controller_servo_id_t chanel,
+		int16_t duty);
+
 	/// @brief Get motor postion
 	/// @param dev Pointer to servo device
 	/// @param position Motor position in fixed number (16, 0) , range [-1, 1)
@@ -337,29 +342,40 @@ extern "C"
 		struct servo_controller_dev_t *dev,
 		int16_t duty[SERVO_CONTROLLER_NUM_SERVO]);
 
-	/// @brief Set position
-	/// @param dev Pointer to servo device
-	/// @param pos Position in fixed number (16, 0) , range [-1, 1)
-	/// @return Error code
-	int servo_controller_set_position(
-		struct servo_controller_dev_t *dev,
-		enum Servo_controller_servo_id_t channel,
-		int16_t pos);
-
 	/// @brief Task Servo Business
 	/// @param arg Pointer to servo device
 	/// @example
 	///    OSTaskCreateExt(task_servo_business, ... )
 	void task_servo_business(void *arg) __attribute__((section(".exceptions")));
 
-	/// @brief Update PID Parameter
+
+	/// @brief Convert position (in fixed(16,0)) to position (in float)
 	/// @param dev Pointer to servo device
-	/// @param channel Servo channel
-	/// @param pidParameter PID parameter
-	/// @return error code
-	int servo_controller_update_pid_parameter(struct servo_controller_dev_t *dev,
-											  enum Servo_controller_servo_id_t channel,
-											  const struct FixedPIDArgument *pidParameter);
+	/// @param chanel Channel
+	/// @param pos Position in fixed(16, 0) type
+	/// @return position in float type
+	static inline float servo_controller_code_to_position(
+		struct servo_controller_dev_t *dev,
+		enum Servo_controller_servo_id_t channel,
+		int16_t pos
+	)
+	{
+		return pos * dev->cfg->Pos_lsb[channel];
+	}
+
+	/// @brief Convert position (in fixed(16,0)) to position (in float)
+	/// @param dev Pointer to servo device
+	/// @param chanel Channel
+	/// @param current Current in fixed(16, 0) type
+	/// @return current in float type
+	static inline float servo_controller_code_to_current(
+		struct servo_controller_dev_t *dev,
+		enum Servo_controller_servo_id_t channel,
+		int16_t current
+	)
+	{
+		return current * dev->cfg->Current_lsb[channel];
+	}
 
 #ifdef __cplusplus
 }
