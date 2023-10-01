@@ -90,13 +90,16 @@ static void servo_controller_predict_pos_step(
 
 	for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
 	{
-		int32_t pk = predict_position1x_step(
-			data->filter_position[i],
-			data->K_filter[i],
-			data->K_phase_to_mea[i],
-			delta_pos[i],
-			pos[i]);
-		data->filter_position[i] = pk;
+		if (dev->cfg->drv_en[i])
+		{
+			int32_t pk = predict_position1x_step(
+				data->filter_position[i],
+				data->K_filter[i],
+				data->K_phase_to_mea[i],
+				delta_pos[i],
+				pos[i]);
+			data->filter_position[i] = pk;
+		}
 	}
 }
 
@@ -125,7 +128,6 @@ void task_servo_business(void *arg)
 		{
 			OSSchedUnlock();
 		}
-		
 	}
 }
 
@@ -156,6 +158,14 @@ static int caculate_K_phase_to_mea(struct servo_controller_dev_t *dev,
 								   enum Servo_controller_servo_id_t channel)
 {
 	struct servo_controller_config_t *cfg = dev->cfg;
+
+	if (!(cfg->Pos_lsb[channel] > 0))
+		return -EINVAL;
+	if (!(cfg->n_motor_pole[channel] > 0))
+		return -EINVAL;
+	if (!(cfg->n_motor_ratio[channel] > 0))
+		return -EINVAL;
+
 	float K_phase_to_mea = (60 << 15) /
 						   (cfg->n_motor_pole[channel] *
 							cfg->n_motor_ratio[channel] *
@@ -177,6 +187,50 @@ static int caculate_K_phase_to_mea(struct servo_controller_dev_t *dev,
 	return 0;
 }
 
+static int caculate_I_max(struct servo_controller_config_t *cfg,
+						  enum Servo_controller_servo_id_t channel,
+						  int16_t *i_max)
+{
+	if (!(cfg->i_max[channel] > 0))
+		return -EINVAL;
+
+	if (!(cfg->Current_lsb[channel] > 0))
+		return -EINVAL;
+
+	float tmp = cfg->i_max[channel] / cfg->Current_lsb[channel];
+
+	if (tmp > (INT16_MAX - 1))
+	{
+		*i_max = INT16_MAX - 1;
+	}
+	else
+	{
+		*i_max = (int16_t)tmp;
+	}
+
+	return 0;
+}
+
+static int caculate_K_filter(
+	struct servo_controller_dev_t *dev,
+	enum Servo_controller_servo_id_t channel)
+{
+	float tmp = dev->cfg->K_position_filter[channel] * INT16_MAX;
+
+	if (tmp > (INT16_MAX - 1))
+	{
+		return -EINVAL;
+	}
+	else if (tmp < 0)
+	{
+		return -EINVAL;
+	}
+
+	dev->data->K_filter[channel] = (int16_t)tmp;
+
+	return 0;
+}
+
 int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 {
 	ALT_DEBUG_ASSERT((dev));
@@ -187,23 +241,38 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 	struct servo_controller_config_t *cfg = dev->cfg;
 	unsigned i;
 
-	ALT_DEBUG_ASSERT((cfg->i_max[0] > 0));
-	ALT_DEBUG_ASSERT((cfg->i_max[1] > 0));
-	ALT_DEBUG_ASSERT((cfg->i_max[2] > 0));
-	ALT_DEBUG_ASSERT((cfg->i_max[3] > 0));
+	int16_t i_max[SERVO_CONTROLLER_NUM_SERVO];
+
+	int ret;
+
+	if (!cfg->spi_speed)
+		return -EINVAL;
+	if (!cfg->pwm_base_freq)
+		return -EINVAL;
+	if (!cfg->pwm_freq)
+		return -EINVAL;
 
 	for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
 	{
 		if (cfg->drv_en[i])
 		{
-			int ret = caculate_K_phase_to_mea(dev, i);
-
+			ret = caculate_K_phase_to_mea(dev, i);
 			if (ret)
 			{
 				return ret;
 			}
 
-			dev->data->K_filter[i] = cfg->K_position_filter[i];
+			ret = caculate_I_max(cfg, i, &i_max[i]);
+			if (ret)
+			{
+				return ret;
+			}
+
+			ret = caculate_K_filter(dev, i);
+			if (ret)
+			{
+				return ret;
+			}
 		}
 	}
 
@@ -238,10 +307,10 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 	SERVO_IOWR(dev, SERVO_CONTROLLER_PULSE_MODE2_OFFSET, cfg->drv_mode[2]);
 	SERVO_IOWR(dev, SERVO_CONTROLLER_PULSE_MODE3_OFFSET, cfg->drv_mode[3]);
 
-	SERVO_IOWR(dev, SERVO_CONTROLLER_I0_MAX_OFFSET, cfg->i_max[0]);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_I1_MAX_OFFSET, cfg->i_max[1]);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_I2_MAX_OFFSET, cfg->i_max[2]);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_I3_MAX_OFFSET, cfg->i_max[3]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_I0_MAX_OFFSET, i_max[0]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_I1_MAX_OFFSET, i_max[1]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_I2_MAX_OFFSET, i_max[2]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_I3_MAX_OFFSET, i_max[3]);
 
 	// clear flag
 	SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET, 0xFFFFFFFFu);
@@ -489,6 +558,34 @@ static void servo_controller_irq_handler(void *arg)
 	}
 }
 
+static void set_default_config(struct servo_controller_config_t *cfg)
+{
+	cfg->Pos_lsb[0] = 1;
+	cfg->Pos_lsb[1] = 1;
+	cfg->Pos_lsb[2] = 1;
+	cfg->Pos_lsb[3] = 1;
+
+	cfg->Current_lsb[0] = 1;
+	cfg->Current_lsb[1] = 1;
+	cfg->Current_lsb[2] = 1;
+	cfg->Current_lsb[3] = 1;
+
+	cfg->n_motor_pole[0] = 1;
+	cfg->n_motor_pole[1] = 1;
+	cfg->n_motor_pole[2] = 1;
+	cfg->n_motor_pole[3] = 1;
+
+	cfg->n_motor_ratio[0] = 1;
+	cfg->n_motor_ratio[1] = 1;
+	cfg->n_motor_ratio[2] = 1;
+	cfg->n_motor_ratio[3] = 1;
+
+	cfg->spi_speed = 1000000;
+	cfg->pwm_base_freq = 5000000;
+	cfg->pwm_freq = 5000;
+	cfg->pwm_trig_rate = 1;
+}
+
 void servo_controller_init(struct servo_controller_dev_t *dev)
 {
 	INT8U err;
@@ -506,6 +603,7 @@ void servo_controller_init(struct servo_controller_dev_t *dev)
 	dev->data->flag = OSFlagCreate(0, &err);
 	ALT_DEBUG_ASSERT((err == OS_ERR_NONE));
 
+	set_default_config(dev->cfg);
 	alt_ic_isr_register(dev->IC_ID, dev->IRQ, servo_controller_irq_handler, dev, 0);
 	alt_dev_reg(&dev->dev);
 }

@@ -40,15 +40,10 @@ void task1(void* pdata)
     SERVO_CONTROLLER_CFG(servoDev)->pwm_freq = 5000;
     SERVO_CONTROLLER_CFG(servoDev)->pwm_trig_rate = 10;
 
-    SERVO_CONTROLLER_CFG(servoDev)->i_max[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.5f);
-    SERVO_CONTROLLER_CFG(servoDev)->i_max[1] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.5f);
-    SERVO_CONTROLLER_CFG(servoDev)->i_max[2] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.5f);
-    SERVO_CONTROLLER_CFG(servoDev)->i_max[3] = SERVO_CONTROLLER_FLOAT_TO_FIXED(0.5f);
+    SERVO_CONTROLLER_CFG(servoDev)->i_max[0] = 10;
 
     SERVO_CONTROLLER_CFG(servoDev)->Pos_lsb[0] = 0.2;
-    SERVO_CONTROLLER_CFG(servoDev)->Pos_lsb[1] = 0.2;
-    SERVO_CONTROLLER_CFG(servoDev)->Pos_lsb[2] = 0.2;
-    SERVO_CONTROLLER_CFG(servoDev)->Pos_lsb[3] = 0.2;
+    SERVO_CONTROLLER_CFG(servoDev)->Current_lsb[0] = 0.2;
 
 
     SERVO_CONTROLLER_CFG(servoDev)->n_motor_pole[0] = 5;

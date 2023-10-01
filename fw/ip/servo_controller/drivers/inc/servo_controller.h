@@ -189,7 +189,9 @@ extern "C"
 		float Current_lsb[SERVO_CONTROLLER_NUM_SERVO];
 		uint8_t n_motor_pole[SERVO_CONTROLLER_NUM_SERVO];
 		uint8_t n_motor_ratio[SERVO_CONTROLLER_NUM_SERVO];
-		int16_t K_position_filter[SERVO_CONTROLLER_NUM_SERVO];
+
+		/// @brief pos = p_predict + K_position_filter * (p_adc - p_predict)
+		float K_position_filter[SERVO_CONTROLLER_NUM_SERVO];
 
 		/// @brief spi speed of measurement IC
 		uint32_t spi_speed;
@@ -206,8 +208,8 @@ extern "C"
 		/// @brief Mode of pulse for motor driver
 		enum Servo_controller_drv_mode_t drv_mode[SERVO_CONTROLLER_NUM_SERVO];
 
-		/// @brief Limit of motor current value, in fixed(16, 0), range [-1, 0)
-		int16_t i_max[SERVO_CONTROLLER_NUM_SERVO];
+		/// @brief Limit of motor current value
+		float i_max[SERVO_CONTROLLER_NUM_SERVO];
 
 		/// @brief Adc init done event handler
 		void (*on_adc_valid)(struct servo_controller_dev_t *dev, void *arg);
