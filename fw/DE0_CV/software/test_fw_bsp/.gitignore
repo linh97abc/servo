@@ -15,4 +15,4 @@
 /obj/
 /newlib/
 /.force_rebuild_all
-
+/newlib-build-tmp/
