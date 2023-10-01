@@ -1,0 +1,33 @@
+[EPCS-202011] # EPCS1N (lead-free)
+sector_size = 32768
+sector_count = 4
+[EPCS-202013] # EPCS4N (lead-free)
+sector_size = 65536
+sector_count = 8
+[EPCS-202015] # EPCS16N (lead-free)
+sector_size = 65536
+sector_count = 32
+[EPCS-014017] # EPCS64N (lead-free)
+sector_size = 65536
+sector_count = 128
+[EPCS-010212] # EPCS4N (Spansion-lead-free) S25FLxxx
+sector_size = 65536
+sector_count = 8
+[EPCS-010214] # EPCS16N (Spansion lead-free)
+sector_size = 65536
+sector_count = 32
+[EPCS-010216] # EPCS64N (Spansion-lead-free)
+sector_size = 65536
+sector_count = 128
+[EPCS-207116] # FLASH ST-M25PX32
+sector_size = 65536
+sector_count = 64
+[EPCS-202014] # FLASH ST-M25P80
+sector_size = 65536
+sector_count = 16
+[EPCS-012018] #EPCS128N(lead-free)
+sector_size = 262144
+sector_count = 64
+[EPCS-9D6017]# Kit moi 03/20202 
+sector_size = 65536
+sector_count = 128
