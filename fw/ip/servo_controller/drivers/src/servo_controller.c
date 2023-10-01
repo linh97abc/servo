@@ -88,10 +88,10 @@ static void servo_controller_predict_pos_step(
 		if (dev->cfg->drv_en[i])
 		{
 			int32_t pk = predict_position1x_step(
-				data->filter_position[i],
+				data->hall_position[i],
 				data->K_phase_to_mea[i],
 				delta_pos[i]);
-			data->filter_position[i] = pk;
+			data->hall_position[i] = pk;
 		}
 	}
 }
@@ -336,7 +336,7 @@ int servo_controller_start(struct servo_controller_dev_t *dev)
 
 	for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
 	{
-		dev->data->filter_position[i] = pos[i] << 15;
+		dev->data->hall_position[i] = pos[i] << 15;
 	}
 
 	servo_controller_reg_CR crReg;
@@ -598,7 +598,7 @@ int servo_controller_get_phase_position(
 
 	for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
 	{
-		position[i] = dev->data->filter_position[i] >> 15;
+		position[i] = dev->data->hall_position[i] >> 15;
 	}
 
 	OS_EXIT_CRITICAL();

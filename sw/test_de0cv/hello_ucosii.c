@@ -70,7 +70,7 @@ void task1(void* pdata)
 	  OSTimeDly(100);
 
 	  servo_controller_get_duty(servoDev, duty);
-	  printf("pos = %ld\n", servoDev->data->filter_position[0] >> 15);
+	  printf("pos = %ld\n", servoDev->data->hall_position[0] >> 15);
 	  printf("duty = %d\n", duty[0]);
 	  printf("realtime_err = %d\n", servoDev->BASE->flag.field.realtime_err);
   }

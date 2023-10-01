@@ -231,9 +231,8 @@ extern "C"
 	{
 		OS_FLAG_GRP *flag;
 
-		int32_t filter_position[SERVO_CONTROLLER_NUM_SERVO];
-		/// @brief fixed(16,0)
-		int16_t K_filter[SERVO_CONTROLLER_NUM_SERVO];
+		int32_t hall_position[SERVO_CONTROLLER_NUM_SERVO];
+
 		/// @brief fixed(32,16)
 		int32_t K_phase_to_mea[SERVO_CONTROLLER_NUM_SERVO];
 	};
