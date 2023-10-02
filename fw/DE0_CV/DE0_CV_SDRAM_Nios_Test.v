@@ -154,9 +154,11 @@ assign UART_PWREN = 1'b0;
 assign UART_SUSPEND = 1'b1;
 
 assign GPIO_0[14] = ADC_CLK;
-assign ADC_DIN = GPIO_0[17];
+//assign ADC_DIN = GPIO_0[17];
+assign GPIO_0[17] = ADC_DIN;
 assign GPIO_0[15] = ADC_CS;
-assign GPIO_0[16] = ADC_DOUT;
+//assign GPIO_0[16] = ADC_DOUT;
+assign ADC_DOUT = GPIO_0[16];
 
 
 assign SV1_HALL_A = GPIO_1[6];
@@ -249,20 +251,20 @@ DE0_CV_QSYS u0(
 		.uart_rs485_conduit_end_txd(UART_TX_A),                   //                                 .txd
       .uart_rs485_conduit_end_dbg_os_pulse(),
 
-		.spi_ad7928_external_MISO                    (ADC_DIN),                    //              spi_ad7928_external.MISO
-		.spi_ad7928_external_MOSI                    (ADC_DOUT),                    //                                 .MOSI
-		.spi_ad7928_external_SCLK                    (ADC_CLK),                    //                                 .SCLK
-		.spi_ad7928_external_SS_n                    (ADC_CS),                     // 
+		//.spi_ad7928_external_MISO                    (ADC_DIN),                    //              spi_ad7928_external.MISO
+		//.spi_ad7928_external_MOSI                    (ADC_DOUT),                    //                                 .MOSI
+		//.spi_ad7928_external_SCLK                    (ADC_CLK),                    //                                 .SCLK
+		//.spi_ad7928_external_SS_n                    (ADC_CS),                     // 
 
             //
-            .servo_controllerv1_0_conduit_end_spi_sclk(), // servo_controllerv1_0_conduit_end.spi_sclk
-		.servo_controllerv1_0_conduit_end_spi_cs(),   //                                 .spi_cs
-		.servo_controllerv1_0_conduit_end_spi_miso(1'b1), //                                 .spi_miso
-		.servo_controllerv1_0_conduit_end_spi_mosi(), //                                 .spi_mosi
-            // .servo_controllerv1_0_conduit_end_spi_sclk(ADC_CLK), // servo_controllerv1_0_conduit_end.spi_sclk
-		// .servo_controllerv1_0_conduit_end_spi_cs(ADC_CS),   //                                 .spi_cs
-		// .servo_controllerv1_0_conduit_end_spi_miso(ADC_DIN), //                                 .spi_miso
-		// .servo_controllerv1_0_conduit_end_spi_mosi(ADC_DOUT), //                                 .spi_mosi
+      //.servo_controllerv1_0_conduit_end_spi_sclk(), // servo_controllerv1_0_conduit_end.spi_sclk
+		//.servo_controllerv1_0_conduit_end_spi_cs(),   //                                 .spi_cs
+		//.servo_controllerv1_0_conduit_end_spi_miso(1'b1), //                                 .spi_miso
+		//.servo_controllerv1_0_conduit_end_spi_mosi(), //                                 .spi_mosi
+      .servo_controllerv1_0_conduit_end_spi_sclk(ADC_CLK), // servo_controllerv1_0_conduit_end.spi_sclk
+		.servo_controllerv1_0_conduit_end_spi_cs(ADC_CS),   //                                 .spi_cs
+		.servo_controllerv1_0_conduit_end_spi_miso(ADC_DOUT), //                                 .spi_miso
+		.servo_controllerv1_0_conduit_end_spi_mosi(ADC_DIN), //                                 .spi_mosi
 		.servo_controllerv1_0_conduit_end_hall_0({SV1_HALL_A, SV1_HALL_B, SV1_HALL_C}),   //                                 .hall_0
 		.servo_controllerv1_0_conduit_end_hall_1({SV2_HALL_A, SV2_HALL_B, SV2_HALL_C}),   //                                 .hall_1
 		.servo_controllerv1_0_conduit_end_hall_2({SV3_HALL_A, SV3_HALL_B, SV3_HALL_C}),   //                                 .hall_2
