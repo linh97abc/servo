@@ -31,10 +31,6 @@
 		.servo_controllerv1_0_conduit_end_phase_3    (<connected-to-servo_controllerv1_0_conduit_end_phase_3>),    //                                 .phase_3
 		.servo_controllerv1_0_conduit_end_nFault     (<connected-to-servo_controllerv1_0_conduit_end_nFault>),     //                                 .nFault
 		.servo_controllerv1_0_conduit_end_drv8320_en (<connected-to-servo_controllerv1_0_conduit_end_drv8320_en>), //                                 .drv8320_en
-		.spi_ad7928_external_MISO                    (<connected-to-spi_ad7928_external_MISO>),                    //              spi_ad7928_external.MISO
-		.spi_ad7928_external_MOSI                    (<connected-to-spi_ad7928_external_MOSI>),                    //                                 .MOSI
-		.spi_ad7928_external_SCLK                    (<connected-to-spi_ad7928_external_SCLK>),                    //                                 .SCLK
-		.spi_ad7928_external_SS_n                    (<connected-to-spi_ad7928_external_SS_n>),                    //                                 .SS_n
 		.tmp101_i2c_sda_t                            (<connected-to-tmp101_i2c_sda_t>),                            //                       tmp101_i2c.sda_t
 		.tmp101_i2c_scl_t                            (<connected-to-tmp101_i2c_scl_t>),                            //                                 .scl_t
 		.tmp101_i2c_sda_i                            (<connected-to-tmp101_i2c_sda_i>),                            //                                 .sda_i

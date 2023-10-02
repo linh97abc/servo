@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Oct 1, 2023 10:42:10 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1696174930359</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Oct 2, 2023 10:22:16 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1696260136204</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\outsource\servo\fw\DE0_CV\software\de0cv_ssbl_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\..\DE0_CV_QSYS.sopcinfo</SopcDesignFile>
@@ -953,12 +953,6 @@
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>spi_ad7928</slaveDescriptor>
-                <addressRange>0x0800C180 - 0x0800C19F</addressRange>
-                <addressSpan>32</addressSpan>
-                <attributes/>
-        </MemoryMap>
-        <MemoryMap>
                 <slaveDescriptor>timer</slaveDescriptor>
                 <addressRange>0x0800C1A0 - 0x0800C1BF</addressRange>
                 <addressSpan>32</addressSpan>
@@ -1007,10 +1001,6 @@
         <DriverPackageInfo>
                 <name>none</name>
                 <moduleName>tmp101</moduleName>
-        </DriverPackageInfo>
-        <DriverPackageInfo>
-                <name>none</name>
-                <moduleName>spi_ad7928</moduleName>
         </DriverPackageInfo>
         <DriverPackageInfo>
                 <name>none</name>

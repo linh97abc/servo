@@ -121,6 +121,8 @@ servo_protect#(
     .i2(i2),
     .i3(i3),
 
+    .measurement_trigger(measurement_trigger),
+
     .i0_max(i0_max),
     .i1_max(i1_max),
     .i2_max(i2_max),

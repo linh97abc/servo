@@ -5,3 +5,4 @@
 /*.objdump
 /obj/
 /mem_init/
+*.flash

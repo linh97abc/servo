@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Oct 1, 2023 10:41:12 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1696174872193</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Oct 2, 2023 10:22:08 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1696260128189</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\outsource\servo\fw\DE0_CV\software\test_fw_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\..\DE0_CV_QSYS.sopcinfo</SopcDesignFile>
@@ -1791,12 +1791,6 @@
                 <addressRange>0x0800C140 - 0x0800C17F</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes>timer</attributes>
-        </MemoryMap>
-        <MemoryMap>
-                <slaveDescriptor>spi_ad7928</slaveDescriptor>
-                <addressRange>0x0800C180 - 0x0800C19F</addressRange>
-                <addressSpan>32</addressSpan>
-                <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timer</slaveDescriptor>

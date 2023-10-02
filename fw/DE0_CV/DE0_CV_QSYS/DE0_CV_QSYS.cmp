@@ -32,10 +32,6 @@
 			servo_controllerv1_0_conduit_end_phase_3    : out   std_logic_vector(5 downto 0);                     -- phase_3
 			servo_controllerv1_0_conduit_end_nFault     : in    std_logic_vector(3 downto 0)  := (others => 'X'); -- nFault
 			servo_controllerv1_0_conduit_end_drv8320_en : out   std_logic_vector(3 downto 0);                     -- drv8320_en
-			spi_ad7928_external_MISO                    : in    std_logic                     := 'X';             -- MISO
-			spi_ad7928_external_MOSI                    : out   std_logic;                                        -- MOSI
-			spi_ad7928_external_SCLK                    : out   std_logic;                                        -- SCLK
-			spi_ad7928_external_SS_n                    : out   std_logic;                                        -- SS_n
 			tmp101_i2c_sda_t                            : out   std_logic;                                        -- sda_t
 			tmp101_i2c_scl_t                            : out   std_logic;                                        -- scl_t
 			tmp101_i2c_sda_i                            : in    std_logic                     := 'X';             -- sda_i

@@ -36,10 +36,6 @@ module DE0_CV_QSYS (
 		output wire [5:0]  servo_controllerv1_0_conduit_end_phase_3,    //                                 .phase_3
 		input  wire [3:0]  servo_controllerv1_0_conduit_end_nFault,     //                                 .nFault
 		output wire [3:0]  servo_controllerv1_0_conduit_end_drv8320_en, //                                 .drv8320_en
-		input  wire        spi_ad7928_external_MISO,                    //              spi_ad7928_external.MISO
-		output wire        spi_ad7928_external_MOSI,                    //                                 .MOSI
-		output wire        spi_ad7928_external_SCLK,                    //                                 .SCLK
-		output wire        spi_ad7928_external_SS_n,                    //                                 .SS_n
 		output wire        tmp101_i2c_sda_t,                            //                       tmp101_i2c.sda_t
 		output wire        tmp101_i2c_scl_t,                            //                                 .scl_t
 		input  wire        tmp101_i2c_sda_i,                            //                                 .sda_i
@@ -49,7 +45,7 @@ module DE0_CV_QSYS (
 		output wire        uart_rs485_conduit_end_dbg_os_pulse          //                                 .dbg_os_pulse
 	);
 
-	wire         pll_outclk0_clk;                                                                  // pll:outclk_0 -> [boot_rom:clk, boot_rom:clk2, epcs_flash_controller_0:clk, irq_mapper:clk, jtag_uart:clk, ltc2992:clk, mm_interconnect_0:pll_outclk0_clk, mm_interconnect_1:pll_outclk0_clk, mm_interconnect_2:pll_outclk0_clk, nios2_qsys:clk, rst_controller:clk, rst_controller_001:clk, sdram:clk, servo_controllerv1_0:clk, spi_ad7928:clk, sysid_qsys:clock, tc_instruct_mem:clk, tc_instruct_mem:clk2, timer:clk, timestamp:clk, tmp101:clk, uart_rs485:clk]
+	wire         pll_outclk0_clk;                                                                  // pll:outclk_0 -> [boot_rom:clk, boot_rom:clk2, epcs_flash_controller_0:clk, irq_mapper:clk, jtag_uart:clk, ltc2992:clk, mm_interconnect_0:pll_outclk0_clk, mm_interconnect_1:pll_outclk0_clk, mm_interconnect_2:pll_outclk0_clk, nios2_qsys:clk, rst_controller:clk, rst_controller_001:clk, sdram:clk, servo_controllerv1_0:clk, sysid_qsys:clock, tc_instruct_mem:clk, tc_instruct_mem:clk2, timer:clk, timestamp:clk, tmp101:clk, uart_rs485:clk]
 	wire         nios2_qsys_custom_instruction_master_readra;                                      // nios2_qsys:E_ci_combo_readra -> nios2_qsys_custom_instruction_master_translator:ci_slave_readra
 	wire         nios2_qsys_custom_instruction_master_readrb;                                      // nios2_qsys:E_ci_combo_readrb -> nios2_qsys_custom_instruction_master_translator:ci_slave_readrb
 	wire   [4:0] nios2_qsys_custom_instruction_master_multi_b;                                     // nios2_qsys:A_ci_multi_b -> nios2_qsys_custom_instruction_master_translator:ci_slave_multi_b
@@ -240,12 +236,6 @@ module DE0_CV_QSYS (
 	wire         mm_interconnect_0_boot_rom_s2_write;                                              // mm_interconnect_0:boot_rom_s2_write -> boot_rom:write2
 	wire  [31:0] mm_interconnect_0_boot_rom_s2_writedata;                                          // mm_interconnect_0:boot_rom_s2_writedata -> boot_rom:writedata2
 	wire         mm_interconnect_0_boot_rom_s2_clken;                                              // mm_interconnect_0:boot_rom_s2_clken -> boot_rom:clken2
-	wire         mm_interconnect_0_spi_ad7928_spi_control_port_chipselect;                         // mm_interconnect_0:spi_ad7928_spi_control_port_chipselect -> spi_ad7928:spi_select
-	wire  [15:0] mm_interconnect_0_spi_ad7928_spi_control_port_readdata;                           // spi_ad7928:data_to_cpu -> mm_interconnect_0:spi_ad7928_spi_control_port_readdata
-	wire   [2:0] mm_interconnect_0_spi_ad7928_spi_control_port_address;                            // mm_interconnect_0:spi_ad7928_spi_control_port_address -> spi_ad7928:mem_addr
-	wire         mm_interconnect_0_spi_ad7928_spi_control_port_read;                               // mm_interconnect_0:spi_ad7928_spi_control_port_read -> spi_ad7928:read_n
-	wire         mm_interconnect_0_spi_ad7928_spi_control_port_write;                              // mm_interconnect_0:spi_ad7928_spi_control_port_write -> spi_ad7928:write_n
-	wire  [15:0] mm_interconnect_0_spi_ad7928_spi_control_port_writedata;                          // mm_interconnect_0:spi_ad7928_spi_control_port_writedata -> spi_ad7928:data_from_cpu
 	wire  [31:0] nios2_qsys_tightly_coupled_instruction_master_0_readdata;                         // mm_interconnect_1:nios2_qsys_tightly_coupled_instruction_master_0_readdata -> nios2_qsys:itcm0_readdata
 	wire  [27:0] nios2_qsys_tightly_coupled_instruction_master_0_address;                          // nios2_qsys:itcm0_address -> mm_interconnect_1:nios2_qsys_tightly_coupled_instruction_master_0_address
 	wire         nios2_qsys_tightly_coupled_instruction_master_0_read;                             // nios2_qsys:itcm0_read -> mm_interconnect_1:nios2_qsys_tightly_coupled_instruction_master_0_read
@@ -274,11 +264,10 @@ module DE0_CV_QSYS (
 	wire         irq_mapper_receiver3_irq;                                                         // jtag_uart:av_irq -> irq_mapper:receiver3_irq
 	wire         irq_mapper_receiver4_irq;                                                         // epcs_flash_controller_0:irq -> irq_mapper:receiver4_irq
 	wire         irq_mapper_receiver5_irq;                                                         // timestamp:irq -> irq_mapper:receiver5_irq
-	wire         irq_mapper_receiver6_irq;                                                         // spi_ad7928:irq -> irq_mapper:receiver6_irq
 	wire  [31:0] nios2_qsys_irq_irq;                                                               // irq_mapper:sender_irq -> nios2_qsys:irq
 	wire         rst_controller_reset_out_reset;                                                   // rst_controller:reset_out -> [boot_rom:reset, boot_rom:reset2, epcs_flash_controller_0:reset_n, jtag_uart:rst_n, mm_interconnect_0:jtag_uart_reset_reset_bridge_in_reset_reset, mm_interconnect_2:boot_rom_reset1_reset_bridge_in_reset_reset, rst_translator:in_reset, sdram:reset_n, sysid_qsys:reset_n, timer:reset_n]
 	wire         rst_controller_reset_out_reset_req;                                               // rst_controller:reset_req -> [boot_rom:reset_req, boot_rom:reset_req2, epcs_flash_controller_0:reset_req, rst_translator:reset_req_in]
-	wire         rst_controller_001_reset_out_reset;                                               // rst_controller_001:reset_out -> [irq_mapper:reset, ltc2992:reset_n, mm_interconnect_0:nios2_qsys_reset_reset_bridge_in_reset_reset, mm_interconnect_1:nios2_qsys_reset_reset_bridge_in_reset_reset, mm_interconnect_2:nios2_qsys_reset_reset_bridge_in_reset_reset, nios2_qsys:reset_n, rst_translator_001:in_reset, servo_controllerv1_0:reset_n, spi_ad7928:reset_n, tc_instruct_mem:reset, tc_instruct_mem:reset2, timestamp:reset_n, tmp101:reset_n, uart_rs485:reset_n]
+	wire         rst_controller_001_reset_out_reset;                                               // rst_controller_001:reset_out -> [irq_mapper:reset, ltc2992:reset_n, mm_interconnect_0:nios2_qsys_reset_reset_bridge_in_reset_reset, mm_interconnect_1:nios2_qsys_reset_reset_bridge_in_reset_reset, mm_interconnect_2:nios2_qsys_reset_reset_bridge_in_reset_reset, nios2_qsys:reset_n, rst_translator_001:in_reset, servo_controllerv1_0:reset_n, tc_instruct_mem:reset, tc_instruct_mem:reset2, timestamp:reset_n, tmp101:reset_n, uart_rs485:reset_n]
 	wire         rst_controller_001_reset_out_reset_req;                                           // rst_controller_001:reset_req -> [nios2_qsys:reset_req, rst_translator_001:reset_req_in, tc_instruct_mem:reset_req, tc_instruct_mem:reset_req2]
 	wire         nios2_qsys_debug_reset_request_reset;                                             // nios2_qsys:debug_reset_request -> rst_controller_001:reset_in1
 
@@ -501,22 +490,6 @@ module DE0_CV_QSYS (
 		.nFault     (servo_controllerv1_0_conduit_end_nFault),                         //                 .nFault
 		.drv8320_en (servo_controllerv1_0_conduit_end_drv8320_en),                     //                 .drv8320_en
 		.irq        (irq_mapper_receiver0_irq)                                         // interrupt_sender.irq
-	);
-
-	DE0_CV_QSYS_spi_ad7928 spi_ad7928 (
-		.clk           (pll_outclk0_clk),                                          //              clk.clk
-		.reset_n       (~rst_controller_001_reset_out_reset),                      //            reset.reset_n
-		.data_from_cpu (mm_interconnect_0_spi_ad7928_spi_control_port_writedata),  // spi_control_port.writedata
-		.data_to_cpu   (mm_interconnect_0_spi_ad7928_spi_control_port_readdata),   //                 .readdata
-		.mem_addr      (mm_interconnect_0_spi_ad7928_spi_control_port_address),    //                 .address
-		.read_n        (~mm_interconnect_0_spi_ad7928_spi_control_port_read),      //                 .read_n
-		.spi_select    (mm_interconnect_0_spi_ad7928_spi_control_port_chipselect), //                 .chipselect
-		.write_n       (~mm_interconnect_0_spi_ad7928_spi_control_port_write),     //                 .write_n
-		.irq           (irq_mapper_receiver6_irq),                                 //              irq.irq
-		.MISO          (spi_ad7928_external_MISO),                                 //         external.export
-		.MOSI          (spi_ad7928_external_MOSI),                                 //                 .export
-		.SCLK          (spi_ad7928_external_SCLK),                                 //                 .export
-		.SS_n          (spi_ad7928_external_SS_n)                                  //                 .export
 	);
 
 	DE0_CV_QSYS_sysid_qsys sysid_qsys (
@@ -894,12 +867,6 @@ module DE0_CV_QSYS (
 		.servo_controllerv1_0_avalon_slave_0_read             (mm_interconnect_0_servo_controllerv1_0_avalon_slave_0_read),             //                                          .read
 		.servo_controllerv1_0_avalon_slave_0_readdata         (mm_interconnect_0_servo_controllerv1_0_avalon_slave_0_readdata),         //                                          .readdata
 		.servo_controllerv1_0_avalon_slave_0_writedata        (mm_interconnect_0_servo_controllerv1_0_avalon_slave_0_writedata),        //                                          .writedata
-		.spi_ad7928_spi_control_port_address                  (mm_interconnect_0_spi_ad7928_spi_control_port_address),                  //               spi_ad7928_spi_control_port.address
-		.spi_ad7928_spi_control_port_write                    (mm_interconnect_0_spi_ad7928_spi_control_port_write),                    //                                          .write
-		.spi_ad7928_spi_control_port_read                     (mm_interconnect_0_spi_ad7928_spi_control_port_read),                     //                                          .read
-		.spi_ad7928_spi_control_port_readdata                 (mm_interconnect_0_spi_ad7928_spi_control_port_readdata),                 //                                          .readdata
-		.spi_ad7928_spi_control_port_writedata                (mm_interconnect_0_spi_ad7928_spi_control_port_writedata),                //                                          .writedata
-		.spi_ad7928_spi_control_port_chipselect               (mm_interconnect_0_spi_ad7928_spi_control_port_chipselect),               //                                          .chipselect
 		.sysid_qsys_control_slave_address                     (mm_interconnect_0_sysid_qsys_control_slave_address),                     //                  sysid_qsys_control_slave.address
 		.sysid_qsys_control_slave_readdata                    (mm_interconnect_0_sysid_qsys_control_slave_readdata),                    //                                          .readdata
 		.tc_instruct_mem_s2_address                           (mm_interconnect_0_tc_instruct_mem_s2_address),                           //                        tc_instruct_mem_s2.address
@@ -973,7 +940,6 @@ module DE0_CV_QSYS (
 		.receiver3_irq (irq_mapper_receiver3_irq),           // receiver3.irq
 		.receiver4_irq (irq_mapper_receiver4_irq),           // receiver4.irq
 		.receiver5_irq (irq_mapper_receiver5_irq),           // receiver5.irq
-		.receiver6_irq (irq_mapper_receiver6_irq),           // receiver6.irq
 		.sender_irq    (nios2_qsys_irq_irq)                  //    sender.irq
 	);
 

@@ -11,6 +11,8 @@ module servo_protect(
     i2_max,
     i3_max,
 
+    measurement_trigger,
+
     stop
 );
 
@@ -29,54 +31,79 @@ input [ADC_WIDTH-2:0]    i1_max;
 input [ADC_WIDTH-2:0]    i2_max;
 input [ADC_WIDTH-2:0]    i3_max;
 
+input measurement_trigger;
+
 output reg [3:0] stop;
 
-wire  [ADC_WIDTH-1:0] si0;
-wire  [ADC_WIDTH-1:0] si1;
-wire  [ADC_WIDTH-1:0] si2;
-wire  [ADC_WIDTH-1:0] si3;
-wire  [ADC_WIDTH-1:0] i0_max_neg;
-wire  [ADC_WIDTH-1:0] i1_max_neg;
-wire  [ADC_WIDTH-1:0] i2_max_neg;
-wire  [ADC_WIDTH-1:0] i3_max_neg;
+// wire  [ADC_WIDTH-1:0] si0;
+// wire  [ADC_WIDTH-1:0] si1;
+// wire  [ADC_WIDTH-1:0] si2;
+// wire  [ADC_WIDTH-1:0] si3;
+// wire  [ADC_WIDTH-1:0] i0_max_neg;
+// wire  [ADC_WIDTH-1:0] i1_max_neg;
+// wire  [ADC_WIDTH-1:0] i2_max_neg;
+// wire  [ADC_WIDTH-1:0] i3_max_neg;
 
-assign si0 = i0;
-assign si1 = i1;
-assign si2 = i2;
-assign si3 = i3;
+// assign si0 = i0;
+// assign si1 = i1;
+// assign si2 = i2;
+// assign si3 = i3;
 
-assign i0_max_neg = {ADC_WIDTH{1'b0}} - {1'b0, i0_max};
-assign i1_max_neg = {ADC_WIDTH{1'b0}} - {1'b0, i1_max};
-assign i2_max_neg = {ADC_WIDTH{1'b0}} - {1'b0, i2_max};
-assign i3_max_neg = {ADC_WIDTH{1'b0}} - {1'b0, i3_max};
+// assign i0_max_neg = {ADC_WIDTH{1'b0}} - {1'b0, i0_max};
+// assign i1_max_neg = {ADC_WIDTH{1'b0}} - {1'b0, i1_max};
+// assign i2_max_neg = {ADC_WIDTH{1'b0}} - {1'b0, i2_max};
+// assign i3_max_neg = {ADC_WIDTH{1'b0}} - {1'b0, i3_max};
+
+// always @(posedge clk) begin
+//     if (~reset_n) begin
+//         stop <= {SERVO_NUM{1'b1}};
+//     end else begin
+//         if (si0[ADC_WIDTH-1]) begin
+//             stop[0] <= (si0[ADC_WIDTH-2] < i0_max_neg[ADC_WIDTH-2:0])? 1'b1: 1'b0;
+//         end else begin
+//             stop[0] <= (si0[ADC_WIDTH-2] > i0_max)? 1'b1: 1'b0;
+//         end
+
+//         if (si1[ADC_WIDTH-1]) begin
+//             stop[1] <= (si1[ADC_WIDTH-2] < i1_max_neg[ADC_WIDTH-2:0])? 1'b1: 1'b0;
+//         end else begin
+//             stop[1] <= (si1[ADC_WIDTH-2] > i1_max)? 1'b1: 1'b0;
+//         end
+
+//         if (si2[ADC_WIDTH-1]) begin
+//             stop[2] <= (si2[ADC_WIDTH-2] < i2_max_neg[ADC_WIDTH-2:0])? 1'b1: 1'b0;
+//         end else begin
+//             stop[2] <= (si2[ADC_WIDTH-2] > i2_max)? 1'b1: 1'b0;
+//         end
+
+//         if (si3[ADC_WIDTH-1]) begin
+//             stop[3] <= (si3[ADC_WIDTH-2] < i3_max_neg[ADC_WIDTH-2:0])? 1'b1: 1'b0;
+//         end else begin
+//             stop[3] <= (si3[ADC_WIDTH-2] > i3_max)? 1'b1: 1'b0;
+//         end
+//     end
+// end
+
+
+reg [3:0] stop_cond1;
+reg [3:0] stop_cond2;
 
 always @(posedge clk) begin
     if (~reset_n) begin
         stop <= {SERVO_NUM{1'b1}};
+        stop_cond1 <= 0;
+        stop_cond2 <= 0;
     end else begin
-        if (si0[ADC_WIDTH-1]) begin
-            stop[0] <= (si0[ADC_WIDTH-2] < i0_max_neg[ADC_WIDTH-2:0])? 1'b1: 1'b0;
-        end else begin
-            stop[0] <= (si0[ADC_WIDTH-2] > i0_max)? 1'b1: 1'b0;
+        if (measurement_trigger) begin
+            stop_cond1[0] <= (i0_max > i0)? 1'b1: 1'b0;
+            stop_cond1[1] <= (i1_max > i1)? 1'b1: 1'b0;
+            stop_cond1[2] <= (i2_max > i2)? 1'b1: 1'b0;
+            stop_cond1[3] <= (i3_max > i3)? 1'b1: 1'b0;
+
+            stop_cond2 <= stop_cond1;
         end
 
-        if (si1[ADC_WIDTH-1]) begin
-            stop[1] <= (si1[ADC_WIDTH-2] < i1_max_neg[ADC_WIDTH-2:0])? 1'b1: 1'b0;
-        end else begin
-            stop[1] <= (si1[ADC_WIDTH-2] > i1_max)? 1'b1: 1'b0;
-        end
-
-        if (si2[ADC_WIDTH-1]) begin
-            stop[2] <= (si2[ADC_WIDTH-2] < i2_max_neg[ADC_WIDTH-2:0])? 1'b1: 1'b0;
-        end else begin
-            stop[2] <= (si2[ADC_WIDTH-2] > i2_max)? 1'b1: 1'b0;
-        end
-
-        if (si3[ADC_WIDTH-1]) begin
-            stop[3] <= (si3[ADC_WIDTH-2] < i3_max_neg[ADC_WIDTH-2:0])? 1'b1: 1'b0;
-        end else begin
-            stop[3] <= (si3[ADC_WIDTH-2] > i3_max)? 1'b1: 1'b0;
-        end
+        stop <= stop | (stop_cond2 & stop_cond1);
     end
 end
 

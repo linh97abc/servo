@@ -209,15 +209,16 @@ ad7928_top #(
     .spi_miso(spi_miso),
 
     .filter_level(filter_level),
+    
+    .m_data_0(pos2),
+    .m_data_1(pos3),
+    .m_data_2(pos0),
+    .m_data_3(pos1),
+    .m_data_4(i3),
+    .m_data_5(i2),
+    .m_data_6(i0),
+    .m_data_7(i1),
 
-    .m_data_0(i0),
-    .m_data_1(i1),
-    .m_data_2(i2),
-    .m_data_3(i3),
-    .m_data_4(pos0),
-    .m_data_5(pos1),
-    .m_data_6(pos2),
-    .m_data_7(pos3),
     .m_valid(adc_data_valid)  
 
 );
@@ -501,18 +502,32 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
                     U1_OFFSET: readdata <= u1;
                     U2_OFFSET: readdata <= u2;
                     U3_OFFSET: readdata <= u3;
-                    I0_MAX_OFFSET: readdata <= {i0_max, {16-ADC_WIDTH{1'b0}}};
-                    I1_MAX_OFFSET: readdata <= {i1_max, {16-ADC_WIDTH{1'b0}}};
-                    I2_MAX_OFFSET: readdata <= {i2_max, {16-ADC_WIDTH{1'b0}}};
-                    I3_MAX_OFFSET: readdata <= {i3_max, {16-ADC_WIDTH{1'b0}}};
-                    I0_OFFSET: readdata <= {i0_sample, {16-ADC_WIDTH{1'b0}}};
-                    I1_OFFSET: readdata <= {i1_sample, {16-ADC_WIDTH{1'b0}}};
-                    I2_OFFSET: readdata <= {i2_sample, {16-ADC_WIDTH{1'b0}}};
-                    I3_OFFSET: readdata <= {i3_sample, {16-ADC_WIDTH{1'b0}}};
-                    POS0_OFFSET: readdata <= {pos0, {16-ADC_WIDTH{1'b0}}};
-                    POS1_OFFSET: readdata <= {pos1, {16-ADC_WIDTH{1'b0}}};
-                    POS2_OFFSET: readdata <= {pos2, {16-ADC_WIDTH{1'b0}}};
-                    POS3_OFFSET: readdata <= {pos3, {16-ADC_WIDTH{1'b0}}};
+                    // I0_MAX_OFFSET: readdata <= {i0_max, {16-ADC_WIDTH{1'b0}}};
+                    // I1_MAX_OFFSET: readdata <= {i1_max, {16-ADC_WIDTH{1'b0}}};
+                    // I2_MAX_OFFSET: readdata <= {i2_max, {16-ADC_WIDTH{1'b0}}};
+                    // I3_MAX_OFFSET: readdata <= {i3_max, {16-ADC_WIDTH{1'b0}}};
+                    // I0_OFFSET: readdata <= {i0_sample, {16-ADC_WIDTH{1'b0}}};
+                    // I1_OFFSET: readdata <= {i1_sample, {16-ADC_WIDTH{1'b0}}};
+                    // I2_OFFSET: readdata <= {i2_sample, {16-ADC_WIDTH{1'b0}}};
+                    // I3_OFFSET: readdata <= {i3_sample, {16-ADC_WIDTH{1'b0}}};
+                    // POS0_OFFSET: readdata <= {pos0, {16-ADC_WIDTH{1'b0}}};
+                    // POS1_OFFSET: readdata <= {pos1, {16-ADC_WIDTH{1'b0}}};
+                    // POS2_OFFSET: readdata <= {pos2, {16-ADC_WIDTH{1'b0}}};
+                    // POS3_OFFSET: readdata <= {pos3, {16-ADC_WIDTH{1'b0}}};
+
+                    I0_MAX_OFFSET: readdata <= i0_max;
+                    I1_MAX_OFFSET: readdata <= i1_max;
+                    I2_MAX_OFFSET: readdata <= i2_max;
+                    I3_MAX_OFFSET: readdata <= i3_max;
+                    I0_OFFSET: readdata <= i0_sample;
+                    I1_OFFSET: readdata <= i1_sample;
+                    I2_OFFSET: readdata <= i2_sample;
+                    I3_OFFSET: readdata <= i3_sample;
+                    POS0_OFFSET: readdata <= pos0;
+                    POS1_OFFSET: readdata <= pos1;
+                    POS2_OFFSET: readdata <= pos2;
+                    POS3_OFFSET: readdata <= pos3;
+
                     POS_HALL0_OFFSET: readdata <= pos_hall_0;
                     POS_HALL1_OFFSET: readdata <= pos_hall_1;
                     POS_HALL2_OFFSET: readdata <= pos_hall_2;

@@ -32,10 +32,6 @@ module DE0_CV_QSYS (
 	servo_controllerv1_0_conduit_end_phase_3,
 	servo_controllerv1_0_conduit_end_nFault,
 	servo_controllerv1_0_conduit_end_drv8320_en,
-	spi_ad7928_external_MISO,
-	spi_ad7928_external_MOSI,
-	spi_ad7928_external_SCLK,
-	spi_ad7928_external_SS_n,
 	tmp101_i2c_sda_t,
 	tmp101_i2c_scl_t,
 	tmp101_i2c_sda_i,
@@ -76,10 +72,6 @@ module DE0_CV_QSYS (
 	output	[5:0]	servo_controllerv1_0_conduit_end_phase_3;
 	input	[3:0]	servo_controllerv1_0_conduit_end_nFault;
 	output	[3:0]	servo_controllerv1_0_conduit_end_drv8320_en;
-	input		spi_ad7928_external_MISO;
-	output		spi_ad7928_external_MOSI;
-	output		spi_ad7928_external_SCLK;
-	output		spi_ad7928_external_SS_n;
 	output		tmp101_i2c_sda_t;
 	output		tmp101_i2c_scl_t;
 	input		tmp101_i2c_sda_i;
