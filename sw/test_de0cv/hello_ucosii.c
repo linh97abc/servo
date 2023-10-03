@@ -54,9 +54,9 @@ void task1(void* pdata)
 
     servo_controller_start(servoDev);
 
-    int16_t duty[SERVO_CONTROLLER_NUM_SERVO];
+    int16_t duty[SERVO_CONTROLLER_NUM_SERVO] = {0};
 //
-    duty[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(-0.4f);
+//    duty[0] = SERVO_CONTROLLER_FLOAT_TO_FIXED(-0.4f);
 //    duty[0] = 0;
 //    duty[1] = 0;
 //    duty[2] = 0;
