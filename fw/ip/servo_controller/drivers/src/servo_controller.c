@@ -11,10 +11,6 @@
 #define SERVO_IOWR(dev, reg, data) IOWR((uintptr_t)dev->BASE, reg, data)
 #define SERVO_IORD(dev, reg) IORD((uintptr_t)dev->BASE, reg)
 
-static int servo_controller_get_phase_position_in_critical(
-	struct servo_controller_dev_t *dev,
-	int16_t position[SERVO_CONTROLLER_NUM_SERVO]) __attribute__((section(".exceptions")));
-
 static int servo_controller_update_duty_in_critical(
 	struct servo_controller_dev_t *dev,
 	int16_t duty[SERVO_CONTROLLER_NUM_SERVO]) __attribute__((section(".exceptions")));
@@ -22,30 +18,6 @@ static int servo_controller_update_duty_in_critical(
 static int servo_controller_get_position_in_critical(
 	struct servo_controller_dev_t *dev,
 	int16_t position[SERVO_CONTROLLER_NUM_SERVO]) __attribute__((section(".exceptions")));
-
-static int32_t predict_position1x_step(
-	int32_t pk1, int32_t K_predict_to_mea, int16_t deltaP) __attribute__((section(".exceptions")));
-
-static void servo_controller_predict_pos_step(
-	struct servo_controller_dev_t *dev) __attribute__((section(".exceptions")));
-
-static int servo_controller_get_phase_position_in_critical(
-	struct servo_controller_dev_t *dev,
-	int16_t position[SERVO_CONTROLLER_NUM_SERVO])
-{
-	servo_controller_reg_I16 i16Reg;
-
-	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE0_OFFSET);
-	position[0] = i16Reg.i16_val;
-	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE1_OFFSET);
-	position[1] = i16Reg.i16_val;
-	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE2_OFFSET);
-	position[2] = i16Reg.i16_val;
-	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE3_OFFSET);
-	position[3] = i16Reg.i16_val;
-
-	return 0;
-}
 
 static int servo_controller_get_position_in_critical(
 	struct servo_controller_dev_t *dev,
@@ -65,34 +37,21 @@ static int servo_controller_get_position_in_critical(
 	return 0;
 }
 
-static int32_t predict_position1x_step(
-	int32_t pk1, int32_t K_predict_to_mea,
-	int16_t deltaP)
+static void servo_controller_init_pos_phase(struct servo_controller_dev_t *dev)
 {
-	int32_t pk = pk1 + K_predict_to_mea * deltaP;
+	INT8U err;
+	struct servo_controller_data_t *data = (struct servo_controller_data_t *)dev->data;
+	OSFlagPend(data->flag, SERVO_CONTROLLER_FLAG_ADC_VALID_BIT, OS_FLAG_WAIT_SET_ANY, 0, &err);
+	ALT_DEBUG_ASSERT((err == OS_ERR_NONE));
 
-	return pk;
-}
+	servo_controller_reg_I16 pos;
 
-static void servo_controller_predict_pos_step(
-	struct servo_controller_dev_t *dev)
-{
-	int16_t delta_pos[SERVO_CONTROLLER_NUM_SERVO];
-
-	servo_controller_get_phase_position_in_critical(dev, delta_pos);
 	unsigned i;
-	struct servo_controller_data_t *data = dev->data;
-
 	for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
 	{
-		if (dev->cfg->drv_en[i])
-		{
-			int32_t pk = predict_position1x_step(
-				data->hall_position[i],
-				data->K_phase_to_mea[i],
-				delta_pos[i]);
-			data->hall_position[i] = pk;
-		}
+		pos.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS0_OFFSET + i);
+		int32_t tmp = pos.i16_val << 15;
+		SERVO_IOWR(dev, SERVO_CONTROLLER_POS_PHASE0_OFFSET + i, tmp / dev->data->K_phase_to_mea[i]);
 	}
 }
 
@@ -105,23 +64,22 @@ void task_servo_business(void *arg)
 	struct servo_controller_data_t *data = (struct servo_controller_data_t *)dev->data;
 	INT8U err;
 
+	servo_controller_init_pos_phase(dev);
+	ie.val = SERVO_IORD(dev, SERVO_CONTROLLER_IE_OFFSET);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val | SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT);
+
 	for (;;)
 	{
 		OSFlagPend(data->flag, SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT, OS_FLAG_WAIT_SET_ANY + OS_FLAG_CONSUME, 0, &err);
 		ALT_DEBUG_ASSERT((err == OS_ERR_NONE));
 
-		OSSchedLock();
-		servo_controller_predict_pos_step(dev);
-
 		if (dev->cfg->on_new_process)
 		{
-			OSSchedUnlock();
 			dev->cfg->on_new_process(dev, dev->cfg->callback_arg);
 		}
 		else
 		{
 			SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET, SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT);
-			OSSchedUnlock();
 		}
 
 		ie.val = SERVO_IORD(dev, SERVO_CONTROLLER_IE_OFFSET);
@@ -232,13 +190,14 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 
 	for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
 	{
+		ret = caculate_K_phase_to_mea(dev, i);
+		if (ret)
+		{
+			return ret;
+		}
+
 		if (cfg->drv_en[i])
 		{
-			ret = caculate_K_phase_to_mea(dev, i);
-			if (ret)
-			{
-				return ret;
-			}
 
 			ret = caculate_I_max(cfg, i, &i_max[i]);
 			if (ret)
@@ -288,8 +247,8 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 	SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET, 0xFFFFFFFFu);
 
 	ieReg.val = 0;
-	ieReg.field.adc_valid = cfg->on_adc_valid ? 1 : 0;
-	ieReg.field.mea_trig = 1;
+	ieReg.field.adc_valid = 1;
+	ieReg.field.mea_trig = 0;
 	ieReg.field.realtime_err = cfg->on_realtime_err ? 1 : 0;
 
 	if (cfg->on_stop_err)
@@ -327,17 +286,7 @@ int servo_controller_start(struct servo_controller_dev_t *dev)
 	ALT_DEBUG_ASSERT((dev));
 
 	OS_CPU_SR cpu_sr = 0;
-	int16_t pos[SERVO_CONTROLLER_NUM_SERVO];
 	OS_ENTER_CRITICAL();
-
-	servo_controller_get_position_in_critical(dev, pos);
-
-	unsigned i;
-
-	for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
-	{
-		dev->data->hall_position[i] = pos[i] << 15;
-	}
 
 	servo_controller_reg_CR crReg;
 	crReg.val = SERVO_IORD(dev, SERVO_CONTROLLER_CR_OFFSET);
@@ -482,7 +431,11 @@ static void servo_controller_irq_handler(void *arg)
 	{
 		if (flag.val & SERVO_CONTROLLER_FLAG_ADC_VALID_BIT)
 		{
-			dev->cfg->on_adc_valid(dev, dev->cfg->callback_arg);
+			if (dev->cfg->on_adc_valid)
+			{
+				dev->cfg->on_adc_valid(dev, dev->cfg->callback_arg);
+			}
+
 			ie.field.adc_valid = 0;
 			SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val);
 		}
@@ -596,9 +549,12 @@ int servo_controller_get_phase_position(
 	unsigned i;
 	OS_ENTER_CRITICAL();
 
+	int32_t pos;
+
 	for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
 	{
-		position[i] = dev->data->hall_position[i] >> 15;
+		pos = SERVO_IORD(dev, SERVO_CONTROLLER_POS0_OFFSET);
+		position[i] = (pos * dev->data->K_phase_to_mea[i]) >> 15;
 	}
 
 	OS_EXIT_CRITICAL();

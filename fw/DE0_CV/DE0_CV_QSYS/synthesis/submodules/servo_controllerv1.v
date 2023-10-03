@@ -83,6 +83,52 @@ output [5:0]    phase_1;
 output [5:0]    phase_2;
 output [5:0]    phase_3;
 
+localparam CR_OFFSET = 0, // protect_en , filter_level, en
+        TR_OFFSET = 1, // reset, start_servo, adc_init, u_valid
+        IE_OFFSET = 2,
+        FLAG_OFFSET = 3,
+
+        SPI_PRES_OFFSET = 4,
+        PWM_PRES_OFFSET = 5,
+        PWM_TRIG_RATE = 6,
+
+        PULSE_MODE0_OFFSET = 7,
+        PULSE_MODE1_OFFSET = PULSE_MODE0_OFFSET+1,
+        PULSE_MODE2_OFFSET = PULSE_MODE0_OFFSET+2,
+        PULSE_MODE3_OFFSET = PULSE_MODE0_OFFSET+3,
+        
+        U0_OFFSET = 11,
+        U1_OFFSET = U0_OFFSET+1,
+        U2_OFFSET = U0_OFFSET+2,
+        U3_OFFSET = U0_OFFSET+3,
+
+        I0_MAX_OFFSET = 15,
+        I1_MAX_OFFSET = I0_MAX_OFFSET+1,
+        I2_MAX_OFFSET = I0_MAX_OFFSET+2,
+        I3_MAX_OFFSET = I0_MAX_OFFSET+3,
+
+        I0_OFFSET = 19,
+        I1_OFFSET = I0_OFFSET+1,
+        I2_OFFSET = I0_OFFSET+2,
+        I3_OFFSET = I0_OFFSET+3,
+
+        POS0_OFFSET = 23,
+        POS1_OFFSET = POS0_OFFSET+1,
+        POS2_OFFSET = POS0_OFFSET+2,
+        POS3_OFFSET = POS0_OFFSET+3,
+
+        DPOS_HALL0_OFFSET = 27,
+        DPOS_HALL1_OFFSET = DPOS_HALL0_OFFSET+1,
+        DPOS_HALL2_OFFSET = DPOS_HALL0_OFFSET+2,
+        DPOS_HALL3_OFFSET = DPOS_HALL0_OFFSET+3,
+
+        POS_HALL0_OFFSET = 31,
+        POS_HALL1_OFFSET = POS_HALL0_OFFSET+1,
+        POS_HALL2_OFFSET = POS_HALL0_OFFSET+2,
+        POS_HALL3_OFFSET = POS_HALL0_OFFSET+3,
+
+        HALL_OFFSET = 35;
+
 reg         core_en;
 reg [7:0]   spi_divisor;
 reg         adc_init;
@@ -114,10 +160,10 @@ reg [DUTY_WIDTH-1:0] u2;
 reg [DUTY_WIDTH-1:0] u3;
 reg u_valid;
 
-reg [ADC_WIDTH-2:0]    i0_max;
-reg [ADC_WIDTH-2:0]    i1_max;
-reg [ADC_WIDTH-2:0]    i2_max;
-reg [ADC_WIDTH-2:0]    i3_max;
+reg [ADC_WIDTH-1:0]    i0_max;
+reg [ADC_WIDTH-1:0]    i1_max;
+reg [ADC_WIDTH-1:0]    i2_max;
+reg [ADC_WIDTH-1:0]    i3_max;
 
 reg [1:0] mode_0;
 reg [1:0] mode_1;
@@ -146,11 +192,16 @@ reg [5:0] hall_1_sync;
 reg [5:0] hall_2_sync;
 reg [5:0] hall_3_sync;
 
-wire [15:0] pos_hall_0;
-wire [15:0] pos_hall_1;
-wire [15:0] pos_hall_2;
-wire [15:0] pos_hall_3;
+wire [15:0] dpos_hall_0;
+wire [15:0] dpos_hall_1;
+wire [15:0] dpos_hall_2;
+wire [15:0] dpos_hall_3;
 
+
+wire [31:0] pos_hall_0;
+wire [31:0] pos_hall_1;
+wire [31:0] pos_hall_2;
+wire [31:0] pos_hall_3;
 
 
 assign irq = |(ie & flag);
@@ -162,7 +213,10 @@ detect_hall_pos detect_hall_pos_inst0
     .reset_n(reset_n & ~core_reset),
     .hall(hall_0_sync[5:3]),
     .mea_trigger(measurement_trigger),
-    .delta_pos(pos_hall_0)
+    .delta_pos(dpos_hall_0),
+    .position(pos_hall_0),
+    .pos_init(writedata),
+    .pos_init_valid(((address == POS_HALL0_OFFSET) && ~write_n))
 );
 
 detect_hall_pos detect_hall_pos_inst1
@@ -171,7 +225,10 @@ detect_hall_pos detect_hall_pos_inst1
     .reset_n(reset_n & ~core_reset),
     .hall(hall_1_sync[5:3]),
     .mea_trigger(measurement_trigger),
-    .delta_pos(pos_hall_1)
+    .delta_pos(dpos_hall_1),
+    .position(pos_hall_1),
+    .pos_init(writedata),
+    .pos_init_valid(((address == POS_HALL1_OFFSET) && ~write_n))
 );
 
 detect_hall_pos detect_hall_pos_inst2
@@ -180,7 +237,10 @@ detect_hall_pos detect_hall_pos_inst2
     .reset_n(reset_n & ~core_reset),
     .hall(hall_2_sync[5:3]),
     .mea_trigger(measurement_trigger),
-    .delta_pos(pos_hall_2)
+    .delta_pos(dpos_hall_2),
+    .position(pos_hall_2),
+    .pos_init(writedata),
+    .pos_init_valid(((address == POS_HALL2_OFFSET) && ~write_n))
 );
 
 detect_hall_pos detect_hall_pos_inst3
@@ -189,7 +249,10 @@ detect_hall_pos detect_hall_pos_inst3
     .reset_n(reset_n & ~core_reset),
     .hall(hall_3_sync[5:3]),
     .mea_trigger(measurement_trigger),
-    .delta_pos(pos_hall_3)
+    .delta_pos(dpos_hall_3),
+    .position(pos_hall_3),
+    .pos_init(writedata),
+    .pos_init_valid(((address == POS_HALL3_OFFSET) && ~write_n))
 );
 
 ad7928_top #(
@@ -300,46 +363,7 @@ localparam
     FLAG_MEA_TRIG_BIT = 1,
     FLAG_REAL_TIME_BIT = 0;
 
-localparam CR_OFFSET = 0, // protect_en , filter_level, en
-        TR_OFFSET = 1, // reset, start_servo, adc_init, u_valid
-        IE_OFFSET = 2,
-        FLAG_OFFSET = 3,
 
-        SPI_PRES_OFFSET = 4,
-        PWM_PRES_OFFSET = 5,
-        PWM_TRIG_RATE = 6,
-
-        PULSE_MODE0_OFFSET = 7,
-        PULSE_MODE1_OFFSET = PULSE_MODE0_OFFSET+1,
-        PULSE_MODE2_OFFSET = PULSE_MODE0_OFFSET+2,
-        PULSE_MODE3_OFFSET = PULSE_MODE0_OFFSET+3,
-        
-        U0_OFFSET = 11,
-        U1_OFFSET = U0_OFFSET+1,
-        U2_OFFSET = U0_OFFSET+2,
-        U3_OFFSET = U0_OFFSET+3,
-
-        I0_MAX_OFFSET = 15,
-        I1_MAX_OFFSET = I0_MAX_OFFSET+1,
-        I2_MAX_OFFSET = I0_MAX_OFFSET+2,
-        I3_MAX_OFFSET = I0_MAX_OFFSET+3,
-
-        I0_OFFSET = 19,
-        I1_OFFSET = I0_OFFSET+1,
-        I2_OFFSET = I0_OFFSET+2,
-        I3_OFFSET = I0_OFFSET+3,
-
-        POS0_OFFSET = 23,
-        POS1_OFFSET = POS0_OFFSET+1,
-        POS2_OFFSET = POS0_OFFSET+2,
-        POS3_OFFSET = POS0_OFFSET+3,
-
-        POS_HALL0_OFFSET = 27,
-        POS_HALL1_OFFSET = POS_HALL0_OFFSET+1,
-        POS_HALL2_OFFSET = POS_HALL0_OFFSET+2,
-        POS_HALL3_OFFSET = POS_HALL0_OFFSET+3,
-
-        HALL_OFFSET = 31;
 
 
 
@@ -444,22 +468,22 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
                 end
                 I0_MAX_OFFSET: begin
                    if (~core_en) begin
-                        i0_max <= writedata[14:16-ADC_WIDTH];
+                        i0_max <= writedata[ADC_WIDTH-1:0];
                    end 
                 end
                 I1_MAX_OFFSET: begin
                    if (~core_en) begin
-                        i1_max <= writedata[14:16-ADC_WIDTH];
+                        i1_max <= writedata[ADC_WIDTH-1:0];
                    end 
                 end
                 I2_MAX_OFFSET: begin
                    if (~core_en) begin
-                        i2_max <= writedata[14:16-ADC_WIDTH];
+                        i2_max <= writedata[ADC_WIDTH-1:0];
                    end 
                 end
                 I3_MAX_OFFSET: begin
                    if (~core_en) begin
-                        i3_max <= writedata[14:16-ADC_WIDTH];
+                        i3_max <= writedata[ADC_WIDTH-1:0];
                    end 
                 end
                 U0_OFFSET: begin
@@ -528,10 +552,16 @@ localparam CR_OFFSET = 0, // protect_en , filter_level, en
                     POS2_OFFSET: readdata <= pos2;
                     POS3_OFFSET: readdata <= pos3;
 
+                    DPOS_HALL0_OFFSET: readdata <= dpos_hall_0;
+                    DPOS_HALL1_OFFSET: readdata <= dpos_hall_1;
+                    DPOS_HALL2_OFFSET: readdata <= dpos_hall_2;
+                    DPOS_HALL3_OFFSET: readdata <= dpos_hall_3;
+
                     POS_HALL0_OFFSET: readdata <= pos_hall_0;
                     POS_HALL1_OFFSET: readdata <= pos_hall_1;
                     POS_HALL2_OFFSET: readdata <= pos_hall_2;
                     POS_HALL3_OFFSET: readdata <= pos_hall_3;
+
                     HALL_OFFSET: readdata <= {hall_3_sync[5:3], hall_2_sync[5:3], hall_1_sync[5:3], hall_0_sync[5:3]};
 
 

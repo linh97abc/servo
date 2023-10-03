@@ -169,7 +169,8 @@ extern "C"
 		volatile servo_controller_reg_I16 i_max[SERVO_CONTROLLER_NUM_SERVO];
 		const volatile servo_controller_reg_I16 i[SERVO_CONTROLLER_NUM_SERVO];
 		const volatile servo_controller_reg_I16 pos[SERVO_CONTROLLER_NUM_SERVO];
-		const volatile uint32_t pos_phase[SERVO_CONTROLLER_NUM_SERVO];
+		const volatile servo_controller_reg_I16 dpos_phase[SERVO_CONTROLLER_NUM_SERVO];
+		volatile uint32_t pos_phase[SERVO_CONTROLLER_NUM_SERVO];
 		const volatile servo_controller_reg_HALL_SIGNAL hall_sig;
 	};
 
@@ -230,8 +231,6 @@ extern "C"
 	struct servo_controller_data_t
 	{
 		OS_FLAG_GRP *flag;
-
-		int32_t hall_position[SERVO_CONTROLLER_NUM_SERVO];
 
 		/// @brief fixed(32,16)
 		int32_t K_phase_to_mea[SERVO_CONTROLLER_NUM_SERVO];

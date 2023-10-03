@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Oct 2, 2023 10:22:08 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1696260128189</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Oct 3, 2023 8:03:39 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1696338219446</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\outsource\servo\fw\DE0_CV\software\test_fw_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\..\DE0_CV_QSYS.sopcinfo</SopcDesignFile>
@@ -1764,49 +1764,49 @@
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>servo_controllerv1_0</slaveDescriptor>
-                <addressRange>0x0800C000 - 0x0800C07F</addressRange>
-                <addressSpan>128</addressSpan>
+                <addressRange>0x0800C000 - 0x0800C0FF</addressRange>
+                <addressSpan>256</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>ltc2992</slaveDescriptor>
-                <addressRange>0x0800C080 - 0x0800C0BF</addressRange>
+                <addressRange>0x0800C100 - 0x0800C13F</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>tmp101</slaveDescriptor>
-                <addressRange>0x0800C0C0 - 0x0800C0FF</addressRange>
+                <addressRange>0x0800C140 - 0x0800C17F</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>uart_rs485</slaveDescriptor>
-                <addressRange>0x0800C100 - 0x0800C13F</addressRange>
+                <addressRange>0x0800C180 - 0x0800C1BF</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timestamp</slaveDescriptor>
-                <addressRange>0x0800C140 - 0x0800C17F</addressRange>
+                <addressRange>0x0800C1C0 - 0x0800C1FF</addressRange>
                 <addressSpan>64</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timer</slaveDescriptor>
-                <addressRange>0x0800C1A0 - 0x0800C1BF</addressRange>
+                <addressRange>0x0800C200 - 0x0800C21F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid_qsys</slaveDescriptor>
-                <addressRange>0x0800C1C8 - 0x0800C1CF</addressRange>
+                <addressRange>0x0800C228 - 0x0800C22F</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart</slaveDescriptor>
-                <addressRange>0x0800C1D0 - 0x0800C1D7</addressRange>
+                <addressRange>0x0800C230 - 0x0800C237</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>

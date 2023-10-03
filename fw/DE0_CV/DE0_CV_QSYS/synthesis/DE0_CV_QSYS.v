@@ -168,7 +168,7 @@ module DE0_CV_QSYS (
 	wire         mm_interconnect_0_jtag_uart_avalon_jtag_slave_write;                              // mm_interconnect_0:jtag_uart_avalon_jtag_slave_write -> jtag_uart:av_write_n
 	wire  [31:0] mm_interconnect_0_jtag_uart_avalon_jtag_slave_writedata;                          // mm_interconnect_0:jtag_uart_avalon_jtag_slave_writedata -> jtag_uart:av_writedata
 	wire  [31:0] mm_interconnect_0_servo_controllerv1_0_avalon_slave_0_readdata;                   // servo_controllerv1_0:readdata -> mm_interconnect_0:servo_controllerv1_0_avalon_slave_0_readdata
-	wire   [4:0] mm_interconnect_0_servo_controllerv1_0_avalon_slave_0_address;                    // mm_interconnect_0:servo_controllerv1_0_avalon_slave_0_address -> servo_controllerv1_0:address
+	wire   [5:0] mm_interconnect_0_servo_controllerv1_0_avalon_slave_0_address;                    // mm_interconnect_0:servo_controllerv1_0_avalon_slave_0_address -> servo_controllerv1_0:address
 	wire         mm_interconnect_0_servo_controllerv1_0_avalon_slave_0_read;                       // mm_interconnect_0:servo_controllerv1_0_avalon_slave_0_read -> servo_controllerv1_0:read_n
 	wire         mm_interconnect_0_servo_controllerv1_0_avalon_slave_0_write;                      // mm_interconnect_0:servo_controllerv1_0_avalon_slave_0_write -> servo_controllerv1_0:write_n
 	wire  [31:0] mm_interconnect_0_servo_controllerv1_0_avalon_slave_0_writedata;                  // mm_interconnect_0:servo_controllerv1_0_avalon_slave_0_writedata -> servo_controllerv1_0:writedata

@@ -26,10 +26,10 @@ input [ADC_WIDTH-1:0]    i1;
 input [ADC_WIDTH-1:0]    i2;
 input [ADC_WIDTH-1:0]    i3;
 
-input [ADC_WIDTH-2:0]    i0_max;
-input [ADC_WIDTH-2:0]    i1_max;
-input [ADC_WIDTH-2:0]    i2_max;
-input [ADC_WIDTH-2:0]    i3_max;
+input [ADC_WIDTH-1:0]    i0_max;
+input [ADC_WIDTH-1:0]    i1_max;
+input [ADC_WIDTH-1:0]    i2_max;
+input [ADC_WIDTH-1:0]    i3_max;
 
 input measurement_trigger;
 
