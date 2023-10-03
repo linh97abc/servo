@@ -267,8 +267,8 @@ int8_t LTC2992_write_24_bits(LTC2992_Dev *dev, uint8_t i2c_address, uint8_t adc_
 {
     uint8_t data[3];
     data[0] = (code >> 16) & 0xFFu;
-    data[0] = (code >> 8) & 0xFFu;
-    data[1] = code & 0xFFu;
+    data[1] = (code >> 8) & 0xFFu;
+    data[2] = code & 0xFFu;
 
     return i2c_write_block(dev,
                            i2c_address,
