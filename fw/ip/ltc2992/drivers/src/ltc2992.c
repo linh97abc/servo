@@ -329,7 +329,6 @@ int8_t LTC2992_read_24_bits(LTC2992_Dev *dev, uint8_t i2c_address, uint8_t adc_c
     int8_t ack;
     uint8_t data[3];
     ack = i2c_read_block(dev, i2c_address, adc_command, data, 3);
-    ack = i2c_read_block(dev, i2c_address, adc_command, data, 2);
 
     if (ack)
     {
