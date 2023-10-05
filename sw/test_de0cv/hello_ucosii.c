@@ -67,12 +67,14 @@ void task1(void* pdata)
 
   while (1)
   {
-	  OSTimeDly(100);
+	  OSTimeDlyHMSM(0, 0, 0, 100);
 
 	  servo_controller_get_duty(servoDev, duty);
-	  printf("pos = %ld\n", servoDev->BASE->pos_phase);
-	  printf("duty = %d\n", duty[0]);
-	  printf("realtime_err = %d\n", servoDev->BASE->flag.field.realtime_err);
+	  printf("pos_phase = %ld\n", servoDev->BASE->pos_phase[0]);
+	  printf("pos = %ld\n", servoDev->BASE->pos[0]);
+//	  printf("duty = %d\n", duty[0]);
+//	  printf("realtime_err = %d\n", servoDev->BASE->flag.field.realtime_err);
+
   }
 }
 
