@@ -337,6 +337,22 @@
          type = "String";
       }
    }
+   element fw_update_0
+   {
+      datum _sortIndex
+      {
+         value = "17";
+         type = "int";
+      }
+   }
+   element fw_update_0.s1
+   {
+      datum baseAddress
+      {
+         value = "134267392";
+         type = "String";
+      }
+   }
    element jtag_uart
    {
       datum _sortIndex
@@ -349,7 +365,7 @@
    {
       datum baseAddress
       {
-         value = "134267440";
+         value = "134267472";
          type = "String";
       }
    }
@@ -438,22 +454,6 @@
          type = "String";
       }
    }
-   element spi_ad7928
-   {
-      datum _sortIndex
-      {
-         value = "17";
-         type = "int";
-      }
-   }
-   element spi_ad7928.spi_control_port
-   {
-      datum baseAddress
-      {
-         value = "134267264";
-         type = "String";
-      }
-   }
    element sysid_qsys
    {
       datum _sortIndex
@@ -466,7 +466,7 @@
    {
       datum baseAddress
       {
-         value = "134267432";
+         value = "134267464";
          type = "String";
       }
    }
@@ -506,7 +506,7 @@
    {
       datum baseAddress
       {
-         value = "134267392";
+         value = "134267424";
          type = "String";
       }
    }
@@ -612,7 +612,6 @@
    internal="servo_controllerv1_0.conduit_end"
    type="conduit"
    dir="end" />
- <interface name="spi_ad7928_external" internal="spi_ad7928.external" />
  <interface name="tmp101_i2c" internal="tmp101.i2c" type="conduit" dir="end" />
  <interface name="uart_debug_conduit_end" internal="uart_debug.conduit_end" />
  <interface
@@ -670,6 +669,12 @@
   <parameter name="resetrequest_enabled" value="true" />
   <parameter name="useASMIAtom" value="false" />
  </module>
+ <module name="fw_update_0" kind="fw_update" version="1.0" enabled="1">
+  <parameter name="LOCK_PWD" value="1234532" />
+  <parameter name="PRODUCT_ID" value="0" />
+  <parameter name="VERSION_MAJOR" value="1" />
+  <parameter name="VERSION_MINOR" value="0" />
+ </module>
  <module
    name="jtag_uart"
    kind="altera_avalon_jtag_uart"
@@ -713,7 +718,7 @@
   <parameter name="dataAddrWidth" value="28" />
   <parameter name="dataMasterHighPerformanceAddrWidth" value="1" />
   <parameter name="dataMasterHighPerformanceMapParam" value="" />
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x4000000' end='0x8000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='tc_instruct_mem.s2' start='0x8000000' end='0x8004098' type='altera_avalon_onchip_memory2.s2' /><slave name='boot_rom.s2' start='0x8008000' end='0x800A000' type='altera_avalon_onchip_memory2.s2' /><slave name='epcs_flash_controller_0.epcs_control_port' start='0x800B000' end='0x800B800' type='altera_avalon_epcs_flash_controller.epcs_control_port' /><slave name='nios2_qsys.debug_mem_slave' start='0x800B800' end='0x800C000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='servo_controllerv1_0.avalon_slave_0' start='0x800C000' end='0x800C100' type='servo_controllerv1.avalon_slave_0' /><slave name='ltc2992.s1' start='0x800C100' end='0x800C140' type='avl_ltc2992.s1' /><slave name='tmp101.s1' start='0x800C140' end='0x800C180' type='avl_tmp101.s1' /><slave name='uart_rs485.s1' start='0x800C180' end='0x800C1C0' type='avl_fifo_uart.s1' /><slave name='timestamp.s1' start='0x800C1C0' end='0x800C200' type='altera_avalon_timer.s1' /><slave name='timer.s1' start='0x800C200' end='0x800C220' type='altera_avalon_timer.s1' /><slave name='sysid_qsys.control_slave' start='0x800C228' end='0x800C230' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x800C230' end='0x800C238' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x4000000' end='0x8000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='tc_instruct_mem.s2' start='0x8000000' end='0x8004098' type='altera_avalon_onchip_memory2.s2' /><slave name='boot_rom.s2' start='0x8008000' end='0x800A000' type='altera_avalon_onchip_memory2.s2' /><slave name='epcs_flash_controller_0.epcs_control_port' start='0x800B000' end='0x800B800' type='altera_avalon_epcs_flash_controller.epcs_control_port' /><slave name='nios2_qsys.debug_mem_slave' start='0x800B800' end='0x800C000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='servo_controllerv1_0.avalon_slave_0' start='0x800C000' end='0x800C100' type='servo_controllerv1.avalon_slave_0' /><slave name='ltc2992.s1' start='0x800C100' end='0x800C140' type='avl_ltc2992.s1' /><slave name='tmp101.s1' start='0x800C140' end='0x800C180' type='avl_tmp101.s1' /><slave name='uart_rs485.s1' start='0x800C180' end='0x800C1C0' type='avl_fifo_uart.s1' /><slave name='timestamp.s1' start='0x800C1C0' end='0x800C200' type='altera_avalon_timer.s1' /><slave name='fw_update_0.s1' start='0x800C200' end='0x800C220' type='fw_update.s1' /><slave name='timer.s1' start='0x800C220' end='0x800C240' type='altera_avalon_timer.s1' /><slave name='sysid_qsys.control_slave' start='0x800C248' end='0x800C250' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x800C250' end='0x800C258' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
   <parameter name="data_master_high_performance_paddr_base" value="0" />
   <parameter name="data_master_high_performance_paddr_size" value="0" />
   <parameter name="data_master_paddr_base" value="0" />
@@ -752,7 +757,7 @@
   <parameter name="icache_tagramBlockType" value="Automatic" />
   <parameter name="impl" value="Fast" />
   <parameter name="instAddrWidth" value="28" />
-  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x4000000' end='0x8000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='epcs_flash_controller_0.epcs_control_port' start='0x800B000' end='0x800B800' type='altera_avalon_epcs_flash_controller.epcs_control_port' /><slave name='nios2_qsys.debug_mem_slave' start='0x800B800' end='0x800C000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x800C230' end='0x800C238' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
+  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='sdram.s1' start='0x4000000' end='0x8000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='epcs_flash_controller_0.epcs_control_port' start='0x800B000' end='0x800B800' type='altera_avalon_epcs_flash_controller.epcs_control_port' /><slave name='nios2_qsys.debug_mem_slave' start='0x800B800' end='0x800C000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x800C250' end='0x800C258' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
   <parameter name="instructionMasterHighPerformanceAddrWidth" value="1" />
   <parameter name="instructionMasterHighPerformanceMapParam" value="" />
   <parameter name="instruction_master_high_performance_paddr_base" value="0" />
@@ -1130,22 +1135,6 @@
   <parameter name="PWM_FREQ" value="1000" />
   <parameter name="SPI_SPEED" value="1000000" />
  </module>
- <module name="spi_ad7928" kind="altera_avalon_spi" version="18.1" enabled="0">
-  <parameter name="avalonSpec" value="2.0" />
-  <parameter name="clockPhase" value="0" />
-  <parameter name="clockPolarity" value="1" />
-  <parameter name="dataWidth" value="8" />
-  <parameter name="disableAvalonFlowControl" value="false" />
-  <parameter name="inputClockRate" value="100000000" />
-  <parameter name="insertDelayBetweenSlaveSelectAndSClk" value="false" />
-  <parameter name="insertSync" value="false" />
-  <parameter name="lsbOrderedFirst" value="false" />
-  <parameter name="masterSPI" value="true" />
-  <parameter name="numberOfSlaves" value="1" />
-  <parameter name="syncRegDepth" value="2" />
-  <parameter name="targetClockRate" value="1000000" />
-  <parameter name="targetSlaveSelectToSClkDelay" value="0.0" />
- </module>
  <module
    name="sysid_qsys"
    kind="altera_avalon_sysid_qsys"
@@ -1249,7 +1238,7 @@
    start="nios2_qsys.data_master"
    end="jtag_uart.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0800c230" />
+  <parameter name="baseAddress" value="0x0800c250" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1267,7 +1256,7 @@
    start="nios2_qsys.data_master"
    end="sysid_qsys.control_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0800c228" />
+  <parameter name="baseAddress" value="0x0800c248" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1294,7 +1283,7 @@
    start="nios2_qsys.data_master"
    end="timer.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0800c200" />
+  <parameter name="baseAddress" value="0x0800c220" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1355,6 +1344,15 @@
    kind="avalon"
    version="18.1"
    start="nios2_qsys.data_master"
+   end="fw_update_0.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0800c200" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="nios2_qsys.data_master"
    end="tc_instruct_mem.s2">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x08000000" />
@@ -1372,19 +1370,10 @@
  <connection
    kind="avalon"
    version="18.1"
-   start="nios2_qsys.data_master"
-   end="spi_ad7928.spi_control_port">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0800c180" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="18.1"
    start="nios2_qsys.instruction_master"
    end="jtag_uart.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0800c230" />
+  <parameter name="baseAddress" value="0x0800c250" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1444,7 +1433,6 @@
    start="pll.outclk0"
    end="epcs_flash_controller_0.clk" />
  <connection kind="clock" version="18.1" start="pll.outclk0" end="timestamp.clk" />
- <connection kind="clock" version="18.1" start="pll.outclk0" end="spi_ad7928.clk" />
  <connection
    kind="clock"
    version="18.1"
@@ -1474,6 +1462,11 @@
    end="uart_debug.clock" />
  <connection kind="clock" version="18.1" start="pll.outclk0" end="tmp101.clock" />
  <connection kind="clock" version="18.1" start="pll.outclk0" end="ltc2992.clock" />
+ <connection
+   kind="clock"
+   version="18.1"
+   start="pll.outclk0"
+   end="fw_update_0.clock" />
  <connection
    kind="interrupt"
    version="18.1"
@@ -1522,13 +1515,6 @@
    start="nios2_qsys.irq"
    end="timestamp.irq">
   <parameter name="irqNumber" value="5" />
- </connection>
- <connection
-   kind="interrupt"
-   version="18.1"
-   start="nios2_qsys.irq"
-   end="spi_ad7928.irq">
-  <parameter name="irqNumber" value="6" />
  </connection>
  <connection
    kind="nios_custom_instruction"
@@ -1613,7 +1599,7 @@
    kind="reset"
    version="18.1"
    start="clk_50.clk_reset"
-   end="spi_ad7928.reset" />
+   end="fw_update_0.reset" />
  <connection
    kind="reset"
    version="18.1"
@@ -1673,7 +1659,7 @@
    kind="reset"
    version="18.1"
    start="nios2_qsys.debug_reset_request"
-   end="spi_ad7928.reset" />
+   end="fw_update_0.reset" />
  <connection
    kind="reset"
    version="18.1"

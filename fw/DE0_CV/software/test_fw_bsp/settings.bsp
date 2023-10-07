@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Oct 3, 2023 8:03:39 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1696338219446</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Oct 7, 2023 3:31:04 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1696667464166</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\outsource\servo\fw\DE0_CV\software\test_fw_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\..\DE0_CV_QSYS.sopcinfo</SopcDesignFile>
@@ -1793,20 +1793,26 @@
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>timer</slaveDescriptor>
+                <slaveDescriptor>fw_update_0</slaveDescriptor>
                 <addressRange>0x0800C200 - 0x0800C21F</addressRange>
+                <addressSpan>32</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>timer</slaveDescriptor>
+                <addressRange>0x0800C220 - 0x0800C23F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid_qsys</slaveDescriptor>
-                <addressRange>0x0800C228 - 0x0800C22F</addressRange>
+                <addressRange>0x0800C248 - 0x0800C24F</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart</slaveDescriptor>
-                <addressRange>0x0800C230 - 0x0800C237</addressRange>
+                <addressRange>0x0800C250 - 0x0800C257</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>

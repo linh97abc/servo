@@ -45,7 +45,7 @@ module DE0_CV_QSYS (
 		output wire        uart_rs485_conduit_end_dbg_os_pulse          //                                 .dbg_os_pulse
 	);
 
-	wire         pll_outclk0_clk;                                                                  // pll:outclk_0 -> [boot_rom:clk, boot_rom:clk2, epcs_flash_controller_0:clk, irq_mapper:clk, jtag_uart:clk, ltc2992:clk, mm_interconnect_0:pll_outclk0_clk, mm_interconnect_1:pll_outclk0_clk, mm_interconnect_2:pll_outclk0_clk, nios2_qsys:clk, rst_controller:clk, rst_controller_001:clk, sdram:clk, servo_controllerv1_0:clk, sysid_qsys:clock, tc_instruct_mem:clk, tc_instruct_mem:clk2, timer:clk, timestamp:clk, tmp101:clk, uart_rs485:clk]
+	wire         pll_outclk0_clk;                                                                  // pll:outclk_0 -> [boot_rom:clk, boot_rom:clk2, epcs_flash_controller_0:clk, fw_update_0:clk, irq_mapper:clk, jtag_uart:clk, ltc2992:clk, mm_interconnect_0:pll_outclk0_clk, mm_interconnect_1:pll_outclk0_clk, mm_interconnect_2:pll_outclk0_clk, nios2_qsys:clk, rst_controller:clk, rst_controller_001:clk, sdram:clk, servo_controllerv1_0:clk, sysid_qsys:clock, tc_instruct_mem:clk, tc_instruct_mem:clk2, timer:clk, timestamp:clk, tmp101:clk, uart_rs485:clk]
 	wire         nios2_qsys_custom_instruction_master_readra;                                      // nios2_qsys:E_ci_combo_readra -> nios2_qsys_custom_instruction_master_translator:ci_slave_readra
 	wire         nios2_qsys_custom_instruction_master_readrb;                                      // nios2_qsys:E_ci_combo_readrb -> nios2_qsys_custom_instruction_master_translator:ci_slave_readrb
 	wire   [4:0] nios2_qsys_custom_instruction_master_multi_b;                                     // nios2_qsys:A_ci_multi_b -> nios2_qsys_custom_instruction_master_translator:ci_slave_multi_b
@@ -222,6 +222,11 @@ module DE0_CV_QSYS (
 	wire         mm_interconnect_0_ltc2992_s1_read;                                                // mm_interconnect_0:ltc2992_s1_read -> ltc2992:read_n
 	wire         mm_interconnect_0_ltc2992_s1_write;                                               // mm_interconnect_0:ltc2992_s1_write -> ltc2992:write_n
 	wire  [31:0] mm_interconnect_0_ltc2992_s1_writedata;                                           // mm_interconnect_0:ltc2992_s1_writedata -> ltc2992:writedata
+	wire  [31:0] mm_interconnect_0_fw_update_0_s1_readdata;                                        // fw_update_0:readdata -> mm_interconnect_0:fw_update_0_s1_readdata
+	wire   [2:0] mm_interconnect_0_fw_update_0_s1_address;                                         // mm_interconnect_0:fw_update_0_s1_address -> fw_update_0:address
+	wire         mm_interconnect_0_fw_update_0_s1_read;                                            // mm_interconnect_0:fw_update_0_s1_read -> fw_update_0:read_n
+	wire         mm_interconnect_0_fw_update_0_s1_write;                                           // mm_interconnect_0:fw_update_0_s1_write -> fw_update_0:write_n
+	wire  [31:0] mm_interconnect_0_fw_update_0_s1_writedata;                                       // mm_interconnect_0:fw_update_0_s1_writedata -> fw_update_0:writedata
 	wire         mm_interconnect_0_tc_instruct_mem_s2_chipselect;                                  // mm_interconnect_0:tc_instruct_mem_s2_chipselect -> tc_instruct_mem:chipselect2
 	wire  [31:0] mm_interconnect_0_tc_instruct_mem_s2_readdata;                                    // tc_instruct_mem:readdata2 -> mm_interconnect_0:tc_instruct_mem_s2_readdata
 	wire  [12:0] mm_interconnect_0_tc_instruct_mem_s2_address;                                     // mm_interconnect_0:tc_instruct_mem_s2_address -> tc_instruct_mem:address2
@@ -267,7 +272,7 @@ module DE0_CV_QSYS (
 	wire  [31:0] nios2_qsys_irq_irq;                                                               // irq_mapper:sender_irq -> nios2_qsys:irq
 	wire         rst_controller_reset_out_reset;                                                   // rst_controller:reset_out -> [boot_rom:reset, boot_rom:reset2, epcs_flash_controller_0:reset_n, jtag_uart:rst_n, mm_interconnect_0:jtag_uart_reset_reset_bridge_in_reset_reset, mm_interconnect_2:boot_rom_reset1_reset_bridge_in_reset_reset, rst_translator:in_reset, sdram:reset_n, sysid_qsys:reset_n, timer:reset_n]
 	wire         rst_controller_reset_out_reset_req;                                               // rst_controller:reset_req -> [boot_rom:reset_req, boot_rom:reset_req2, epcs_flash_controller_0:reset_req, rst_translator:reset_req_in]
-	wire         rst_controller_001_reset_out_reset;                                               // rst_controller_001:reset_out -> [irq_mapper:reset, ltc2992:reset_n, mm_interconnect_0:nios2_qsys_reset_reset_bridge_in_reset_reset, mm_interconnect_1:nios2_qsys_reset_reset_bridge_in_reset_reset, mm_interconnect_2:nios2_qsys_reset_reset_bridge_in_reset_reset, nios2_qsys:reset_n, rst_translator_001:in_reset, servo_controllerv1_0:reset_n, tc_instruct_mem:reset, tc_instruct_mem:reset2, timestamp:reset_n, tmp101:reset_n, uart_rs485:reset_n]
+	wire         rst_controller_001_reset_out_reset;                                               // rst_controller_001:reset_out -> [fw_update_0:reset_n, irq_mapper:reset, ltc2992:reset_n, mm_interconnect_0:nios2_qsys_reset_reset_bridge_in_reset_reset, mm_interconnect_1:nios2_qsys_reset_reset_bridge_in_reset_reset, mm_interconnect_2:nios2_qsys_reset_reset_bridge_in_reset_reset, nios2_qsys:reset_n, rst_translator_001:in_reset, servo_controllerv1_0:reset_n, tc_instruct_mem:reset, tc_instruct_mem:reset2, timestamp:reset_n, tmp101:reset_n, uart_rs485:reset_n]
 	wire         rst_controller_001_reset_out_reset_req;                                           // rst_controller_001:reset_req -> [nios2_qsys:reset_req, rst_translator_001:reset_req_in, tc_instruct_mem:reset_req, tc_instruct_mem:reset_req2]
 	wire         nios2_qsys_debug_reset_request_reset;                                             // nios2_qsys:debug_reset_request -> rst_controller_001:reset_in1
 
@@ -306,6 +311,21 @@ module DE0_CV_QSYS (
 		.write_n    (~mm_interconnect_0_epcs_flash_controller_0_epcs_control_port_write),     //                  .write_n
 		.writedata  (mm_interconnect_0_epcs_flash_controller_0_epcs_control_port_writedata),  //                  .writedata
 		.irq        (irq_mapper_receiver4_irq)                                                //               irq.irq
+	);
+
+	fw_update #(
+		.PRODUCT_ID    (0),
+		.VERSION_MAJOR (1),
+		.VERSION_MINOR (0),
+		.LOCK_PWD      (1234532)
+	) fw_update_0 (
+		.clk       (pll_outclk0_clk),                            // clock.clk
+		.reset_n   (~rst_controller_001_reset_out_reset),        // reset.reset_n
+		.address   (mm_interconnect_0_fw_update_0_s1_address),   //    s1.address
+		.writedata (mm_interconnect_0_fw_update_0_s1_writedata), //      .writedata
+		.write_n   (~mm_interconnect_0_fw_update_0_s1_write),    //      .write_n
+		.read_n    (~mm_interconnect_0_fw_update_0_s1_read),     //      .read_n
+		.readdata  (mm_interconnect_0_fw_update_0_s1_readdata)   //      .readdata
 	);
 
 	DE0_CV_QSYS_jtag_uart jtag_uart (
@@ -833,6 +853,11 @@ module DE0_CV_QSYS (
 		.epcs_flash_controller_0_epcs_control_port_readdata   (mm_interconnect_0_epcs_flash_controller_0_epcs_control_port_readdata),   //                                          .readdata
 		.epcs_flash_controller_0_epcs_control_port_writedata  (mm_interconnect_0_epcs_flash_controller_0_epcs_control_port_writedata),  //                                          .writedata
 		.epcs_flash_controller_0_epcs_control_port_chipselect (mm_interconnect_0_epcs_flash_controller_0_epcs_control_port_chipselect), //                                          .chipselect
+		.fw_update_0_s1_address                               (mm_interconnect_0_fw_update_0_s1_address),                               //                            fw_update_0_s1.address
+		.fw_update_0_s1_write                                 (mm_interconnect_0_fw_update_0_s1_write),                                 //                                          .write
+		.fw_update_0_s1_read                                  (mm_interconnect_0_fw_update_0_s1_read),                                  //                                          .read
+		.fw_update_0_s1_readdata                              (mm_interconnect_0_fw_update_0_s1_readdata),                              //                                          .readdata
+		.fw_update_0_s1_writedata                             (mm_interconnect_0_fw_update_0_s1_writedata),                             //                                          .writedata
 		.jtag_uart_avalon_jtag_slave_address                  (mm_interconnect_0_jtag_uart_avalon_jtag_slave_address),                  //               jtag_uart_avalon_jtag_slave.address
 		.jtag_uart_avalon_jtag_slave_write                    (mm_interconnect_0_jtag_uart_avalon_jtag_slave_write),                    //                                          .write
 		.jtag_uart_avalon_jtag_slave_read                     (mm_interconnect_0_jtag_uart_avalon_jtag_slave_read),                     //                                          .read
