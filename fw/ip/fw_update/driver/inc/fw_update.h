@@ -14,8 +14,13 @@
 #define FW_UPDATE_DATA_REG_NUM 6
 #define FW_UPDATE_VERSION_STR_LEN 10
 
+#define FW_UPDATE_FW_MAX_SIZE 0x200000
+#define FW_UPDATE_SW_MAX_SIZE 0x250000
+
 #define FW_UPDATE_CONFIG_BANK_SIZE 256
 #define FW_UPDATE_CONFIG_BANK_NUM 256
+
+
 
 #ifdef __cplusplus
 extern "C"
@@ -41,6 +46,8 @@ extern "C"
         volatile uint32_t user_data[FW_UPDATE_DATA_REG_NUM];
     } fw_update_Reg;
 
+    struct fw_update_data;
+
     /// @brief FW Update Device Type
     typedef struct tag_fw_update_Dev
     {
@@ -56,7 +63,12 @@ extern "C"
         // vxxx.xxx
         char version[FW_UPDATE_VERSION_STR_LEN];
 
+        /// @brief user data
+        void *Tag;
+        void (*On_progress)(struct tag_fw_update_Dev* dev, uint8_t progress_val);
+
     } fw_update_dev;
+
 
     /// @brief Find FW_Update Device by device name
     /// @param name Device name
@@ -80,8 +92,8 @@ extern "C"
     /// @return 0 if OK, -ENOTSUP if not support
     int fw_update_check_current_fw(fw_update_dev *dev);
 
-    uint32_t fw_update_get_fw_size(fw_update_dev *dev);
-    uint32_t fw_update_get_sw_size(fw_update_dev *dev);
+    int fw_update_get_fw_size(fw_update_dev *dev);
+    int fw_update_get_sw_size(fw_update_dev *dev);
 
     int fw_update_save_firmware(
         fw_update_dev *dev,
