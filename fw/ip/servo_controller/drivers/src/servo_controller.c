@@ -99,6 +99,9 @@ static int servo_controller_update_duty_in_critical(
 	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET,
 			   SERVO_CONTROLLER_TR_U_VALID_BIT);
 
+	SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET,
+			   SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT);
+
 	return 0;
 }
 
@@ -285,6 +288,9 @@ int servo_controller_start(struct servo_controller_dev_t *dev)
 {
 	ALT_DEBUG_ASSERT((dev));
 
+	int16_t duty[SERVO_CONTROLLER_NUM_SERVO] = {0, 0, 0, 0};
+	int ret;
+
 	OS_CPU_SR cpu_sr = 0;
 	OS_ENTER_CRITICAL();
 
@@ -293,11 +299,42 @@ int servo_controller_start(struct servo_controller_dev_t *dev)
 	crReg.field.en = 1;
 	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, crReg.val);
 
+	ret = servo_controller_update_duty_in_critical(dev, duty);
+	if (ret)
+	{
+		OS_EXIT_CRITICAL();
+		return ret;
+	}
+	
+
 	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET,
 			   SERVO_CONTROLLER_TR_START_SERVO3_BIT |
 				   SERVO_CONTROLLER_TR_START_SERVO2_BIT |
 				   SERVO_CONTROLLER_TR_START_SERVO1_BIT |
 				   SERVO_CONTROLLER_TR_START_SERVO0_BIT);
+
+	OS_EXIT_CRITICAL();
+
+	return 0;
+}
+
+int servo_controller_restart_channel(
+	struct servo_controller_dev_t *dev,
+	enum Servo_controller_servo_id_t channel)
+{
+	ALT_DEBUG_ASSERT((dev));
+	ALT_DEBUG_ASSERT((chanel >= 0));
+	ALT_DEBUG_ASSERT((chanel < SERVO_CONTROLLER_NUM_SERVO));
+
+	OS_CPU_SR cpu_sr = 0;
+	OS_ENTER_CRITICAL();
+
+	uint32_t cr_val = SERVO_IORD(dev, SERVO_CONTROLLER_CR_OFFSET);
+	
+	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, cr_val & ~(1u << (SERVO_CONTROLLER_CR_DRV_EN0_BIT_INDEX + channel)));
+	OSTimeDly(1);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, cr_val);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET, 1u << (SERVO_CONTROLLER_TR_START_SERVO0_BIT_INDEX + channel));
 
 	OS_EXIT_CRITICAL();
 
@@ -320,7 +357,7 @@ int servo_controller_stop(struct servo_controller_dev_t *dev)
 	return 0;
 }
 
-int servo_controller_update_duty(
+int servo_controller_set_and_notify_duty_changed(
 	struct servo_controller_dev_t *dev,
 	int16_t duty[SERVO_CONTROLLER_NUM_SERVO])
 {
@@ -490,25 +527,17 @@ static void servo_controller_irq_handler(void *arg)
 
 static void set_default_config(struct servo_controller_config_t *cfg)
 {
-	cfg->Pos_lsb[0] = 1;
-	cfg->Pos_lsb[1] = 1;
-	cfg->Pos_lsb[2] = 1;
-	cfg->Pos_lsb[3] = 1;
+	unsigned i;
 
-	cfg->Current_lsb[0] = 1;
-	cfg->Current_lsb[1] = 1;
-	cfg->Current_lsb[2] = 1;
-	cfg->Current_lsb[3] = 1;
-
-	cfg->n_motor_pole[0] = 1;
-	cfg->n_motor_pole[1] = 1;
-	cfg->n_motor_pole[2] = 1;
-	cfg->n_motor_pole[3] = 1;
-
-	cfg->n_motor_ratio[0] = 1;
-	cfg->n_motor_ratio[1] = 1;
-	cfg->n_motor_ratio[2] = 1;
-	cfg->n_motor_ratio[3] = 1;
+	for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
+	{
+		cfg->i_max[i] = 5;
+		cfg->Pos_lsb[i] = 1;
+		cfg->Current_lsb[i] = 1;
+		cfg->n_motor_pole[i] = 1;
+		cfg->n_motor_pole[i] = 1;
+		cfg->n_motor_ratio[i] = 1;
+	}
 
 	cfg->spi_speed = 1000000;
 	cfg->pwm_base_freq = 5000000;
@@ -562,30 +591,19 @@ int servo_controller_get_phase_position(
 	return 0;
 }
 
-int servo_controller_update_duty_1channel(
+int servo_controller_set_duty_1channel(
 	struct servo_controller_dev_t *dev,
 	enum Servo_controller_servo_id_t chanel,
 	int16_t duty)
 {
-	if (!dev)
-	{
-		return -EINVAL;
-	}
-
-	if (chanel < 0)
-	{
-		return -EINVAL;
-	}
-
-	if (chanel >= SERVO_CONTROLLER_NUM_SERVO)
-	{
-		return -EINVAL;
-	}
+	ALT_DEBUG_ASSERT((dev));
+	ALT_DEBUG_ASSERT((chanel >= 0));
+	ALT_DEBUG_ASSERT((chanel < SERVO_CONTROLLER_NUM_SERVO));
 
 	OS_CPU_SR cpu_sr = 0;
 	OS_ENTER_CRITICAL();
 
-	uint8_t offset[] = {
+	const uint8_t offset[] = {
 		SERVO_CONTROLLER_U0_OFFSET,
 		SERVO_CONTROLLER_U1_OFFSET,
 		SERVO_CONTROLLER_U2_OFFSET,
@@ -597,6 +615,17 @@ int servo_controller_update_duty_1channel(
 			   SERVO_CONTROLLER_TR_U_VALID_BIT);
 
 	OS_EXIT_CRITICAL();
+
+	return 0;
+}
+
+int servo_controller_notify_duty_changed(
+	struct servo_controller_dev_t *dev)
+{
+	ALT_DEBUG_ASSERT((dev));
+
+	SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET,
+			   SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT);
 
 	return 0;
 }

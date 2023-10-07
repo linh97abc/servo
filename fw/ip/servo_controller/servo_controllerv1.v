@@ -390,8 +390,7 @@ module servo_controllerv1 (
                 (measurement_trigger_pendding | measurement_trigger ) 
                 & 
                 ((~write_n && (
-                    ((address == FLAG_OFFSET) && writedata[FLAG_MEA_TRIG_BIT]) ||
-                    ((address == TR_OFFSET) && writedata[TR_U_VALID_BIT])
+                    ((address == FLAG_OFFSET) && writedata[FLAG_MEA_TRIG_BIT])
                 ))? 1'b0: 1'b1);
 
 

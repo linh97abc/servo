@@ -21,8 +21,6 @@ extern "C"
 /// @brief Convert fixed(16, 0) number to float number
 #define SERVO_CONTROLLER_FIXED_TO_FLOAT(num) ((float)(num) / INT16_MAX)
 
-
-
 	enum Servo_controller_filter_level_t
 	{
 		SERVO_CONTROLLER_FILTER_LEVEL_1,
@@ -276,6 +274,13 @@ extern "C"
 	/// @return Error code
 	int servo_controller_start(struct servo_controller_dev_t *dev);
 
+	/// @brief ReStart servo
+	/// @param dev Pointer to servo device
+	/// @return Error code
+	int servo_controller_restart_channel(
+		struct servo_controller_dev_t *dev,
+		enum Servo_controller_servo_id_t channel);
+
 	/// @brief Stop servo
 	/// @param dev Pointer to servo device
 	/// @return Error code
@@ -293,19 +298,25 @@ extern "C"
 	///
 	///         servo_controller_update_duty(dev, duty);
 	///     }
-	int servo_controller_update_duty(
+	int servo_controller_set_and_notify_duty_changed(
 		struct servo_controller_dev_t *dev,
 		int16_t duty[SERVO_CONTROLLER_NUM_SERVO]);
 
-	/// @brief Update duty cycle for 1 channel
+	/// @brief Set duty cycle for 1 channel
 	/// @param dev Pointer to servo device
 	/// @param chanel Channel
 	/// @param duty Duty cycle in fixed number (16, 0) , range [-1, 1)
 	/// @return Error code
-	int servo_controller_update_duty_1channel(
+	int servo_controller_set_duty_1channel(
 		struct servo_controller_dev_t *dev,
 		enum Servo_controller_servo_id_t chanel,
 		int16_t duty);
+
+	/// @brief Use with @b servo_controller_set_duty_1channel , call after each servo process
+	/// @param dev Pointer to servo device
+	/// @return Error code
+	int servo_controller_notify_duty_changed(
+		struct servo_controller_dev_t *dev);
 
 	/// @brief Get motor postion
 	/// @param dev Pointer to servo device
@@ -345,7 +356,6 @@ extern "C"
 	///    OSTaskCreateExt(task_servo_business, ... )
 	void task_servo_business(void *arg) __attribute__((section(".exceptions")));
 
-
 	/// @brief Convert position (in fixed(16,0)) to position (in float)
 	/// @param dev Pointer to servo device
 	/// @param chanel Channel
@@ -354,8 +364,7 @@ extern "C"
 	static inline float servo_controller_code_to_position(
 		struct servo_controller_dev_t *dev,
 		enum Servo_controller_servo_id_t channel,
-		int16_t pos
-	)
+		int16_t pos)
 	{
 		return pos * dev->cfg->Pos_lsb[channel];
 	}
@@ -368,8 +377,7 @@ extern "C"
 	static inline float servo_controller_code_to_current(
 		struct servo_controller_dev_t *dev,
 		enum Servo_controller_servo_id_t channel,
-		int16_t current
-	)
+		int16_t current)
 	{
 		return current * dev->cfg->Current_lsb[channel];
 	}

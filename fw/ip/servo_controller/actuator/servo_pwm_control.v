@@ -110,7 +110,7 @@ wire [DUTY_WIDTH-2:0] d3;
 
 wire [SERVO_NUM-1:0] direction;
 
-servo_protect#(
+servo_protect #(
     .ADC_WIDTH(ADC_WIDTH)
 ) servo_protect_inst
  (
