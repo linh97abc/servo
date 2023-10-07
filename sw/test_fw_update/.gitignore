@@ -1,0 +1,6 @@
+/.settings
+/create-this-app
+/*.elf
+/*.map
+/*.objdump
+/obj/
