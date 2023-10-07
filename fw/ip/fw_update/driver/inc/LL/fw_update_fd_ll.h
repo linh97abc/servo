@@ -19,8 +19,8 @@ extern "C"
 #define NIOS2_DCACHE_BYPASS_MASK 0
 #endif
 
-#define AVL_TMP101_INSTANCE(name, dev)                                 \
-    static TMP101_Dev dev =                                            \
+#define FW_UPDATE_INSTANCE(name, dev)                                  \
+    static fw_update_dev dev =                                         \
         {                                                              \
             {                                                          \
                 ALT_LLIST_ENTRY,                                       \
@@ -39,6 +39,6 @@ extern "C"
             name##_VERSION_MINOR,                                      \
     }
 
-#define AVL_TMP101_INIT(name, dev) fw_update_init(&dev)
+#define FW_UPDATE_INIT(name, dev) fw_update_init(&dev)
 
 #endif // __AVL_TMP101_FD_LL_H__

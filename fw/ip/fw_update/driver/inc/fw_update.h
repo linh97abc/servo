@@ -1,5 +1,5 @@
-#ifndef __TMP101_H__
-#define __TMP101_H__
+#ifndef __FW_UPDATE_H__
+#define __FW_UPDATE_H__
 
 #include <stdint.h>
 #include <errno.h>

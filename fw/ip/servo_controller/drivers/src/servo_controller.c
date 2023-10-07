@@ -8,6 +8,10 @@
 #include <sys/alt_dev.h>
 #include <sys/alt_debug.h>
 
+#ifndef BIT
+#define BIT(i) (1u << (i))
+#endif
+
 #define SERVO_IOWR(dev, reg, data) IOWR((uintptr_t)dev->BASE, reg, data)
 #define SERVO_IORD(dev, reg) IORD((uintptr_t)dev->BASE, reg)
 
@@ -323,18 +327,18 @@ int servo_controller_restart_channel(
 	enum Servo_controller_servo_id_t channel)
 {
 	ALT_DEBUG_ASSERT((dev));
-	ALT_DEBUG_ASSERT((chanel >= 0));
-	ALT_DEBUG_ASSERT((chanel < SERVO_CONTROLLER_NUM_SERVO));
+	ALT_DEBUG_ASSERT((channel >= 0));
+	ALT_DEBUG_ASSERT((channel < SERVO_CONTROLLER_NUM_SERVO));
 
 	OS_CPU_SR cpu_sr = 0;
 	OS_ENTER_CRITICAL();
 
 	uint32_t cr_val = SERVO_IORD(dev, SERVO_CONTROLLER_CR_OFFSET);
 	
-	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, cr_val & ~(1u << (SERVO_CONTROLLER_CR_DRV_EN0_BIT_INDEX + channel)));
+	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, cr_val & ~BIT(SERVO_CONTROLLER_CR_DRV_EN0_BIT_INDEX + channel));
 	OSTimeDly(1);
 	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, cr_val);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET, 1u << (SERVO_CONTROLLER_TR_START_SERVO0_BIT_INDEX + channel));
+	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET, BIT(SERVO_CONTROLLER_TR_START_SERVO0_BIT_INDEX + channel));
 
 	OS_EXIT_CRITICAL();
 
