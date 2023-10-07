@@ -10,10 +10,11 @@
 #include <sys/alt_debug.h>
 #include <epcs_commands.h>
 
-#define FW_UPDATE_FIRMWARE_OFFSET 0x200000
-#define FW_UPDATE_SOFTWARE_OFFSET 0x400000
 #define FW_UPDATE_CONFIG_OFFSET 0x700000
 #define BOOT_CFG_ADDR (0x006F0000)
+#define BOOT_FW_CFG_ADDR (0x006F0100)
+
+#define SIGNATURE 0xa5a5a5a5
 
 #define EPCS_CONTROLLER_BASE EPCS_FLASH_CONTROLLER_0_BASE
 #define EPCS_CONTROLLER_REGISTER_OFFSET EPCS_FLASH_CONTROLLER_0_REGISTER_OFFSET
@@ -21,12 +22,15 @@
 struct fw_update_boot_config_info
 {
     alt_u32 sw_offset;
-    alt_u32 reserved1;
-    alt_u32 reserved2;
     alt_u32 fw_offset;
-    alt_u32 fw_len;
-    alt_u32 fw_crc;
 };
+
+typedef struct
+{
+    alt_u32 signature;
+    alt_u32 data_length;
+    alt_u32 data_crc;
+} fw_update_flash_fw_header_type;
 
 typedef struct
 {
@@ -231,23 +235,32 @@ int fw_update_read_firmware(
     ALT_DEBUG_ASSERT((data));
 
     struct fw_update_boot_config_info boot_info;
+    fw_update_flash_fw_header_type header;
+
     CopyFromFlash(&boot_info, (void *)BOOT_CFG_ADDR, sizeof(boot_info));
+    CopyFromFlash(&header, (void *)BOOT_FW_CFG_ADDR, sizeof(header));
 
-    if (boot_info.fw_len >= FW_UPDATE_FW_MAX_SIZE)
+    if (header.signature != SIGNATURE)
+    {
+        return 0;
+    }
+    
+
+    if (header.data_length >= FW_UPDATE_FW_MAX_SIZE)
     {
         return 0;
     }
 
-    fw_update_read_partition(dev, data, boot_info.fw_offset, boot_info.fw_len);
+    fw_update_read_partition(dev, data, boot_info.fw_offset, header.data_length);
 
-    alt_u32 fw_crc = FlashCalcCRC32(data, boot_info.fw_len);
+    alt_u32 fw_crc = FlashCalcCRC32(data, header.data_length);
 
-    if (fw_crc != boot_info.fw_crc)
+    if (fw_crc != header.data_crc)
     {
         return 0;
     }
 
-    return boot_info.fw_len;
+    return header.data_length;
 }
 
 int fw_update_read_software(
@@ -297,9 +310,18 @@ int fw_update_read_config(
 int fw_update_get_fw_size(fw_update_dev *dev)
 {
     struct fw_update_boot_config_info boot_info;
-    CopyFromFlash(&boot_info, (void *)BOOT_CFG_ADDR, sizeof(boot_info));
+    fw_update_flash_fw_header_type header;
 
-    return boot_info.fw_len;
+    CopyFromFlash(&boot_info, (void *)BOOT_CFG_ADDR, sizeof(boot_info));
+    CopyFromFlash(&header, (void *)BOOT_FW_CFG_ADDR, sizeof(header));
+
+    if (header.signature != SIGNATURE)
+    {
+        return 0;
+    }
+    
+
+    return header.data_length;
 }
 
 int fw_update_get_sw_size(fw_update_dev *dev)
@@ -342,17 +364,20 @@ int fw_update_save_firmware(
     alt_u32 fw_crc = FlashCalcCRC32(data, len);
 
     struct fw_update_boot_config_info boot_info;
+    fw_update_flash_fw_header_type header;
+
     CopyFromFlash(&boot_info, (void *)BOOT_CFG_ADDR, sizeof(boot_info));
+    CopyFromFlash(&header, (void *)BOOT_FW_CFG_ADDR, sizeof(header));
 
-    boot_info.fw_len = 0;
-    boot_info.fw_crc = fw_crc;
-    WriteToFlash((void *)BOOT_CFG_ADDR, &boot_info, sizeof(boot_info));
+    header.signature = SIGNATURE;
+    header.data_length = 0;
+    header.data_crc = fw_crc;
+    WriteToFlash((void *)BOOT_FW_CFG_ADDR, &header, sizeof(header));
 
-    int write_len = fw_update_write_partition(dev, data, FW_UPDATE_FIRMWARE_OFFSET, len);
+    int write_len = fw_update_write_partition(dev, data, boot_info.fw_offset, len);
 
-    boot_info.fw_offset = FW_UPDATE_FIRMWARE_OFFSET;
-    boot_info.fw_len = write_len;
-    WriteToFlash((void *)BOOT_CFG_ADDR, &boot_info, sizeof(boot_info));
+    header.data_length = write_len;
+    WriteToFlash((void *)BOOT_FW_CFG_ADDR, &header, sizeof(header));
 
     return write_len;
 }
@@ -371,10 +396,9 @@ int fw_update_save_software(
     }
 
     struct fw_update_boot_config_info boot_info;
-    boot_info.sw_offset = FW_UPDATE_SOFTWARE_OFFSET;
     CopyFromFlash(&boot_info, (void *)BOOT_CFG_ADDR, sizeof(boot_info));
 
-    return fw_update_write_partition(dev, data, FW_UPDATE_SOFTWARE_OFFSET, len);
+    return fw_update_write_partition(dev, data, boot_info.sw_offset, len);
 }
 
 int fw_update_save_config(
