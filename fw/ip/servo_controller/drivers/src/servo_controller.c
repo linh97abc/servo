@@ -429,7 +429,8 @@ static void servo_controller_irq_handler(void *arg)
 		{
 			dev->cfg->on_realtime_err(dev, dev->cfg->callback_arg);
 			SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET,
-					   SERVO_CONTROLLER_FLAG_CTRL_STEP_PENDING_BIT);
+					   SERVO_CONTROLLER_FLAG_CTRL_STEP_PENDING_BIT |
+						   SERVO_CONTROLLER_FLAG_REALTIME_ERR_BIT);
 		}
 
 		if (flag.val & SERVO_CONTROLLER_FLAG_STOP0_BIT)
