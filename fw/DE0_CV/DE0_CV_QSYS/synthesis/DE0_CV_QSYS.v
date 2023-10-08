@@ -316,7 +316,7 @@ module DE0_CV_QSYS (
 	fw_update #(
 		.PRODUCT_ID    (0),
 		.VERSION_MAJOR (1),
-		.VERSION_MINOR (0),
+		.VERSION_MINOR (4),
 		.LOCK_PWD      (1234532)
 	) fw_update_0 (
 		.clk       (pll_outclk0_clk),                            // clock.clk

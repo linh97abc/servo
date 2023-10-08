@@ -673,7 +673,7 @@
   <parameter name="LOCK_PWD" value="1234532" />
   <parameter name="PRODUCT_ID" value="0" />
   <parameter name="VERSION_MAJOR" value="1" />
-  <parameter name="VERSION_MINOR" value="0" />
+  <parameter name="VERSION_MINOR" value="4" />
  </module>
  <module
    name="jtag_uart"
