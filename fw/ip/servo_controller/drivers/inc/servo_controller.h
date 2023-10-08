@@ -89,6 +89,7 @@ extern "C"
 			uint32_t drv_1_fault : 1;
 			uint32_t drv_2_fault : 1;
 			uint32_t drv_3_fault : 1;
+			uint32_t ctrl_step_pending : 1;
 		} field;
 		uint32_t val;
 	} servo_controller_reg_FLAG;
@@ -228,10 +229,7 @@ extern "C"
 
 	struct servo_controller_data_t
 	{
-		OS_FLAG_GRP *flag;
-
-		/// @brief fixed(32,16)
-		int32_t K_phase_to_mea[SERVO_CONTROLLER_NUM_SERVO];
+		uint8_t _reserved;
 	};
 
 	struct servo_controller_dev_t
@@ -320,23 +318,31 @@ extern "C"
 
 	/// @brief Get motor postion
 	/// @param dev Pointer to servo device
-	/// @param position Motor position in fixed number (16, 0) , range [-1, 1)
+	/// @param position Motor position
 	/// @return Error code
 	int servo_controller_get_position(
 		struct servo_controller_dev_t *dev,
 		int16_t position[SERVO_CONTROLLER_NUM_SERVO]);
 
+	/// @brief Update motor phase postion
+	/// @param dev Pointer to servo device
+	/// @param pos_phase Motor position phase
+	/// @return Error code
+	int servo_controller_update_pos_phase(
+		struct servo_controller_dev_t *dev,
+		int32_t pos_phase[SERVO_CONTROLLER_NUM_SERVO]);
+
 	/// @brief Get motor phase postion
 	/// @param dev Pointer to servo device
-	/// @param position Motor position in fixed number (16, 0) , range [-1, 1)
+	/// @param pos_phase Motor position phase
 	/// @return Error code
 	int servo_controller_get_phase_position(
 		struct servo_controller_dev_t *dev,
-		int16_t position[SERVO_CONTROLLER_NUM_SERVO]);
+		int32_t pos_phase[SERVO_CONTROLLER_NUM_SERVO]);
 
 	/// @brief Get motor current
 	/// @param dev Pointer to servo device
-	/// @param current Motor current in fixed number (16, 0) , range [-1, 1)
+	/// @param current Motor current
 	/// @return Error code
 	int servo_controller_get_current(
 		struct servo_controller_dev_t *dev,
@@ -349,12 +355,6 @@ extern "C"
 	int servo_controller_get_duty(
 		struct servo_controller_dev_t *dev,
 		int16_t duty[SERVO_CONTROLLER_NUM_SERVO]);
-
-	/// @brief Task Servo Business
-	/// @param arg Pointer to servo device
-	/// @example
-	///    OSTaskCreateExt(task_servo_business, ... )
-	void task_servo_business(void *arg) __attribute__((section(".exceptions")));
 
 	/// @brief Convert position (in fixed(16,0)) to position (in float)
 	/// @param dev Pointer to servo device

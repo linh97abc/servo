@@ -175,9 +175,10 @@ module servo_controllerv1 (
 
   reg                   measurement_trigger_pendding;
   reg                   realtime_err;
+  reg                   control_step_pending;
 
   reg  [          10:0] ie;
-  wire [          10:0] flag;
+  wire [          11:0] flag;
 
   reg                   core_reset;
 
@@ -203,8 +204,15 @@ module servo_controllerv1 (
   wire [          31:0] pos_hall_3;
 
 
-  assign irq  = |(ie & flag);
-  assign flag = {drv8320_fault, stop, adc_data_valid, measurement_trigger_pendding, realtime_err};
+  assign irq = |(ie & flag[10:0]);
+  assign flag = {
+    control_step_pending,
+    drv8320_fault,
+    stop,
+    adc_data_valid,
+    measurement_trigger_pendding,
+    realtime_err
+  };
 
   detect_hall_pos detect_hall_pos_inst0 (
       .clk(clk),
@@ -341,6 +349,7 @@ module servo_controllerv1 (
   localparam TR_U_VALID_BIT = 0, TR_ADC_INIT_BIT = 1, TR_START_SERVO_BIT = 2, TR_RESET_BIT = 6;
 
   localparam 
+    FLAG_CONTROL_PENDING_BIT = 11,
     FLAG_DRV8320_FAULT_BIT = 7,
     FLAG_STOP_BIT = 3,
     FLAG_ADC_VALID_BIT = 2,
@@ -376,6 +385,9 @@ module servo_controllerv1 (
       mode_1 <= C_MODE1;
       mode_2 <= C_MODE2;
       mode_3 <= C_MODE3;
+      measurement_trigger_pendding <= 1'b0;
+      control_step_pending <= 1'b0;
+      realtime_err <= 1'b0;
     end else begin
       core_reset <= ((address == TR_OFFSET) && ~write_n) ? writedata[TR_RESET_BIT] : 1'b0;
       start_servo <= 
@@ -393,10 +405,17 @@ module servo_controllerv1 (
                     ((address == FLAG_OFFSET) && writedata[FLAG_MEA_TRIG_BIT])
                 ))? 1'b0: 1'b1);
 
-
+      control_step_pending <=
+                ie[FLAG_MEA_TRIG_BIT]
+                &             
+                (control_step_pending | measurement_trigger ) 
+                & 
+                ((~write_n && (
+                    ((address == FLAG_OFFSET) && writedata[FLAG_CONTROL_PENDING_BIT])
+                ))? 1'b0: 1'b1);
 
       realtime_err <= 
-                ((measurement_trigger_pendding & measurement_trigger) | realtime_err)
+                ((control_step_pending & measurement_trigger) | realtime_err)
                 & ( (address == FLAG_OFFSET)? (write_n | ~writedata[FLAG_REAL_TIME_BIT]): 1'b1);
 
 
