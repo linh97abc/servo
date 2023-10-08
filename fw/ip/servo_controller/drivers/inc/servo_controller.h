@@ -187,8 +187,6 @@ extern "C"
 
 		float Pos_lsb[SERVO_CONTROLLER_NUM_SERVO];
 		float Current_lsb[SERVO_CONTROLLER_NUM_SERVO];
-		uint8_t n_motor_pole[SERVO_CONTROLLER_NUM_SERVO];
-		uint8_t n_motor_ratio[SERVO_CONTROLLER_NUM_SERVO];
 
 		/// @brief spi speed of measurement IC
 		uint32_t spi_speed;

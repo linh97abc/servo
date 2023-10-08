@@ -8,11 +8,7 @@
 
 #include <servo_controller.h>
 #include <avl_fifo_uart.h>
-#include <avl_tmp101.h>
-#include <fw_update.h>
 
-TMP101_Dev *tmp101Dev;
-fw_update_dev *fwUpddateDev;
 
 #define SERVO4X_NAME SERVO_CONTROLLERV1_0_NAME
 
@@ -31,6 +27,18 @@ OS_STK    task_servo_stk[TASK_STACKSIZE];
 struct servo_controller_dev_t *servoDev;
 
 #define SELECTED_CHANNEL 1
+
+void on_new_process(struct servo_controller_dev_t *dev, void *arg)
+{
+	arg = 0;
+	servo_controller_notify_duty_changed(dev);
+}
+
+void on_realtime_err(struct servo_controller_dev_t *dev, void *arg)
+{
+	arg = 0;
+//	servo_controller_notify_duty_changed(dev);
+}
 
 void task1(void* pdata)
 {
@@ -51,8 +59,8 @@ void task1(void* pdata)
     SERVO_CONTROLLER_CFG(servoDev)->Current_lsb[SELECTED_CHANNEL] = 0.2;
 
 
-    SERVO_CONTROLLER_CFG(servoDev)->n_motor_pole[SELECTED_CHANNEL] = 5;
-    SERVO_CONTROLLER_CFG(servoDev)->n_motor_ratio[SELECTED_CHANNEL] = 1;
+    SERVO_CONTROLLER_CFG(servoDev)->on_new_process = on_new_process;
+    SERVO_CONTROLLER_CFG(servoDev)->on_realtime_err = on_realtime_err;
 
     stt = servo_controller_apply_configure(servoDev);
     ALT_DEBUG_ASSERT((stt == 0));
@@ -75,13 +83,17 @@ void task1(void* pdata)
 	  OSTimeDlyHMSM(0, 0, 0, 100);
 	  int16_t current[SERVO_CONTROLLER_NUM_SERVO];
 	  int16_t pos[SERVO_CONTROLLER_NUM_SERVO];
+	  int32_t pos_phase[SERVO_CONTROLLER_NUM_SERVO];
 
 	  servo_controller_get_duty(servoDev, duty);
 	  servo_controller_get_position(servoDev, current);
 	  servo_controller_get_current(servoDev, pos);
-	  printf("pos_phase = %ld\n", servoDev->BASE->pos_phase[SELECTED_CHANNEL]);
+	  servo_controller_get_phase_position(servoDev, pos_phase);
+	  printf("pos_phase = %ld\n", pos_phase[SELECTED_CHANNEL]);
 	  printf("pos = %d\n", current[SELECTED_CHANNEL]);
 	  printf("current = %d\n", pos[SELECTED_CHANNEL]);
+
+	  printf("real_time_err = %d\n", servoDev->BASE->flag.field.realtime_err);
 
   }
 }
@@ -91,9 +103,6 @@ int main(void)
 {
 
   printf("MicroC/OS-II\n");
-
-  fwUpddateDev = fw_update_open_dev(FW_UPDATE_0_NAME);
-  tmp101Dev = TMP101_OpenDev(TMP101_NAME);
 
   OSTaskCreateExt(task1,
                   NULL,
@@ -105,15 +114,6 @@ int main(void)
                   NULL,
                   0);
 
-  OSTaskCreateExt(task_servo_business,
-		          (void*) SERVO4X_NAME,
-				  &task_servo_stk[TASK_STACKSIZE-1],
-				  TASK_SERVO_PRIORITY,
-				  TASK_SERVO_PRIORITY,
-				  task_servo_stk,
-                  TASK_STACKSIZE,
-                  NULL,
-                  0);
 
   OSStart();
   return 0;
