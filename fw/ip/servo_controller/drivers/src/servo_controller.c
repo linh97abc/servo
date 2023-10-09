@@ -7,6 +7,7 @@
 #include <sys/alt_irq.h>
 #include <sys/alt_dev.h>
 #include <sys/alt_debug.h>
+#include <system.h
 
 #ifndef BIT
 #define BIT(i) (1u << (i))
@@ -83,30 +84,6 @@ struct servo_controller_dev_t *servo_controller_open_dev(const char *name)
 	return dev;
 }
 
-static int caculate_I_max(struct servo_controller_config_t *cfg,
-						  enum Servo_controller_servo_id_t channel,
-						  int16_t *i_max)
-{
-	if (!(cfg->i_max[channel] > 0))
-		return -EINVAL;
-
-	if (!(cfg->Current_lsb[channel] > 0))
-		return -EINVAL;
-
-	float tmp = cfg->i_max[channel] / cfg->Current_lsb[channel];
-
-	if (tmp > (INT16_MAX - 1))
-	{
-		*i_max = INT16_MAX - 1;
-	}
-	else
-	{
-		*i_max = (int16_t)tmp;
-	}
-
-	return 0;
-}
-
 int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 {
 	ALT_DEBUG_ASSERT((dev));
@@ -117,8 +94,6 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 	struct servo_controller_config_t *cfg = dev->cfg;
 	unsigned i;
 
-	int16_t i_max[SERVO_CONTROLLER_NUM_SERVO];
-
 	int ret;
 
 	if (!cfg->spi_speed)
@@ -128,19 +103,6 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 	if (!cfg->pwm_freq)
 		return -EINVAL;
 
-	for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
-	{
-		if (cfg->drv_en[i])
-		{
-
-			ret = caculate_I_max(cfg, i, &i_max[i]);
-			if (ret)
-			{
-				return ret;
-			}
-		}
-	}
-
 	crReg.val = 0;
 	crReg.field.en = 0;
 	crReg.field.filter_level = cfg->filter_level;
@@ -148,10 +110,6 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 	crReg.field.protected_1_en = cfg->protected_en[1];
 	crReg.field.protected_2_en = cfg->protected_en[2];
 	crReg.field.protected_3_en = cfg->protected_en[3];
-	crReg.field.drv_0_en = cfg->drv_en[0];
-	crReg.field.drv_1_en = cfg->drv_en[1];
-	crReg.field.drv_2_en = cfg->drv_en[2];
-	crReg.field.drv_3_en = cfg->drv_en[3];
 
 	OS_CPU_SR cpu_sr = 0;
 	OS_ENTER_CRITICAL();
@@ -172,10 +130,10 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 	SERVO_IOWR(dev, SERVO_CONTROLLER_PULSE_MODE2_OFFSET, cfg->drv_mode[2]);
 	SERVO_IOWR(dev, SERVO_CONTROLLER_PULSE_MODE3_OFFSET, cfg->drv_mode[3]);
 
-	SERVO_IOWR(dev, SERVO_CONTROLLER_I0_MAX_OFFSET, i_max[0]);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_I1_MAX_OFFSET, i_max[1]);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_I2_MAX_OFFSET, i_max[2]);
-	SERVO_IOWR(dev, SERVO_CONTROLLER_I3_MAX_OFFSET, i_max[3]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_I0_MAX_OFFSET, cfg->i_max[0]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_I1_MAX_OFFSET, cfg->i_max[1]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_I2_MAX_OFFSET, cfg->i_max[2]);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_I3_MAX_OFFSET, cfg->i_max[3]);
 
 	SERVO_IOWR(dev, SERVO_CONTROLLER_U0_OFFSET, 0);
 	SERVO_IOWR(dev, SERVO_CONTROLLER_U1_OFFSET, 0);
@@ -184,40 +142,18 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 
 	// clear flag
 	SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET, 0xFFFFFFFFu);
-
-	ieReg.val = 0;
-	ieReg.field.adc_valid = 1;
-	ieReg.field.mea_trig = 0;
-	ieReg.field.realtime_err = cfg->on_realtime_err ? 1 : 0;
-
-	if (cfg->on_stop_err)
-	{
-		ieReg.field.drv_0_stop = 1;
-		ieReg.field.drv_1_stop = 1;
-		ieReg.field.drv_2_stop = 1;
-		ieReg.field.drv_3_stop = 1;
-	}
-
-	if (cfg->on_drv_fault)
-	{
-		ieReg.field.drv_0_fault = 1;
-		ieReg.field.drv_1_fault = 1;
-		ieReg.field.drv_2_fault = 1;
-		ieReg.field.drv_3_fault = 1;
-	}
-
-	SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ieReg.val);
-
-	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET, SERVO_CONTROLLER_TR_RESET_BIT);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, 0);
+	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET,
+			   SERVO_CONTROLLER_TR_RESET_BIT);
 
 	crReg.field.en = 1;
 	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, crReg.val);
-
 	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET,
 			   SERVO_CONTROLLER_TR_U_VALID_BIT |
 				   SERVO_CONTROLLER_TR_ADC_INIT_BIT);
 
 	OS_EXIT_CRITICAL();
+	OSTimeDly(TIMER_TICKS_PER_SEC / 100);
 
 	return 0;
 }
@@ -231,37 +167,33 @@ int servo_controller_start(struct servo_controller_dev_t *dev)
 	servo_controller_reg_IE ie;
 	servo_controller_reg_CR crReg;
 
-	OS_CPU_SR cpu_sr = 0;
-	OS_ENTER_CRITICAL();
-
-	crReg.val = SERVO_IORD(dev, SERVO_CONTROLLER_CR_OFFSET);
-	crReg.field.en = 1;
-	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, crReg.val);
-
 	ret = servo_controller_update_duty_in_critical(dev, duty);
 	if (ret)
 	{
-		OS_EXIT_CRITICAL();
 		return ret;
 	}
+
+	crReg.val = SERVO_IORD(dev, SERVO_CONTROLLER_CR_OFFSET);
+	crReg.field.en = 1;
+	crReg.field.drv_0_en = 0;
+	crReg.field.drv_1_en = 0;
+	crReg.field.drv_2_en = 0;
+	crReg.field.drv_3_en = 0;
+	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, crReg.val);
+
+	OSTimeDly(1);
+
+	crReg.field.drv_0_en = dev->cfg->drv_en[0];
+	crReg.field.drv_1_en = dev->cfg->drv_en[1];
+	crReg.field.drv_2_en = dev->cfg->drv_en[2];
+	crReg.field.drv_3_en = dev->cfg->drv_en[3];
+	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, crReg.val);
 
 	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET,
 			   SERVO_CONTROLLER_TR_START_SERVO3_BIT |
 				   SERVO_CONTROLLER_TR_START_SERVO2_BIT |
 				   SERVO_CONTROLLER_TR_START_SERVO1_BIT |
 				   SERVO_CONTROLLER_TR_START_SERVO0_BIT);
-
-	if (dev->cfg->on_new_process)
-	{
-		ie.val = SERVO_IORD(dev, SERVO_CONTROLLER_IE_OFFSET);
-		ie.field.mea_trig = 1;
-		SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET,
-				   SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT |
-					   SERVO_CONTROLLER_FLAG_REALTIME_ERR_BIT);
-		SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val);
-	}
-
-	OS_EXIT_CRITICAL();
 
 	return 0;
 }
@@ -274,17 +206,12 @@ int servo_controller_restart_channel(
 	ALT_DEBUG_ASSERT((channel >= 0));
 	ALT_DEBUG_ASSERT((channel < SERVO_CONTROLLER_NUM_SERVO));
 
-	OS_CPU_SR cpu_sr = 0;
-	OS_ENTER_CRITICAL();
-
 	uint32_t cr_val = SERVO_IORD(dev, SERVO_CONTROLLER_CR_OFFSET);
 
 	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, cr_val & ~BIT(SERVO_CONTROLLER_CR_DRV_EN0_BIT_INDEX + channel));
 	OSTimeDly(1);
 	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, cr_val);
 	SERVO_IOWR(dev, SERVO_CONTROLLER_TR_OFFSET, BIT(SERVO_CONTROLLER_TR_START_SERVO0_BIT_INDEX + channel));
-
-	OS_EXIT_CRITICAL();
 
 	return 0;
 }
@@ -298,6 +225,10 @@ int servo_controller_stop(struct servo_controller_dev_t *dev)
 
 	servo_controller_reg_CR crReg;
 	crReg.val = SERVO_IORD(dev, SERVO_CONTROLLER_CR_OFFSET);
+	crReg.field.drv_0_en = 0;
+	crReg.field.drv_1_en = 0;
+	crReg.field.drv_2_en = 0;
+	crReg.field.drv_3_en = 0;
 	crReg.field.en = 0;
 	SERVO_IOWR(dev, SERVO_CONTROLLER_CR_OFFSET, crReg.val);
 	OS_EXIT_CRITICAL();
@@ -391,6 +322,106 @@ int servo_controller_get_duty(
 }
 
 static void servo_controller_irq_handler(void *arg) __attribute__((section(".exceptions")));
+static void servo_controller_check_and_handle_err(
+	struct servo_controller_dev_t *dev,
+	uint32_t flag,
+	uint32_t ieVal) __attribute__((section(".exceptions")));
+
+static void servo_controller_check_and_handle_err(
+	struct servo_controller_dev_t *dev,
+	uint32_t flag,
+	uint32_t ieVal)
+{
+	servo_controller_reg_IE ie;
+	struct servo_controller_config_t *cfg = dev->cfg;
+	ie.val = ieVal;
+
+	if (flag & SERVO_CONTROLLER_FLAG_REALTIME_ERR_BIT)
+	{
+		if (cfg->on_err)
+		{
+			cfg->on_err(dev, 0, SERVO_CTRL_REALTIME_ERR);
+		}
+
+		SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET,
+				   SERVO_CONTROLLER_FLAG_CTRL_STEP_PENDING_BIT |
+					   SERVO_CONTROLLER_FLAG_REALTIME_ERR_BIT);
+	}
+
+	if (flag & SERVO_CONTROLLER_FLAG_STOP0_BIT)
+	{
+		if (cfg->on_err)
+		{
+			cfg->on_err(dev, 0, SERVO_CTRL_OVERLOAD_ERR);
+		}
+		ie.field.drv_0_stop = 0;
+	}
+
+	if (flag & SERVO_CONTROLLER_FLAG_STOP1_BIT)
+	{
+		if (cfg->on_err)
+		{
+			cfg->on_err(dev, 1, SERVO_CTRL_OVERLOAD_ERR);
+		}
+		ie.field.drv_1_stop = 0;
+	}
+
+	if (flag & SERVO_CONTROLLER_FLAG_STOP2_BIT)
+	{
+		if (cfg->on_err)
+		{
+			cfg->on_err(dev, 2, SERVO_CTRL_OVERLOAD_ERR);
+		}
+		ie.field.drv_2_stop = 0;
+	}
+
+	if (flag & SERVO_CONTROLLER_FLAG_STOP3_BIT)
+	{
+		if (cfg->on_err)
+		{
+			cfg->on_err(dev, 3, SERVO_CTRL_OVERLOAD_ERR);
+		}
+		ie.field.drv_3_stop = 0;
+	}
+
+	if (flag & SERVO_CONTROLLER_FLAG_DRV8320_FAULT0_BIT)
+	{
+		if (cfg->on_err)
+		{
+			cfg->on_err(dev, 0, SERVO_CTRL_DRV_ERR);
+		}
+		ie.field.drv_0_fault = 0;
+	}
+
+	if (flag & SERVO_CONTROLLER_FLAG_DRV8320_FAULT1_BIT)
+	{
+		if (cfg->on_err)
+		{
+			cfg->on_err(dev, 1, SERVO_CTRL_DRV_ERR);
+		}
+		ie.field.drv_0_fault = 1;
+	}
+
+	if (flag & SERVO_CONTROLLER_FLAG_DRV8320_FAULT2_BIT)
+	{
+		if (cfg->on_err)
+		{
+			cfg->on_err(dev, 2, SERVO_CTRL_DRV_ERR);
+		}
+		ie.field.drv_0_fault = 2;
+	}
+
+	if (flag & SERVO_CONTROLLER_FLAG_DRV8320_FAULT3_BIT)
+	{
+		if (cfg->on_err)
+		{
+			cfg->on_err(dev, 3, SERVO_CTRL_DRV_ERR);
+		}
+		ie.field.drv_0_fault = 3;
+	}
+
+	SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val);
+}
 
 static void servo_controller_irq_handler(void *arg)
 {
@@ -406,7 +437,7 @@ static void servo_controller_irq_handler(void *arg)
 	{
 		if (dev->cfg->on_new_process)
 		{
-			dev->cfg->on_new_process(dev, dev->cfg->callback_arg);
+			dev->cfg->on_new_process(dev);
 		}
 
 		SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET,
@@ -415,73 +446,7 @@ static void servo_controller_irq_handler(void *arg)
 
 	if (flag.val & ~SERVO_CONTROLLER_FLAG_MEA_TRIG_BIT)
 	{
-		if (flag.val & SERVO_CONTROLLER_FLAG_ADC_VALID_BIT)
-		{
-			if (dev->cfg->on_adc_valid)
-			{
-				dev->cfg->on_adc_valid(dev, dev->cfg->callback_arg);
-			}
-
-			ie.field.adc_valid = 0;
-		}
-
-		if (flag.val & SERVO_CONTROLLER_FLAG_REALTIME_ERR_BIT)
-		{
-			dev->cfg->on_realtime_err(dev, dev->cfg->callback_arg);
-			SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET,
-					   SERVO_CONTROLLER_FLAG_CTRL_STEP_PENDING_BIT |
-						   SERVO_CONTROLLER_FLAG_REALTIME_ERR_BIT);
-		}
-
-		if (flag.val & SERVO_CONTROLLER_FLAG_STOP0_BIT)
-		{
-			dev->cfg->on_stop_err(dev, 0, dev->cfg->callback_arg);
-			ie.field.drv_0_stop = 0;
-		}
-
-		if (flag.val & SERVO_CONTROLLER_FLAG_STOP1_BIT)
-		{
-			dev->cfg->on_stop_err(dev, 1, dev->cfg->callback_arg);
-			ie.field.drv_1_stop = 0;
-		}
-
-		if (flag.val & SERVO_CONTROLLER_FLAG_STOP2_BIT)
-		{
-			dev->cfg->on_stop_err(dev, 2, dev->cfg->callback_arg);
-			ie.field.drv_2_stop = 0;
-		}
-
-		if (flag.val & SERVO_CONTROLLER_FLAG_STOP3_BIT)
-		{
-			dev->cfg->on_stop_err(dev, 3, dev->cfg->callback_arg);
-			ie.field.drv_3_stop = 0;
-		}
-
-		if (flag.val & SERVO_CONTROLLER_FLAG_DRV8320_FAULT0_BIT)
-		{
-			dev->cfg->on_drv_fault(dev, 0, dev->cfg->callback_arg);
-			ie.field.drv_0_fault = 0;
-		}
-
-		if (flag.val & SERVO_CONTROLLER_FLAG_DRV8320_FAULT1_BIT)
-		{
-			dev->cfg->on_drv_fault(dev, 1, dev->cfg->callback_arg);
-			ie.field.drv_1_fault = 0;
-		}
-
-		if (flag.val & SERVO_CONTROLLER_FLAG_DRV8320_FAULT2_BIT)
-		{
-			dev->cfg->on_drv_fault(dev, 2, dev->cfg->callback_arg);
-			ie.field.drv_2_fault = 0;
-		}
-
-		if (flag.val & SERVO_CONTROLLER_FLAG_DRV8320_FAULT3_BIT)
-		{
-			dev->cfg->on_drv_fault(dev, 3, dev->cfg->callback_arg);
-			ie.field.drv_3_fault = 0;
-		}
-
-		SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val);
+		servo_controller_check_and_handle_err(dev, flag.val, ie.val);
 	}
 }
 
@@ -491,9 +456,7 @@ static void set_default_config(struct servo_controller_config_t *cfg)
 
 	for (i = 0; i < SERVO_CONTROLLER_NUM_SERVO; i++)
 	{
-		cfg->i_max[i] = 5;
-		cfg->Pos_lsb[i] = 1;
-		cfg->Current_lsb[i] = 1;
+		cfg->i_max[i] = 2048;
 	}
 
 	cfg->spi_speed = 1000000;
@@ -577,4 +540,111 @@ int servo_controller_notify_duty_changed(
 			   SERVO_CONTROLLER_FLAG_CTRL_STEP_PENDING_BIT);
 
 	return 0;
+}
+
+int servo_controller_get_position_channel(
+	struct servo_controller_dev_t *dev,
+	enum Servo_controller_servo_id_t channel,
+	int16_t *position)
+{
+	ALT_DEBUG_ASSERT((dev));
+	ALT_DEBUG_ASSERT((channel >= 0));
+	ALT_DEBUG_ASSERT((channel < SERVO_CONTROLLER_NUM_SERVO));
+	ALT_DEBUG_ASSERT((position));
+
+	servo_controller_reg_I16 i16Reg;
+	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS0_OFFSET + channel);
+	*position = i16Reg.i16_val;
+
+	return 0;
+}
+
+int servo_controller_update_pos_phase_channel(
+	struct servo_controller_dev_t *dev,
+	enum Servo_controller_servo_id_t channel,
+	int32_t pos_phase)
+{
+	ALT_DEBUG_ASSERT((dev));
+	ALT_DEBUG_ASSERT((channel >= 0));
+	ALT_DEBUG_ASSERT((channel < SERVO_CONTROLLER_NUM_SERVO));
+
+	SERVO_IOWR(dev,
+			   SERVO_CONTROLLER_POS_PHASE0_OFFSET + channel,
+			   pos_phase);
+
+	return 0;
+}
+
+int servo_controller_get_phase_position_channel(
+	struct servo_controller_dev_t *dev,
+	enum Servo_controller_servo_id_t channel,
+	int32_t *pos_phase)
+{
+	ALT_DEBUG_ASSERT((dev));
+	ALT_DEBUG_ASSERT((channel >= 0));
+	ALT_DEBUG_ASSERT((channel < SERVO_CONTROLLER_NUM_SERVO));
+	ALT_DEBUG_ASSERT((pos_phase));
+
+	*pos_phase = SERVO_IORD(dev, SERVO_CONTROLLER_POS_PHASE0_OFFSET + channel);
+
+	return 0;
+}
+
+int servo_controller_get_current_channel(
+	struct servo_controller_dev_t *dev,
+	enum Servo_controller_servo_id_t channel,
+	int16_t *current)
+{
+	ALT_DEBUG_ASSERT((dev));
+	ALT_DEBUG_ASSERT((channel >= 0));
+	ALT_DEBUG_ASSERT((channel < SERVO_CONTROLLER_NUM_SERVO));
+	ALT_DEBUG_ASSERT((current));
+
+	servo_controller_reg_I16 i16Reg;
+	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_I0_OFFSET + channel);
+	*current = i16Reg.i16_val;
+
+	return 0;
+}
+
+int servo_controller_get_duty_channel(
+	struct servo_controller_dev_t *dev,
+	enum Servo_controller_servo_id_t channel,
+	int16_t *duty)
+{
+	ALT_DEBUG_ASSERT((dev));
+	ALT_DEBUG_ASSERT((channel >= 0));
+	ALT_DEBUG_ASSERT((channel < SERVO_CONTROLLER_NUM_SERVO));
+	ALT_DEBUG_ASSERT((duty));
+
+	servo_controller_reg_I16 i16Reg;
+
+	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_U0_OFFSET + channel);
+	*duty = i16Reg.i16_val;
+
+	return 0;
+}
+
+void servo_controller_enable_interrupt(
+	struct servo_controller_dev_t *dev,
+	uint32_t mask)
+{
+	ALT_DEBUG_ASSERT((dev));
+
+	servo_controller_reg_IE ie;
+	ie.val = SERVO_IORD(dev, SERVO_CONTROLLER_IE_OFFSET);
+	ie.val |= mask;
+	SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val);
+}
+
+void servo_controller_disable_interrupt(
+	struct servo_controller_dev_t *dev,
+	uint32_t mask)
+{
+	ALT_DEBUG_ASSERT((dev));
+
+	servo_controller_reg_IE ie;
+	ie.val = SERVO_IORD(dev, SERVO_CONTROLLER_IE_OFFSET);
+	ie.val &= ~mask;
+	SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val);
 }

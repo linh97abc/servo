@@ -56,6 +56,15 @@ extern "C"
 		SERVO_CONTROLLER_DRV_MODE_1x = 2,
 	};
 
+	enum Servo_controller_err_t
+	{
+		SERVO_CTRL_HALL_ERR,
+		SERVO_CTRL_ADC_ERR,
+		SERVO_CTRL_DRV_ERR, // nFault
+		SERVO_CTRL_REALTIME_ERR,
+		SERVO_CTRL_OVERLOAD_ERR,
+	};
+
 	typedef union
 	{
 		struct
@@ -185,9 +194,6 @@ extern "C"
 		/// @brief enable motor driver
 		bool drv_en[SERVO_CONTROLLER_NUM_SERVO];
 
-		float Pos_lsb[SERVO_CONTROLLER_NUM_SERVO];
-		float Current_lsb[SERVO_CONTROLLER_NUM_SERVO];
-
 		/// @brief spi speed of measurement IC
 		uint32_t spi_speed;
 
@@ -204,22 +210,16 @@ extern "C"
 		enum Servo_controller_drv_mode_t drv_mode[SERVO_CONTROLLER_NUM_SERVO];
 
 		/// @brief Limit of motor current value
-		float i_max[SERVO_CONTROLLER_NUM_SERVO];
-
-		/// @brief Adc init done event handler
-		void (*on_adc_valid)(struct servo_controller_dev_t *dev, void *arg);
+		int16_t i_max[SERVO_CONTROLLER_NUM_SERVO];
 
 		/// @brief New sample event handler
-		void (*on_new_process)(struct servo_controller_dev_t *dev, void *arg);
+		void (*on_new_process)(struct servo_controller_dev_t *dev);
 
-		/// @brief Realtime violation event handler
-		void (*on_realtime_err)(struct servo_controller_dev_t *dev, void *arg);
-
-		/// @brief Motor current ovverload event handler
-		void (*on_stop_err)(struct servo_controller_dev_t *dev, enum Servo_controller_servo_id_t servo_id, void *arg);
-
-		/// @brief Motor driver fault event handler
-		void (*on_drv_fault)(struct servo_controller_dev_t *dev, enum Servo_controller_servo_id_t servo_id, void *arg);
+		/// @brief Error handler
+		void (*on_err)(
+			struct servo_controller_dev_t*,
+			enum Servo_controller_servo_id_t,
+			enum Servo_controller_err_t);
 
 		/// @brief Callback argument
 		void *callback_arg;
@@ -254,6 +254,22 @@ extern "C"
 	///         // do something
 	///     }
 	struct servo_controller_dev_t *servo_controller_open_dev(const char *name);
+
+	/// @brief Enable interrupt
+	/// @param dev Pointer to servo device
+	/// @param mask @see servo_controller_reg.h
+	void servo_controller_enable_interrupt(
+		struct servo_controller_dev_t *dev,
+		uint32_t mask
+	);
+
+	/// @brief Disable interrupt
+	/// @param dev Pointer to servo device
+	/// @param mask @see servo_controller_reg.h
+	void servo_controller_disable_interrupt(
+		struct servo_controller_dev_t *dev,
+		uint32_t mask
+	);
 
 	/// @brief Apply new config for device
 	/// @param dev Pointer to servo device
@@ -322,6 +338,16 @@ extern "C"
 		struct servo_controller_dev_t *dev,
 		int16_t position[SERVO_CONTROLLER_NUM_SERVO]);
 
+	/// @brief Get motor postion 1 channel
+	/// @param dev Pointer to servo device
+	/// @param channel Channel
+	/// @param position Motor position
+	/// @return Error code
+	int servo_controller_get_position_channel(
+		struct servo_controller_dev_t *dev,
+		enum Servo_controller_servo_id_t channel,
+		int16_t *position);
+
 	/// @brief Update motor phase postion
 	/// @param dev Pointer to servo device
 	/// @param pos_phase Motor position phase
@@ -329,6 +355,16 @@ extern "C"
 	int servo_controller_update_pos_phase(
 		struct servo_controller_dev_t *dev,
 		int32_t pos_phase[SERVO_CONTROLLER_NUM_SERVO]);
+
+	/// @brief Update motor phase postion 1 channel
+	/// @param dev Pointer to servo device
+	/// @param channel Channel
+	/// @param pos_phase Motor position phase
+	/// @return Error code
+	int servo_controller_update_pos_phase_channel(
+		struct servo_controller_dev_t *dev,
+		enum Servo_controller_servo_id_t channel,
+		int32_t pos_phase);
 
 	/// @brief Get motor phase postion
 	/// @param dev Pointer to servo device
@@ -338,6 +374,16 @@ extern "C"
 		struct servo_controller_dev_t *dev,
 		int32_t pos_phase[SERVO_CONTROLLER_NUM_SERVO]);
 
+	/// @brief Get motor phase postion 1 channel
+	/// @param dev Pointer to servo device
+	/// @param channel Channel
+	/// @param pos_phase Motor position phase
+	/// @return Error code
+	int servo_controller_get_phase_position_channel(
+		struct servo_controller_dev_t *dev,
+		enum Servo_controller_servo_id_t channel,
+		int32_t *pos_phase);
+
 	/// @brief Get motor current
 	/// @param dev Pointer to servo device
 	/// @param current Motor current
@@ -345,6 +391,16 @@ extern "C"
 	int servo_controller_get_current(
 		struct servo_controller_dev_t *dev,
 		int16_t current[SERVO_CONTROLLER_NUM_SERVO]);
+
+	/// @brief Get motor current
+	/// @param dev Pointer to servo device
+	/// @param channel Channel
+	/// @param current Motor current
+	/// @return Error code
+	int servo_controller_get_current_channel(
+		struct servo_controller_dev_t *dev,
+		enum Servo_controller_servo_id_t channel,
+		int16_t *current);
 
 	/// @brief Get duty cycle of pwm
 	/// @param dev Pointer to servo device
@@ -354,31 +410,15 @@ extern "C"
 		struct servo_controller_dev_t *dev,
 		int16_t duty[SERVO_CONTROLLER_NUM_SERVO]);
 
-	/// @brief Convert position (in fixed(16,0)) to position (in float)
+	/// @brief Get duty cycle of pwm
 	/// @param dev Pointer to servo device
-	/// @param chanel Channel
-	/// @param pos Position in fixed(16, 0) type
-	/// @return position in float type
-	static inline float servo_controller_code_to_position(
+	/// @param channel Channel
+	/// @param duty Duty cycle in fixed number (16, 0) , range [-1, 1)
+	/// @return Error code
+	int servo_controller_get_duty_channel(
 		struct servo_controller_dev_t *dev,
 		enum Servo_controller_servo_id_t channel,
-		int16_t pos)
-	{
-		return pos * dev->cfg->Pos_lsb[channel];
-	}
-
-	/// @brief Convert position (in fixed(16,0)) to position (in float)
-	/// @param dev Pointer to servo device
-	/// @param chanel Channel
-	/// @param current Current in fixed(16, 0) type
-	/// @return current in float type
-	static inline float servo_controller_code_to_current(
-		struct servo_controller_dev_t *dev,
-		enum Servo_controller_servo_id_t channel,
-		int16_t current)
-	{
-		return current * dev->cfg->Current_lsb[channel];
-	}
+		int16_t *duty);
 
 #ifdef __cplusplus
 }
