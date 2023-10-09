@@ -37,8 +37,7 @@ void on_new_process(struct servo_controller_dev_t *dev)
 
 void on_err(
 		struct servo_controller_dev_t* dev,
-		enum Servo_controller_servo_id_t id,
-		enum Servo_controller_err_t err)
+		uint32_t flag)
 {
 //	servo_controller_notify_duty_changed(dev);
 }
@@ -65,7 +64,8 @@ void task1(void* pdata)
 
     servo_controller_start(servoDev);
 
-    servo_controller_enable_interrupt(servoDev, SERVO_CONTROLLER_IE_MEA_TRIG_BIT);
+    servo_controller_enable_interrupt(servoDev,
+    		SERVO_CONTROLLER_IE_MEA_TRIG_BIT | SERVO_CONTROLLER_IE_REALTIME_ERR_BIT);
 
     int16_t duty[SERVO_CONTROLLER_NUM_SERVO] = {0};
 //

@@ -57,15 +57,6 @@ extern "C"
 		SERVO_CONTROLLER_DRV_MODE_1x = 2,
 	};
 
-	enum Servo_controller_err_t
-	{
-		SERVO_CTRL_HALL_ERR,
-		SERVO_CTRL_ADC_ERR,
-		SERVO_CTRL_DRV_ERR, // nFault
-		SERVO_CTRL_REALTIME_ERR,
-		SERVO_CTRL_OVERLOAD_ERR,
-	};
-
 	typedef union
 	{
 		struct
@@ -223,8 +214,7 @@ extern "C"
 		/// @brief Error handler
 		void (*on_err)(
 			struct servo_controller_dev_t*,
-			enum Servo_controller_servo_id_t,
-			enum Servo_controller_err_t);
+			uint32_t flag);
 
 		/// @brief Callback argument
 		void *callback_arg;
