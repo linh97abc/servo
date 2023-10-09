@@ -2,7 +2,7 @@ set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name IP_TOOL
 set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name IP_TOOL_VERSION "18.1"
 set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -library "DE0_CV_QSYS" -name SOPCINFO_FILE [file join $::quartus(qip_path) "../../../DE0_CV_QSYS.sopcinfo"]
-set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name SLD_INFO "QSYS_NAME DE0_CV_QSYS HAS_SOPCINFO 1 GENERATION_ID 1696739632"
+set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name SLD_INFO "QSYS_NAME DE0_CV_QSYS HAS_SOPCINFO 1 GENERATION_ID 1696867716"
 set_global_assignment -library "DE0_CV_QSYS" -name MISC_FILE [file join $::quartus(qip_path) "../DE0_CV_QSYS.cmp"]
 set_global_assignment -library "DE0_CV_QSYS" -name SLD_FILE [file join $::quartus(qip_path) "DE0_CV_QSYS.regmap"]
 set_global_assignment -library "DE0_CV_QSYS" -name SLD_FILE [file join $::quartus(qip_path) "DE0_CV_QSYS.debuginfo"]
@@ -16,7 +16,7 @@ set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name IP_COMP
 set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name IP_COMPONENT_REPORT_HIERARCHY "On"
 set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name IP_COMPONENT_INTERNAL "Off"
 set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name IP_COMPONENT_VERSION "MS4w"
-set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTY5NjczOTYzMg==::QXV0byBHRU5FUkFUSU9OX0lE"
+set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTY5Njg2NzcxNg==::QXV0byBHRU5FUkFUSU9OX0lE"
 set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfRkFNSUxZ::Q3ljbG9uZSBW::QXV0byBERVZJQ0VfRkFNSUxZ"
 set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0U=::NUNFQkE0RjIzQzc=::QXV0byBERVZJQ0U="
 set_global_assignment -entity "DE0_CV_QSYS" -library "DE0_CV_QSYS" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfU1BFRURHUkFERQ==::Nw==::QXV0byBERVZJQ0VfU1BFRURHUkFERQ=="

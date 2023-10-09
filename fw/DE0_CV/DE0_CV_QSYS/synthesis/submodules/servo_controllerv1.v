@@ -128,86 +128,99 @@ module servo_controllerv1 (
 
         HALL_OFFSET = 35;
 
-  reg                   core_en;
-  reg  [           7:0] spi_divisor;
-  reg                   adc_init;
-  reg  [           3:0] filter_level;
-  reg  [           5:0] trig_rate;
+  localparam 
+    FLAG_CONTROL_PENDING_BIT = 15,
+    FLAG_HALL_ERR_BIT = 11,
+    FLAG_DRV8320_FAULT_BIT = 7,
+    FLAG_STOP_BIT = 3,
+    FLAG_ADC_VALID_BIT = 2,
+    FLAG_MEA_TRIG_BIT = 1,
+    FLAG_REAL_TIME_BIT = 0;
+
+  reg                                 core_en;
+  reg  [                         7:0] spi_divisor;
+  reg                                 adc_init;
+  reg  [                         3:0] filter_level;
+  reg  [                         5:0] trig_rate;
 
   // m
-  reg  [ ADC_WIDTH-1:0] i0_sample;
-  reg  [ ADC_WIDTH-1:0] i1_sample;
-  reg  [ ADC_WIDTH-1:0] i2_sample;
-  reg  [ ADC_WIDTH-1:0] i3_sample;
-  wire [ ADC_WIDTH-1:0] i0;
-  wire [ ADC_WIDTH-1:0] i1;
-  wire [ ADC_WIDTH-1:0] i2;
-  wire [ ADC_WIDTH-1:0] i3;
-  wire [ ADC_WIDTH-1:0] pos0;
-  wire [ ADC_WIDTH-1:0] pos1;
-  wire [ ADC_WIDTH-1:0] pos2;
-  wire [ ADC_WIDTH-1:0] pos3;
-  wire                  adc_data_valid;
+  reg  [               ADC_WIDTH-1:0] i0_sample;
+  reg  [               ADC_WIDTH-1:0] i1_sample;
+  reg  [               ADC_WIDTH-1:0] i2_sample;
+  reg  [               ADC_WIDTH-1:0] i3_sample;
+  wire [               ADC_WIDTH-1:0] i0;
+  wire [               ADC_WIDTH-1:0] i1;
+  wire [               ADC_WIDTH-1:0] i2;
+  wire [               ADC_WIDTH-1:0] i3;
+  wire [               ADC_WIDTH-1:0] pos0;
+  wire [               ADC_WIDTH-1:0] pos1;
+  wire [               ADC_WIDTH-1:0] pos2;
+  wire [               ADC_WIDTH-1:0] pos3;
+  wire                                adc_data_valid_sig;
+  reg                                 adc_data_valid;
 
-  reg  [DUTY_WIDTH-2:0] pwm_prescaler;
-  reg  [DUTY_WIDTH-2:0] half_period;
-  reg  [ SERVO_NUM-1:0] start_servo;
-  reg  [ SERVO_NUM-1:0] protected_en;
-  reg  [DUTY_WIDTH-1:0] u0;
-  reg  [DUTY_WIDTH-1:0] u1;
-  reg  [DUTY_WIDTH-1:0] u2;
-  reg  [DUTY_WIDTH-1:0] u3;
-  reg                   u_valid;
+  reg  [              DUTY_WIDTH-2:0] pwm_prescaler;
+  reg  [              DUTY_WIDTH-2:0] half_period;
+  reg  [               SERVO_NUM-1:0] start_servo;
+  reg  [               SERVO_NUM-1:0] protected_en;
+  reg  [              DUTY_WIDTH-1:0] u0;
+  reg  [              DUTY_WIDTH-1:0] u1;
+  reg  [              DUTY_WIDTH-1:0] u2;
+  reg  [              DUTY_WIDTH-1:0] u3;
+  reg                                 u_valid;
 
-  reg  [ ADC_WIDTH-1:0] i0_max;
-  reg  [ ADC_WIDTH-1:0] i1_max;
-  reg  [ ADC_WIDTH-1:0] i2_max;
-  reg  [ ADC_WIDTH-1:0] i3_max;
+  reg  [               ADC_WIDTH-1:0] i0_max;
+  reg  [               ADC_WIDTH-1:0] i1_max;
+  reg  [               ADC_WIDTH-1:0] i2_max;
+  reg  [               ADC_WIDTH-1:0] i3_max;
 
-  reg  [           1:0] mode_0;
-  reg  [           1:0] mode_1;
-  reg  [           1:0] mode_2;
-  reg  [           1:0] mode_3;
+  reg  [                         1:0] mode_0;
+  reg  [                         1:0] mode_1;
+  reg  [                         1:0] mode_2;
+  reg  [                         1:0] mode_3;
 
-  wire                  measurement_trigger;
-  wire [ SERVO_NUM-1:0] stop;
-
-
-  reg                   measurement_trigger_pendding;
-  reg                   realtime_err;
-  reg                   control_step_pending;
-
-  reg  [          10:0] ie;
-  wire [          11:0] flag;
-
-  reg                   core_reset;
-
-  reg  [ SERVO_NUM-1:0] Fault_tmp;
-  reg  [ SERVO_NUM-1:0] Fault_sync0;
-  reg  [ SERVO_NUM-1:0] Fault_sync1;
-  reg  [ SERVO_NUM-1:0] drv8320_fault;
-
-  reg  [           5:0] hall_0_sync;
-  reg  [           5:0] hall_1_sync;
-  reg  [           5:0] hall_2_sync;
-  reg  [           5:0] hall_3_sync;
-
-  wire [          15:0] dpos_hall_0;
-  wire [          15:0] dpos_hall_1;
-  wire [          15:0] dpos_hall_2;
-  wire [          15:0] dpos_hall_3;
+  wire                                measurement_trigger;
+  wire [               SERVO_NUM-1:0] stop;
 
 
-  wire [          31:0] pos_hall_0;
-  wire [          31:0] pos_hall_1;
-  wire [          31:0] pos_hall_2;
-  wire [          31:0] pos_hall_3;
+  reg                                 measurement_trigger_pendding;
+  reg                                 realtime_err;
+  reg                                 control_step_pending;
+
+  reg  [FLAG_CONTROL_PENDING_BIT-1:0] ie;
+  wire [  FLAG_CONTROL_PENDING_BIT:0] flag;
+
+  reg                                 core_reset;
+
+  reg  [               SERVO_NUM-1:0] Fault_tmp;
+  reg  [               SERVO_NUM-1:0] Fault_sync0;
+  reg  [               SERVO_NUM-1:0] Fault_sync1;
+  reg  [               SERVO_NUM-1:0] drv8320_fault;
+
+  reg  [                         5:0] hall_0_sync;
+  reg  [                         5:0] hall_1_sync;
+  reg  [                         5:0] hall_2_sync;
+  reg  [                         5:0] hall_3_sync;
+
+  wire [                        15:0] dpos_hall_0;
+  wire [                        15:0] dpos_hall_1;
+  wire [                        15:0] dpos_hall_2;
+  wire [                        15:0] dpos_hall_3;
 
 
-  assign irq = |(ie & flag[10:0]);
+  wire [                        31:0] pos_hall_0;
+  wire [                        31:0] pos_hall_1;
+  wire [                        31:0] pos_hall_2;
+  wire [                        31:0] pos_hall_3;
+
+  wire [               SERVO_NUM-1:0] hall_err;
+
+
+  assign irq = |(ie & flag[FLAG_CONTROL_PENDING_BIT-1:0]);
   assign flag = {
     control_step_pending,
-    drv8320_fault,
+    hall_err,
+    drv8320_fault & drv8320_en,
     stop,
     adc_data_valid,
     measurement_trigger_pendding,
@@ -222,7 +235,8 @@ module servo_controllerv1 (
       .delta_pos(dpos_hall_0),
       .position(pos_hall_0),
       .pos_init(writedata),
-      .pos_init_valid(((address == POS_HALL0_OFFSET) && ~write_n))
+      .pos_init_valid(((address == POS_HALL0_OFFSET) && ~write_n)),
+      .hall_err(hall_err[0])
   );
 
   detect_hall_pos detect_hall_pos_inst1 (
@@ -233,7 +247,8 @@ module servo_controllerv1 (
       .delta_pos(dpos_hall_1),
       .position(pos_hall_1),
       .pos_init(writedata),
-      .pos_init_valid(((address == POS_HALL1_OFFSET) && ~write_n))
+      .pos_init_valid(((address == POS_HALL1_OFFSET) && ~write_n)),
+      .hall_err(hall_err[1])
   );
 
   detect_hall_pos detect_hall_pos_inst2 (
@@ -244,7 +259,8 @@ module servo_controllerv1 (
       .delta_pos(dpos_hall_2),
       .position(pos_hall_2),
       .pos_init(writedata),
-      .pos_init_valid(((address == POS_HALL2_OFFSET) && ~write_n))
+      .pos_init_valid(((address == POS_HALL2_OFFSET) && ~write_n)),
+      .hall_err(hall_err[2])
   );
 
   detect_hall_pos detect_hall_pos_inst3 (
@@ -255,7 +271,8 @@ module servo_controllerv1 (
       .delta_pos(dpos_hall_3),
       .position(pos_hall_3),
       .pos_init(writedata),
-      .pos_init_valid(((address == POS_HALL3_OFFSET) && ~write_n))
+      .pos_init_valid(((address == POS_HALL3_OFFSET) && ~write_n)),
+      .hall_err(hall_err[3])
   );
 
   ad7928_top #(
@@ -283,7 +300,7 @@ module servo_controllerv1 (
       .m_data_6(i0),
       .m_data_7(i1),
 
-      .m_valid(adc_data_valid)
+      .m_valid(adc_data_valid_sig)
 
   );
 
@@ -348,14 +365,23 @@ module servo_controllerv1 (
 
   localparam TR_U_VALID_BIT = 0, TR_ADC_INIT_BIT = 1, TR_START_SERVO_BIT = 2, TR_RESET_BIT = 6;
 
-  localparam 
-    FLAG_CONTROL_PENDING_BIT = 11,
-    FLAG_DRV8320_FAULT_BIT = 7,
-    FLAG_STOP_BIT = 3,
-    FLAG_ADC_VALID_BIT = 2,
-    FLAG_MEA_TRIG_BIT = 1,
-    FLAG_REAL_TIME_BIT = 0;
 
+  reg adc_data_valid_tmp;
+  always @(posedge clk) begin
+    if (~reset_n) begin
+      adc_data_valid_tmp <= 1'b0;
+      adc_data_valid <= 1'b0;
+    end else begin
+
+      if (adc_data_valid_sig) begin
+        adc_data_valid <= 1'b1;
+        adc_data_valid_tmp <= 1'b1;
+      end else if (measurement_trigger) begin
+        adc_data_valid <= adc_data_valid_tmp;
+        adc_data_valid_tmp <= 1'b0;
+      end
+    end
+  end
 
 
 
