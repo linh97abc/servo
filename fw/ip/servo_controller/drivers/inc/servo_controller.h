@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <sys/alt_dev.h>
 #include <ucos_ii.h>
+#include "LL/servo_controller_reg.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -118,6 +119,10 @@ extern "C"
 			uint32_t drv_1_fault : 1;
 			uint32_t drv_2_fault : 1;
 			uint32_t drv_3_fault : 1;
+			uint32_t hall_0_err : 1;
+			uint32_t hall_1_err : 1;
+			uint32_t hall_2_err : 1;
+			uint32_t hall_3_err : 1;
 		} field;
 		uint32_t val;
 	} servo_controller_reg_IE;

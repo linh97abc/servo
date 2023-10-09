@@ -28,15 +28,18 @@ struct servo_controller_dev_t *servoDev;
 
 #define SELECTED_CHANNEL 1
 
-void on_new_process(struct servo_controller_dev_t *dev, void *arg)
+void on_new_process(struct servo_controller_dev_t *dev)
 {
-	arg = 0;
 	servo_controller_notify_duty_changed(dev);
 }
 
-void on_realtime_err(struct servo_controller_dev_t *dev, void *arg)
+
+
+void on_err(
+		struct servo_controller_dev_t* dev,
+		enum Servo_controller_servo_id_t id,
+		enum Servo_controller_err_t err)
 {
-	arg = 0;
 //	servo_controller_notify_duty_changed(dev);
 }
 
@@ -48,24 +51,21 @@ void task1(void* pdata)
 
     SERVO_CONTROLLER_CFG(servoDev)->drv_en[SELECTED_CHANNEL] = true;
     SERVO_CONTROLLER_CFG(servoDev)->filter_level = SERVO_CONTROLLER_FILTER_LEVEL_32;
-    SERVO_CONTROLLER_CFG(servoDev)->spi_speed = 1000000;
+    SERVO_CONTROLLER_CFG(servoDev)->spi_speed = 5000000;
     SERVO_CONTROLLER_CFG(servoDev)->pwm_base_freq = 1000000;
     SERVO_CONTROLLER_CFG(servoDev)->pwm_freq = 5000;
     SERVO_CONTROLLER_CFG(servoDev)->pwm_trig_rate = 10;
-
-    SERVO_CONTROLLER_CFG(servoDev)->i_max[SELECTED_CHANNEL] = 10;
-
-    SERVO_CONTROLLER_CFG(servoDev)->Pos_lsb[SELECTED_CHANNEL] = 0.2;
-    SERVO_CONTROLLER_CFG(servoDev)->Current_lsb[SELECTED_CHANNEL] = 0.2;
-
+    SERVO_CONTROLLER_CFG(servoDev)->i_max[SELECTED_CHANNEL] = 3000;
 
     SERVO_CONTROLLER_CFG(servoDev)->on_new_process = on_new_process;
-    SERVO_CONTROLLER_CFG(servoDev)->on_realtime_err = on_realtime_err;
+    SERVO_CONTROLLER_CFG(servoDev)->on_err = on_err;
 
     stt = servo_controller_apply_configure(servoDev);
     ALT_DEBUG_ASSERT((stt == 0));
 
     servo_controller_start(servoDev);
+
+    servo_controller_enable_interrupt(servoDev, SERVO_CONTROLLER_IE_MEA_TRIG_BIT);
 
     int16_t duty[SERVO_CONTROLLER_NUM_SERVO] = {0};
 //

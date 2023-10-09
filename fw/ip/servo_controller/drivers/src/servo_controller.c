@@ -7,7 +7,7 @@
 #include <sys/alt_irq.h>
 #include <sys/alt_dev.h>
 #include <sys/alt_debug.h>
-#include <system.h
+#include <system.h>
 
 #ifndef BIT
 #define BIT(i) (1u << (i))
@@ -90,11 +90,7 @@ int servo_controller_apply_configure(struct servo_controller_dev_t *dev)
 
 	servo_controller_reg_CR crReg;
 	uint32_t prescale;
-	servo_controller_reg_IE ieReg;
 	struct servo_controller_config_t *cfg = dev->cfg;
-	unsigned i;
-
-	int ret;
 
 	if (!cfg->spi_speed)
 		return -EINVAL;
@@ -164,7 +160,7 @@ int servo_controller_start(struct servo_controller_dev_t *dev)
 
 	int16_t duty[SERVO_CONTROLLER_NUM_SERVO] = {0, 0, 0, 0};
 	int ret;
-	servo_controller_reg_IE ie;
+//	servo_controller_reg_IE ie;
 	servo_controller_reg_CR crReg;
 
 	ret = servo_controller_update_duty_in_critical(dev, duty);
@@ -413,7 +409,7 @@ static void servo_controller_check_and_handle_err(
 		{
 			cfg->on_err(dev, 1, SERVO_CTRL_DRV_ERR);
 		}
-		ie.field.drv_0_fault = 1;
+		ie.field.drv_1_fault = 0;
 	}
 
 	if (flag & SERVO_CONTROLLER_FLAG_DRV8320_FAULT2_BIT)
@@ -422,7 +418,7 @@ static void servo_controller_check_and_handle_err(
 		{
 			cfg->on_err(dev, 2, SERVO_CTRL_DRV_ERR);
 		}
-		ie.field.drv_0_fault = 2;
+		ie.field.drv_2_fault = 0;
 	}
 
 	if (flag & SERVO_CONTROLLER_FLAG_DRV8320_FAULT3_BIT)
@@ -431,7 +427,7 @@ static void servo_controller_check_and_handle_err(
 		{
 			cfg->on_err(dev, 3, SERVO_CTRL_DRV_ERR);
 		}
-		ie.field.drv_0_fault = 3;
+		ie.field.drv_3_fault = 0;
 	}
 
 	if (flag & SERVO_CONTROLLER_FLAG_HALL_ERR0_BIT)
@@ -440,7 +436,7 @@ static void servo_controller_check_and_handle_err(
 		{
 			cfg->on_err(dev, 0, SERVO_CTRL_HALL_ERR);
 		}
-		ie.field.drv_0_fault = 0;
+		ie.field.hall_0_err = 0;
 	}
 
 	if (flag & SERVO_CONTROLLER_FLAG_HALL_ERR1_BIT)
@@ -449,7 +445,7 @@ static void servo_controller_check_and_handle_err(
 		{
 			cfg->on_err(dev, 1, SERVO_CTRL_HALL_ERR);
 		}
-		ie.field.drv_1_fault = 0;
+		ie.field.hall_1_err = 0;
 	}
 
 	if (flag & SERVO_CONTROLLER_FLAG_HALL_ERR2_BIT)
@@ -458,7 +454,7 @@ static void servo_controller_check_and_handle_err(
 		{
 			cfg->on_err(dev, 2, SERVO_CTRL_HALL_ERR);
 		}
-		ie.field.drv_2_fault = 0;
+		ie.field.hall_2_err = 0;
 	}
 
 	if (flag & SERVO_CONTROLLER_FLAG_HALL_ERR3_BIT)
@@ -467,7 +463,7 @@ static void servo_controller_check_and_handle_err(
 		{
 			cfg->on_err(dev, 3, SERVO_CTRL_HALL_ERR);
 		}
-		ie.field.drv_3_fault = 0;
+		ie.field.hall_3_err = 0;
 	}
 
 	SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val);
