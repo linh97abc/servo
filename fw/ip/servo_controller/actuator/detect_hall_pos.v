@@ -8,7 +8,9 @@ module detect_hall_pos
     position,
 
     pos_init,
-    pos_init_valid
+    pos_init_valid,
+
+    hall_err
 );
 
 localparam DWIDTH = 16;
@@ -25,6 +27,8 @@ output reg [31:0] position;
 input [31:0] pos_init;
 input pos_init_valid;
 
+output wire hall_err;
+
 reg [2:0] hall_old;
 
 wire [31:0] pos_next;
@@ -32,6 +36,9 @@ wire [31:0] pos_prev;
 
 reg [31:0] old_position;
 
+reg [1:0] hall_err_cnt;
+
+assign hall_err = &hall_err_cnt;
 assign pos_next = position + 1'b1;
 assign pos_prev = position - 1'b1;
 
@@ -41,6 +48,7 @@ always @(posedge clk) begin
         position <= 0;
         hall_old <= 0;
         old_position <= 0;
+        hall_err_cnt <= 0;
     end else begin
         hall_old <= hall;
 
@@ -52,7 +60,14 @@ always @(posedge clk) begin
             if (mea_trigger) begin
                 delta_pos <= position - old_position;
                 old_position <= position;
+
+                if (&hall | ~(|hall)) begin
+                    hall_err_cnt <= hall_err? hall_err_cnt: hall_err_cnt + 1'b1;
+                end else begin
+                    hall_err_cnt <= 0;
+                end
             end 
+
             
             case ({hall, hall_old})
                 {3'b001, 3'b101}: position <= pos_next;

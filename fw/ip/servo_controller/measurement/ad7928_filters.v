@@ -106,6 +106,7 @@ always @(posedge clk) begin
     end else begin
         case (step)
             0: begin
+                m_valid <= 1'b0;
                 if (s_axis_valid) begin
                     old_adc_data <= adc_data[s_adc_chanel];
                     old_cnt <= data_cnt[s_adc_chanel];

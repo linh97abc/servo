@@ -260,6 +260,13 @@ int servo_controller_get_position(
 	ALT_DEBUG_ASSERT((dev));
 	ALT_DEBUG_ASSERT((position));
 
+	uint32_t flag = SERVO_IORD(dev, SERVO_CONTROLLER_FLAG_OFFSET);
+
+	if (!(flag & SERVO_CONTROLLER_FLAG_ADC_VALID_BIT))
+	{
+		return -ENODATA;
+	}
+
 	OS_CPU_SR cpu_sr = 0;
 	int err;
 	OS_ENTER_CRITICAL();
@@ -277,6 +284,13 @@ int servo_controller_get_current(
 {
 	ALT_DEBUG_ASSERT((dev));
 	ALT_DEBUG_ASSERT((current));
+
+	uint32_t flag = SERVO_IORD(dev, SERVO_CONTROLLER_FLAG_OFFSET);
+
+	if (!(flag & SERVO_CONTROLLER_FLAG_ADC_VALID_BIT))
+	{
+		return -ENODATA;
+	}
 
 	OS_CPU_SR cpu_sr = 0;
 	servo_controller_reg_I16 i16Reg;
@@ -420,6 +434,42 @@ static void servo_controller_check_and_handle_err(
 		ie.field.drv_0_fault = 3;
 	}
 
+	if (flag & SERVO_CONTROLLER_FLAG_HALL_ERR0_BIT)
+	{
+		if (cfg->on_err)
+		{
+			cfg->on_err(dev, 0, SERVO_CTRL_HALL_ERR);
+		}
+		ie.field.drv_0_fault = 0;
+	}
+
+	if (flag & SERVO_CONTROLLER_FLAG_HALL_ERR1_BIT)
+	{
+		if (cfg->on_err)
+		{
+			cfg->on_err(dev, 1, SERVO_CTRL_HALL_ERR);
+		}
+		ie.field.drv_1_fault = 0;
+	}
+
+	if (flag & SERVO_CONTROLLER_FLAG_HALL_ERR2_BIT)
+	{
+		if (cfg->on_err)
+		{
+			cfg->on_err(dev, 2, SERVO_CTRL_HALL_ERR);
+		}
+		ie.field.drv_2_fault = 0;
+	}
+
+	if (flag & SERVO_CONTROLLER_FLAG_HALL_ERR3_BIT)
+	{
+		if (cfg->on_err)
+		{
+			cfg->on_err(dev, 3, SERVO_CTRL_HALL_ERR);
+		}
+		ie.field.drv_3_fault = 0;
+	}
+
 	SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val);
 }
 
@@ -552,6 +602,13 @@ int servo_controller_get_position_channel(
 	ALT_DEBUG_ASSERT((channel < SERVO_CONTROLLER_NUM_SERVO));
 	ALT_DEBUG_ASSERT((position));
 
+	uint32_t flag = SERVO_IORD(dev, SERVO_CONTROLLER_FLAG_OFFSET);
+
+	if (!(flag & SERVO_CONTROLLER_FLAG_ADC_VALID_BIT))
+	{
+		return -ENODATA;
+	}
+
 	servo_controller_reg_I16 i16Reg;
 	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_POS0_OFFSET + channel);
 	*position = i16Reg.i16_val;
@@ -600,6 +657,13 @@ int servo_controller_get_current_channel(
 	ALT_DEBUG_ASSERT((channel < SERVO_CONTROLLER_NUM_SERVO));
 	ALT_DEBUG_ASSERT((current));
 
+	uint32_t flag = SERVO_IORD(dev, SERVO_CONTROLLER_FLAG_OFFSET);
+
+	if (!(flag & SERVO_CONTROLLER_FLAG_ADC_VALID_BIT))
+	{
+		return -ENODATA;
+	}
+
 	servo_controller_reg_I16 i16Reg;
 	i16Reg.u32_val = SERVO_IORD(dev, SERVO_CONTROLLER_I0_OFFSET + channel);
 	*current = i16Reg.i16_val;
@@ -632,9 +696,15 @@ void servo_controller_enable_interrupt(
 	ALT_DEBUG_ASSERT((dev));
 
 	servo_controller_reg_IE ie;
+
+	OS_CPU_SR cpu_sr = 0;
+	OS_ENTER_CRITICAL();
+
 	ie.val = SERVO_IORD(dev, SERVO_CONTROLLER_IE_OFFSET);
 	ie.val |= mask;
 	SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val);
+
+	OS_EXIT_CRITICAL();
 }
 
 void servo_controller_disable_interrupt(
@@ -644,7 +714,13 @@ void servo_controller_disable_interrupt(
 	ALT_DEBUG_ASSERT((dev));
 
 	servo_controller_reg_IE ie;
+
+	OS_CPU_SR cpu_sr = 0;
+	OS_ENTER_CRITICAL();
+
 	ie.val = SERVO_IORD(dev, SERVO_CONTROLLER_IE_OFFSET);
 	ie.val &= ~mask;
 	SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ie.val);
+
+	OS_EXIT_CRITICAL();
 }
