@@ -220,7 +220,7 @@ module servo_controllerv1 (
   assign flag = {
     control_step_pending,
     hall_err,
-    drv8320_fault,
+    drv8320_fault & drv8320_en,
     stop,
     adc_data_valid,
     measurement_trigger_pendding,
