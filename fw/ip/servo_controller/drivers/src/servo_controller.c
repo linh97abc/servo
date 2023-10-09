@@ -344,6 +344,11 @@ static void servo_controller_check_and_handle_err(
 {
 	struct servo_controller_config_t *cfg = dev->cfg;
 
+	if (cfg->on_err)
+	{
+		cfg->on_err(dev, flag);
+	}
+
 	if (flag & SERVO_CONTROLLER_FLAG_REALTIME_ERR_BIT)
 	{
 		SERVO_IOWR(dev, SERVO_CONTROLLER_FLAG_OFFSET,
@@ -363,11 +368,6 @@ static void servo_controller_check_and_handle_err(
 									SERVO_CONTROLLER_FLAG_HALL_ERR1_BIT |
 									SERVO_CONTROLLER_FLAG_HALL_ERR2_BIT |
 									SERVO_CONTROLLER_FLAG_HALL_ERR3_BIT);
-
-	if (cfg->on_err)
-	{
-		cfg->on_err(dev, flag);
-	}
 
 	SERVO_IOWR(dev, SERVO_CONTROLLER_IE_OFFSET, ieVal & ~dis_irq_mask);
 }
